@@ -1,5 +1,5 @@
 import { Icon } from '../components/Icon'
-import { CATALOG, PROVIDERS } from '../data/services'
+import { CATALOG, MONTH, PROVIDERS } from '../data/services'
 import { useApp } from '../store'
 
 export function BookDone() {
@@ -24,7 +24,7 @@ export function BookDone() {
         <Row label="Prestador" value={provider ? provider.name : '—'} />
         <Row
           label="Cuándo"
-          value={`${bk.day ? `${bk.day} ago` : '—'} · ${bk.time ?? '—'}`}
+          value={`${bk.day ? `${bk.day} ${MONTH.short}` : '—'} · ${bk.time ?? '—'}`}
           accent
         />
         <Row label="Dónde" value="Sucursal Del Valle" />

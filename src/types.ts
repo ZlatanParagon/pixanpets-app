@@ -17,6 +17,12 @@ export type Screen =
   | 'profile'
   | 'record'
   | 'notifs'
+  | 'urgencias'
+  | 'direcciones'
+  | 'pagos'
+  | 'privacidad'
+  | 'editperfil'
+  | 'forgot'
 
 export type ServiceType = 'Médico' | 'Estética'
 

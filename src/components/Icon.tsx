@@ -129,6 +129,31 @@ const ICONS = {
     ),
   },
   check: { sw: 2.6, round: true, body: <path d="M5 13l4.5 4.5L19 7" /> },
+  warning: {
+    sw: 2.2,
+    body: (
+      <path d="M12 8v5M12 16.5v.5M10.3 3.9 2.6 17.4A1.6 1.6 0 0 0 4 19.8h16a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0Z" />
+    ),
+  },
+  redo: { sw: 2, body: <path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4h-4" /> },
+  pin: {
+    sw: 2,
+    body: (
+      <>
+        <path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z" />
+        <circle cx="12" cy="10" r="2.5" />
+      </>
+    ),
+  },
+  mail: {
+    sw: 2,
+    body: (
+      <>
+        <rect x="2.5" y="5" width="19" height="14" rx="3" />
+        <path d="M3 7l9 6 9-6" />
+      </>
+    ),
+  },
 } satisfies Record<string, Spec>
 
 export type IconName = keyof typeof ICONS

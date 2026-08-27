@@ -1,5 +1,6 @@
 import { CheckMark, Icon } from '../components/Icon'
-import { Avatar, Note } from '../components/ui'
+import { Avatar, Field } from '../components/ui'
+import { ADDRESSES, CARDS } from '../data/settings'
 import { useApp } from '../store'
 import { C } from '../theme'
 import { money } from '../utils'
@@ -8,9 +9,11 @@ const TITLES = ['Entrega', 'Método de pago', 'Revisa tu pedido']
 const STEPS = ['ENTREGA', 'PAGO', 'REVISIÓN']
 
 export function Checkout() {
-  const { state, set, go, lines, subtotal, shipping, total, placeOrder } = useApp()
+  const { state, set, go, lines, subtotal, shipping, total, placeOrder, openSetting } = useApp()
   const step = state.coStep
   const atHome = state.delivery === 'home'
+  const address = ADDRESSES[state.addr] ?? ADDRESSES[0]
+  const card = CARDS[state.card] ?? CARDS[0]
 
   const back = () => (step === 1 ? go('cart') : set({ coStep: step - 1 }))
   const next = () => (step === 3 ? placeOrder() : set({ coStep: step + 1 }))
@@ -55,12 +58,26 @@ export function Checkout() {
               {atHome && (
                 <span className="option__detail">
                   <span className="address">
-                    <span className="address__name">Casa · Ana Robles</span>
-                    <span className="address__line">
-                      Av. Coyoacán 1234, Del Valle Centro, 03100 CDMX
-                    </span>
+                    <span className="address__name">{address.label} · Ana Robles</span>
+                    <span className="address__line">{address.line}</span>
                   </span>
-                  <span className="address__change">Cambiar</span>
+                  <span
+                    className="address__change"
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      openSetting('direcciones')
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.stopPropagation()
+                        openSetting('direcciones')
+                      }
+                    }}
+                  >
+                    Cambiar
+                  </span>
                 </span>
               )}
             </button>
@@ -86,26 +103,23 @@ export function Checkout() {
               )}
             </button>
 
-            <Note decision>
-              Reglas de costo de envío por definir (fijo, por zona o gratis sobre monto).
-            </Note>
           </div>
         )}
 
         {step === 2 && (
           <div className="stack stack--11 slide-in">
             <div className="pay pay--on">
-              <span className="pay__chip" />
+              <span className="pay__chip" style={{ background: card.art }} />
               <div className="pay__main">
-                <div className="pay__title">Visa ···· 4821</div>
-                <div className="pay__sub">Vence 09/29</div>
+                <div className="pay__title">{card.name}</div>
+                <div className="pay__sub">{card.meta}</div>
               </div>
               <span className="radio radio--on radio--sm">
                 <CheckMark color="#fff" />
               </span>
             </div>
 
-            <button type="button" className="pay">
+            <button type="button" className="pay" onClick={() => openSetting('pagos')}>
               <Icon name="card" size={22} color={C.purple} />
               <span className="pay__main">
                 <span className="pay__title">Agregar otra tarjeta</span>
@@ -113,31 +127,46 @@ export function Checkout() {
               </span>
             </button>
 
-            <button type="button" className="pay">
+            <button type="button" className="pay" onClick={() => openSetting('pagos')}>
               <Icon name="circlePlus" size={22} color={C.tealDark} />
               <span className="pay__main">
-                <span className="pay__title">Otro método</span>
-                <span className="pay__sub">
-                  Pasarela por definir: Stripe / Mercado Pago / Conekta
-                </span>
+                <span className="pay__title">Apple Pay o Google Pay</span>
+                <span className="pay__sub">Autoriza con Face ID desde tu wallet</span>
               </span>
             </button>
 
-            <div className="cfdi">
-              <div>
-                <div className="cfdi__title">Factura fiscal (CFDI)</div>
-                <div className="cfdi__sub">RFC, régimen y uso · por confirmar</div>
+            <div className="cfdi-block">
+              <div className="cfdi">
+                <div>
+                  <div className="cfdi__title">Factura fiscal (CFDI)</div>
+                  <div className="cfdi__sub">Te la enviamos por correo</div>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={state.cfdi}
+                  aria-label="Solicitar factura fiscal CFDI"
+                  className={state.cfdi ? 'switch switch--on' : 'switch'}
+                  onClick={() => set({ cfdi: !state.cfdi })}
+                >
+                  <span className="switch__knob" />
+                </button>
               </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={state.cfdi}
-                aria-label="Solicitar factura fiscal"
-                className={state.cfdi ? 'switch switch--on' : 'switch'}
-                onClick={() => set({ cfdi: !state.cfdi })}
-              >
-                <span className="switch__knob" />
-              </button>
+              {state.cfdi && (
+                <div className="cfdi-form">
+                  <div className="cfdi-form__row">
+                    <Field label="RFC" style={{ flex: 1.2 }}>
+                      <input className="input input--sm" defaultValue="ROAN890314H2A" />
+                    </Field>
+                    <Field label="Régimen" style={{ flex: 1 }}>
+                      <input className="input input--sm" defaultValue="605" />
+                    </Field>
+                  </div>
+                  <Field label="Uso del CFDI">
+                    <input className="input input--sm" defaultValue="G03 · Gastos en general" />
+                  </Field>
+                </div>
+              )}
             </div>
 
             <p className="fineprint">
@@ -172,7 +201,7 @@ export function Checkout() {
               </div>
               <div className="totals__row">
                 <span>Pago</span>
-                <span className="totals__val">Visa ···· 4821</span>
+                <span className="totals__val">{card.name}</span>
               </div>
               <div className="totals__row">
                 <span>Subtotal</span>

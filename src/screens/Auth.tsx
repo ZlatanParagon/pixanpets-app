@@ -5,7 +5,7 @@ import { Field, TickBox } from '../components/ui'
 import { useApp } from '../store'
 
 export function Auth() {
-  const { state, set, go } = useApp()
+  const { state, set, openSetting } = useApp()
   const isLogin = state.authMode === 'login'
 
   const [name, setName] = useState('Ana Robles')
@@ -16,9 +16,10 @@ export function Auth() {
   const [accepted, setAccepted] = useState(true)
 
   // The prototype has no backend: either path just lands on the next screen.
+  const enter = () => set({ screen: isLogin ? 'home' : 'petnew', settingFrom: 'home' })
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    go(isLogin ? 'home' : 'petnew')
+    enter()
   }
 
   return (
@@ -87,7 +88,11 @@ export function Auth() {
         </Field>
 
         {isLogin && (
-          <button type="button" className="auth__forgot">
+          <button
+            type="button"
+            className="auth__forgot"
+            onClick={() => set({ screen: 'forgot', forgotSent: false })}
+          >
             ¿Olvidaste tu contraseña?
           </button>
         )}
@@ -101,8 +106,17 @@ export function Auth() {
               onChange={(e) => setAccepted(e.target.checked)}
             />
             <TickBox>
-              Acepto el <a href="#privacidad">aviso de privacidad</a> y el tratamiento de mis datos
-              (LFPDPPP, derechos ARCO).
+              Acepto el{' '}
+              <a
+                href="#privacidad"
+                onClick={(e) => {
+                  e.preventDefault()
+                  openSetting('privacidad')
+                }}
+              >
+                aviso de privacidad
+              </a>{' '}
+              y el tratamiento de mis datos (LFPDPPP, derechos ARCO).
             </TickBox>
           </label>
         )}
@@ -119,15 +133,11 @@ export function Auth() {
       </div>
 
       <div className="auth__providers">
-        <button type="button" className="provider" onClick={() => go(isLogin ? 'home' : 'petnew')}>
+        <button type="button" className="provider" onClick={enter}>
           <GoogleLogo />
           Google
         </button>
-        <button
-          type="button"
-          className="provider provider--apple"
-          onClick={() => go(isLogin ? 'home' : 'petnew')}
-        >
+        <button type="button" className="provider provider--apple" onClick={enter}>
           <AppleLogo />
           Apple
         </button>

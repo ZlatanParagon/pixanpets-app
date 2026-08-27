@@ -36,7 +36,7 @@ function ageLabel(birth: string): string {
 }
 
 export function PetNew() {
-  const { state, go, addPet } = useApp()
+  const { state, go, addPet, petFormExit } = useApp()
   const fileRef = useRef<HTMLInputElement>(null)
 
   const [species, setSpecies] = useState('Perro')
@@ -78,7 +78,7 @@ export function PetNew() {
   return (
     <section className="screen petnew">
       <header className="petnew__head">
-        <button type="button" className="petnew__skip" onClick={() => go('home')}>
+        <button type="button" className="petnew__skip" onClick={() => go(petFormExit)}>
           Ahora no
         </button>
         <h1 className="petnew__title">¿A quién vamos a consentir?</h1>

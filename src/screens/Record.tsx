@@ -1,11 +1,14 @@
 import { Icon } from '../components/Icon'
 import { BackHeader, PetAvatar, Tag } from '../components/ui'
-import { CONSULTATIONS, VACCINES } from '../data/records'
+import { CONSULTATIONS, EMPTY_DUE, RECORD_DUE, VACCINES } from '../data/records'
 import { useApp } from '../store'
 
 export function Record() {
   const { state, go, startBooking } = useApp()
   const pet = state.pets[state.recPet] ?? state.pets[0]
+  const vaccines = VACCINES[pet.name] ?? []
+  const consultations = CONSULTATIONS[pet.name] ?? []
+  const due = RECORD_DUE[pet.name] ?? EMPTY_DUE
 
   return (
     <section className="screen scroll record">
@@ -34,18 +37,20 @@ export function Record() {
             <Icon name="clock" size={22} color="#46DED5" />
           </span>
           <span className="booster__main">
-            <span className="booster__title">Próximo refuerzo en 3 semanas</span>
-            <span className="booster__sub">Rabia anual · sugerido 18 sep 2026</span>
+            <span className="booster__title">{due.title}</span>
+            <span className="booster__sub">{due.sub}</span>
           </span>
-          <button type="button" className="booster__cta" onClick={startBooking}>
-            Agendar
-          </button>
+          {due.has && (
+            <button type="button" className="booster__cta" onClick={startBooking}>
+              Agendar
+            </button>
+          )}
         </div>
 
         <div>
           <h2 className="section-title section-title--16">Vacunas y desparasitaciones</h2>
           <div className="vaccines">
-            {VACCINES.map((v) => (
+            {vaccines.map((v) => (
               <div key={v.name + v.date} className="vaccine">
                 <span
                   className="vaccine__dot"
@@ -69,7 +74,7 @@ export function Record() {
         <div>
           <h2 className="section-title section-title--16">Consultas</h2>
           <div className="stack stack--10">
-            {CONSULTATIONS.map((c) => (
+            {consultations.map((c) => (
               <article key={c.title + c.date} className="consult">
                 <div className="consult__top">
                   <h3 className="consult__title">{c.title}</h3>

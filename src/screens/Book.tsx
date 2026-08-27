@@ -1,29 +1,18 @@
 import { CheckMark, Icon } from '../components/Icon'
 import { Note, PetAvatar, Tag, TickBox } from '../components/ui'
-import { AVAILABLE_DAYS, CATALOG, PROVIDERS, SLOTS } from '../data/services'
+import { CATALOG, MONTH, PROVIDERS, SLOTS } from '../data/services'
 import { useApp } from '../store'
 import { C } from '../theme'
 import type { ServiceType } from '../types'
 
-const TITLES = [
-  '¿Quién viene a la cita?',
-  'Tipo de servicio',
-  'Elige prestador',
-  'Fecha y hora',
-  'Confirma tu cita',
-]
-
 const WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
-const DAYS_IN_MONTH = 31
-/** The grid shows August 2026; only days from the 26th on are still bookable. */
-const FIRST_BOOKABLE = 26
 
 function isAvailable(day: number): boolean {
-  return AVAILABLE_DAYS.includes(day) && day >= FIRST_BOOKABLE
+  return !MONTH.closed.includes(day) && !MONTH.booked.includes(day)
 }
 
 export function Book() {
-  const { state, set, setBooking, go } = useApp()
+  const { state, set, setBooking, confirmBooking } = useApp()
   const { bk, bookStep } = state
 
   const services = CATALOG[bk.type]
@@ -33,6 +22,16 @@ export function Book() {
   const pet = state.pets[bk.pet] ?? state.pets[0]
   const isMed = bk.type === 'Médico'
   const duration = service ? service.dur : '30 min'
+  const resched = state.reschedId != null
+  const original = resched ? state.upcoming[state.reschedId!] : null
+
+  const titles = [
+    '¿Quién viene a la cita?',
+    'Tipo de servicio',
+    'Elige prestador',
+    'Fecha y hora',
+    resched ? 'Confirma el cambio' : 'Confirma tu cita',
+  ]
 
   const ready = [
     true,
@@ -42,10 +41,13 @@ export function Book() {
     true,
   ][bookStep - 1]
 
-  const back = () => (bookStep === 1 ? go('citas') : set({ bookStep: bookStep - 1 }))
+  const back = () =>
+    bookStep === 1
+      ? set({ screen: 'citas', reschedId: null })
+      : set({ bookStep: bookStep - 1 })
   const next = () => {
     if (!ready) return
-    if (bookStep === 5) go('bookdone')
+    if (bookStep === 5) confirmBooking()
     else set({ bookStep: bookStep + 1 })
   }
 
@@ -60,7 +62,7 @@ export function Book() {
           </button>
           <div>
             <div className="book__step">PASO {bookStep} DE 5</div>
-            <h1 className="book__title">{TITLES[bookStep - 1]}</h1>
+            <h1 className="book__title">{titles[bookStep - 1]}</h1>
           </div>
         </div>
         <div
@@ -98,7 +100,11 @@ export function Book() {
                 </button>
               )
             })}
-            <button type="button" className="dashed-row" onClick={() => go('petnew')}>
+            <button
+              type="button"
+              className="dashed-row"
+              onClick={() => set({ screen: 'petnew', settingFrom: 'book' })}
+            >
               <Icon name="plus" size={17} color={C.purple} stroke={2.4} />
               Agregar otra mascota
             </button>
@@ -153,9 +159,6 @@ export function Book() {
                 )
               })}
             </div>
-            <Note decision>
-              El catálogo y las duraciones los administra la veterinaria desde el panel web.
-            </Note>
           </div>
         )}
 
@@ -190,8 +193,17 @@ export function Book() {
 
         {bookStep === 4 && (
           <div className="slide-in">
+            {resched && original && (
+              <div className="resched-note">
+                <Icon name="redo" size={19} color="#C0186A" />
+                <span>
+                  Estás reprogramando la cita de {original.date} · {original.time}. Al confirmar,
+                  la anterior se libera.
+                </span>
+              </div>
+            )}
             <div className="cal__head">
-              <h2 className="book__subhead book__subhead--flush">Agosto 2026</h2>
+              <h2 className="book__subhead book__subhead--flush">{MONTH.label}</h2>
               <span className="cal__branch">Sucursal Del Valle · L–S</span>
             </div>
 
@@ -204,7 +216,10 @@ export function Book() {
             </div>
 
             <div className="cal__grid">
-              {Array.from({ length: DAYS_IN_MONTH }, (_, i) => i + 1).map((n) => {
+              {Array.from({ length: MONTH.firstCol }, (_, i) => (
+                <span key={`blank-${i}`} className="cal__blank" aria-hidden="true" />
+              ))}
+              {Array.from({ length: MONTH.days }, (_, i) => i + 1).map((n) => {
                 const free = isAvailable(n)
                 const on = bk.day === n
                 return (
@@ -223,7 +238,7 @@ export function Book() {
             </div>
 
             <h2 className="book__subhead">
-              Horarios libres · {bk.day ? `${bk.day} de agosto` : 'elige un día'}
+              Horarios libres · {bk.day ? `${bk.day} de ${MONTH.name}` : 'elige un día'}
             </h2>
             <div className="slots">
               {SLOTS.map(([h, free]) => {
@@ -274,7 +289,7 @@ export function Book() {
               <SummaryRow label="Prestador" value={provider ? provider.name : '—'} />
               <SummaryRow
                 label="Fecha y hora"
-                value={`${bk.day ? `${bk.day} ago` : '—'} · ${bk.time ?? '—'}`}
+                value={`${bk.day ? `${bk.day} ${MONTH.short}` : '—'} · ${bk.time ?? '—'}`}
               />
               <SummaryRow label="Duración" value={duration} />
               <div className="summary__total">
@@ -305,7 +320,7 @@ export function Book() {
           onClick={next}
           disabled={!ready}
         >
-          {bookStep === 5 ? 'Confirmar cita' : 'Continuar'}
+          {bookStep === 5 ? (resched ? 'Confirmar cambio' : 'Confirmar cita') : 'Continuar'}
         </button>
       </footer>
     </section>

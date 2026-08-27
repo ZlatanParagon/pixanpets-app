@@ -7,17 +7,23 @@ import { BookDone } from './screens/BookDone'
 import { Cart } from './screens/Cart'
 import { Checkout } from './screens/Checkout'
 import { Citas } from './screens/Citas'
+import { Direcciones } from './screens/Direcciones'
+import { EditProfile } from './screens/EditProfile'
+import { Forgot } from './screens/Forgot'
 import { Home } from './screens/Home'
 import { Notifications } from './screens/Notifications'
 import { Onboarding } from './screens/Onboarding'
 import { OrderDone } from './screens/OrderDone'
 import { Orders } from './screens/Orders'
+import { Pagos } from './screens/Pagos'
 import { PetNew } from './screens/PetNew'
+import { Privacidad } from './screens/Privacidad'
 import { Product } from './screens/Product'
 import { Profile } from './screens/Profile'
 import { Record } from './screens/Record'
 import { Shop } from './screens/Shop'
 import { Tips } from './screens/Tips'
+import { Urgencias } from './screens/Urgencias'
 import { AppProvider, useApp } from './store'
 import type { Screen } from './types'
 
@@ -40,6 +46,12 @@ const SCREENS: Record<Screen, () => React.JSX.Element> = {
   profile: Profile,
   record: Record,
   notifs: Notifications,
+  urgencias: Urgencias,
+  direcciones: Direcciones,
+  pagos: Pagos,
+  privacidad: Privacidad,
+  editperfil: EditProfile,
+  forgot: Forgot,
 }
 
 function Shell() {

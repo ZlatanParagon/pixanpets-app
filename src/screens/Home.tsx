@@ -1,8 +1,7 @@
 import logo from '../assets/pixanpets-logo.png'
 import { Icon } from '../components/Icon'
 import { Tag } from '../components/ui'
-import { NEXT_APPOINTMENT } from '../data/appointments'
-import { LATEST_ORDER, ORDER_STAGES } from '../data/orders'
+import { ORDER_STAGES, stagesDone } from '../data/orders'
 import { useApp } from '../store'
 
 /**
@@ -17,7 +16,12 @@ function greeting(names: string[]): string {
 }
 
 export function Home() {
-  const { state, go, set, startBooking } = useApp()
+  const { state, go, set, startBooking, upcomingSorted } = useApp()
+
+  const next = upcomingSorted[0]
+  const [nextDay, nextMonth] = next ? next.date.split(' ') : ['', '']
+  const latest = state.orders[0]
+  const done = latest ? stagesDone(latest.status) : 0
 
   return (
     <section className="screen scroll scroll--tabbed home">
@@ -34,7 +38,7 @@ export function Home() {
             type="button"
             className="home__bell"
             onClick={() => go('notifs')}
-            aria-label="Notificaciones"
+            aria-label="Ver notificaciones"
           >
             <Icon name="bell" size={20} color="#fff" />
             <span className="home__bell-dot" />
@@ -42,12 +46,22 @@ export function Home() {
         </div>
 
         <div className="home__actions">
-          <button type="button" className="action action--teal" onClick={startBooking}>
+          <button
+            type="button"
+            className="action action--teal"
+            onClick={startBooking}
+            aria-label="Agendar una cita"
+          >
             <Icon name="calendar" size={24} color="#14126B" />
             <span className="action__title">Agendar cita</span>
             <span className="action__sub">Médico o estética</span>
           </button>
-          <button type="button" className="action" onClick={() => go('shop')}>
+          <button
+            type="button"
+            className="action"
+            onClick={() => go('shop')}
+            aria-label="Ir a la tienda"
+          >
             <Icon name="bag" size={24} color="#E9207F" />
             <span className="action__title">Comprar</span>
             <span className="action__sub action__sub--muted">Alimento y más</span>
@@ -58,55 +72,71 @@ export function Home() {
       <div className="home__body">
         <div>
           <h2 className="section-title">Tu próxima cita</h2>
-          <button type="button" className="card next-appt" onClick={() => go('citas')}>
-            <span className="next-appt__date">
-              <span className="next-appt__day">{NEXT_APPOINTMENT.day}</span>
-              <span className="next-appt__month">{NEXT_APPOINTMENT.month}</span>
-            </span>
-            <span className="next-appt__main">
-              <span className="next-appt__meta">
-                <Tag bg="#EAFBFA" fg="#0F8F88" wide>
-                  {NEXT_APPOINTMENT.type}
-                </Tag>
-                <span className="next-appt__time">{NEXT_APPOINTMENT.time}</span>
+          {next ? (
+            <button type="button" className="card next-appt" onClick={() => go('citas')}>
+              <span className="next-appt__date">
+                <span className="next-appt__day">{nextDay}</span>
+                <span className="next-appt__month">{nextMonth.toUpperCase()}</span>
               </span>
-              <span className="next-appt__title">{NEXT_APPOINTMENT.title}</span>
-              <span className="next-appt__provider">{NEXT_APPOINTMENT.provider}</span>
-            </span>
-            <Icon name="chevronRight" size={18} color="#C9BEF6" />
-          </button>
+              <span className="next-appt__main">
+                <span className="next-appt__meta">
+                  <Tag bg={next.tagBg} fg={next.tagFg} wide>
+                    {next.type}
+                  </Tag>
+                  <span className="next-appt__time">{next.time}</span>
+                </span>
+                <span className="next-appt__title">
+                  {next.service} · {next.pet}
+                </span>
+                <span className="next-appt__provider">{next.provider}</span>
+              </span>
+              <Icon name="chevronRight" size={18} color="#C9BEF6" />
+            </button>
+          ) : (
+            <button type="button" className="card no-appt" onClick={startBooking}>
+              <span className="no-appt__icon">
+                <Icon name="calendar" size={21} color="#7A22C4" />
+              </span>
+              <span className="no-appt__main">
+                <span className="no-appt__title">Sin citas próximas</span>
+                <span className="no-appt__sub">Agenda la siguiente visita en 3 toques.</span>
+              </span>
+              <span className="no-appt__cta">Agendar</span>
+            </button>
+          )}
         </div>
 
-        <div>
-          <div className="section-head">
-            <h2 className="section-title">Último pedido</h2>
-            <button type="button" className="link" onClick={() => go('orders')}>
-              Ver todos
+        {latest && (
+          <div>
+            <div className="section-head">
+              <h2 className="section-title">Último pedido</h2>
+              <button type="button" className="link" onClick={() => go('orders')}>
+                Ver todos
+              </button>
+            </div>
+            <button type="button" className="card order-card" onClick={() => go('orders')}>
+              <span className="order-card__top">
+                <span className="order-card__id">Pedido {latest.id}</span>
+                <Tag bg={latest.tagBg} fg={latest.tagFg}>
+                  {latest.status}
+                </Tag>
+              </span>
+              <span className="order-card__meta">
+                {latest.meta} · {latest.total}
+              </span>
+              <span className="order-card__track">
+                {ORDER_STAGES.map((stage, i) => (
+                  <span key={stage} className={i < done ? 'track track--on' : 'track'} />
+                ))}
+              </span>
+              <span className="order-card__stages">
+                {ORDER_STAGES.map((stage) => (
+                  <span key={stage}>{stage}</span>
+                ))}
+              </span>
             </button>
           </div>
-          <button type="button" className="card order-card" onClick={() => go('orders')}>
-            <span className="order-card__top">
-              <span className="order-card__id">Pedido {LATEST_ORDER.id}</span>
-              <Tag bg="#FFF0E6" fg="#C05A12">
-                {LATEST_ORDER.status}
-              </Tag>
-            </span>
-            <span className="order-card__meta">{LATEST_ORDER.meta}</span>
-            <span className="order-card__track">
-              {ORDER_STAGES.map((stage, i) => (
-                <span
-                  key={stage}
-                  className={i < LATEST_ORDER.stagesDone ? 'track track--on' : 'track'}
-                />
-              ))}
-            </span>
-            <span className="order-card__stages">
-              {ORDER_STAGES.map((stage) => (
-                <span key={stage}>{stage}</span>
-              ))}
-            </span>
-          </button>
-        </div>
+        )}
 
         <div>
           <h2 className="section-title">Mis peluditos</h2>
@@ -139,7 +169,7 @@ export function Home() {
           </div>
         </div>
 
-        <button type="button" className="emergency" onClick={() => go('notifs')}>
+        <button type="button" className="emergency" onClick={() => go('urgencias')}>
           <span className="emergency__icon">
             <Icon name="phone" size={20} color="#FF6BAE" />
           </span>

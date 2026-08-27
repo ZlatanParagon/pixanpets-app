@@ -73,8 +73,20 @@ export const PROVIDERS: Record<ServiceType, Provider[]> = {
   ],
 }
 
-/** Days with free slots in August 2026. Sundays are closed (L–S). */
-export const AVAILABLE_DAYS = [26, 27, 28, 29, 31, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12]
+/**
+ * The month the booking calendar shows: September 2026. `firstCol` is how many
+ * leading blanks the grid needs (Sep 1 2026 is a Tuesday → 1 blank after L).
+ * `closed` are Sundays; `booked` days have no free slots left.
+ */
+export const MONTH = {
+  label: 'Septiembre 2026',
+  name: 'septiembre',
+  short: 'sep',
+  firstCol: 1,
+  days: 30,
+  closed: [6, 13, 20, 27],
+  booked: [3, 9, 15, 22],
+}
 
 /** [hour, isFree] — the crossed-out ones are already taken. */
 export const SLOTS: [string, boolean][] = [

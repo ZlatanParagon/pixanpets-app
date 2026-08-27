@@ -1,16 +1,15 @@
 import { BackHeader, Tag } from '../components/ui'
-import { ORDERS } from '../data/orders'
 import { useApp } from '../store'
 
 export function Orders() {
-  const { go } = useApp()
+  const { state, go } = useApp()
 
   return (
     <section className="screen scroll orders">
       <BackHeader title="Mis pedidos" onBack={() => go('home')} className="back-header--sheet" />
 
       <div className="orders__list">
-        {ORDERS.map((o) => (
+        {state.orders.map((o) => (
           <article key={o.id} className="card order">
             <div className="order__top">
               <h2 className="order__id">{o.id}</h2>

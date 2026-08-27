@@ -30,11 +30,16 @@ export const ORDERS: Order[] = [
 /** The four fulfilment stages shown as the progress bar on the home card. */
 export const ORDER_STAGES = ['PAGADO', 'PREPARANDO', 'EN CAMINO', 'ENTREGADO']
 
-/** The order summarised on the home screen. */
-export const LATEST_ORDER = {
-  id: '#PX-2841',
-  status: 'EN CAMINO',
-  meta: '2 productos · $848.00 · Envío a domicilio',
-  /** How many of ORDER_STAGES are complete. */
-  stagesDone: 3,
+/** How many of ORDER_STAGES an order has completed, from its status tag. */
+export function stagesDone(status: string): number {
+  const i = ORDER_STAGES.indexOf(status)
+  return i >= 0 ? i + 1 : 1
+}
+
+/** Tag palette per order status, used when a new order is placed in-session. */
+export const STATUS_TAGS: Record<string, { tagBg: string; tagFg: string }> = {
+  PAGADO: { tagBg: '#EAFBFA', tagFg: '#0F8F88' },
+  PREPARANDO: { tagBg: '#FFF9E8', tagFg: '#8A6A17' },
+  'EN CAMINO': { tagBg: '#FFF0E6', tagFg: '#C05A12' },
+  ENTREGADO: { tagBg: '#EAFBFA', tagFg: '#0F8F88' },
 }

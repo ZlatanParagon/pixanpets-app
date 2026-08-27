@@ -1,12 +1,21 @@
 import { Icon } from '../components/Icon'
 import { Tag } from '../components/ui'
-import { APPTS_PAST, APPTS_UPCOMING } from '../data/appointments'
 import { useApp } from '../store'
 
 export function Citas() {
-  const { state, set, startBooking } = useApp()
+  const {
+    state,
+    set,
+    startBooking,
+    startReschedule,
+    askCancel,
+    dismissCancel,
+    confirmCancel,
+    upcomingSorted,
+  } = useApp()
   const upcoming = state.apptTab === 'up'
-  const appts = upcoming ? APPTS_UPCOMING : APPTS_PAST
+  const appts = upcoming ? upcomingSorted : state.past
+  const cancelTarget = state.cancelId != null ? state.upcoming[state.cancelId] : null
 
   return (
     <section className="screen scroll scroll--tabbed">
@@ -37,7 +46,7 @@ export function Citas() {
       <div className="citas__list">
         {appts.map((a) => (
           <article
-            key={`${a.service}-${a.date}-${a.pet}`}
+            key={`${a.service}-${a.date}-${a.pet}-${a.status}`}
             className="card appt"
             style={{ borderLeftColor: a.accent }}
           >
@@ -65,13 +74,17 @@ export function Citas() {
             {a.actionable && (
               <>
                 <div className="appt__actions">
-                  <button type="button" className="btn-sm btn-sm--soft" onClick={startBooking}>
+                  <button
+                    type="button"
+                    className="btn-sm btn-sm--soft"
+                    onClick={() => startReschedule(a)}
+                  >
                     Reprogramar
                   </button>
                   <button
                     type="button"
                     className="btn-sm btn-sm--danger"
-                    onClick={() => set({ apptTab: 'past' })}
+                    onClick={() => askCancel(a)}
                   >
                     Cancelar
                   </button>
@@ -87,6 +100,29 @@ export function Citas() {
           Agendar nueva cita
         </button>
       </div>
+
+      {cancelTarget && (
+        <div className="sheet-overlay" role="dialog" aria-modal="true" aria-label="Cancelar cita">
+          <div className="cancel-sheet">
+            <span className="cancel-sheet__icon">
+              <Icon name="warning" size={24} color="#E9207F" />
+            </span>
+            <h2 className="cancel-sheet__title">¿Cancelar esta cita?</h2>
+            <p className="cancel-sheet__text">
+              {cancelTarget.service} de {cancelTarget.pet} ({cancelTarget.date}) quedará libre para
+              otro paciente. Puedes agendar de nuevo cuando quieras.
+            </p>
+            <div className="cancel-sheet__actions">
+              <button type="button" className="btn btn--pink btn--52" onClick={confirmCancel}>
+                Sí, cancelar la cita
+              </button>
+              <button type="button" className="btn btn--soft btn--52" onClick={dismissCancel}>
+                Conservarla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

@@ -10,12 +10,12 @@ interface Row {
   tint: string
   ink: string
   to: Screen
-  /** Checkout opens on this step when the row points at it. */
-  step?: number
+  /** Settings-style screens remember where they were opened from. */
+  setting?: boolean
 }
 
 export function Profile() {
-  const { state, set, go } = useApp()
+  const { state, set, go, openSetting } = useApp()
 
   const rows: Row[] = [
     {
@@ -26,15 +26,22 @@ export function Profile() {
       ink: '#0F8F88',
       to: 'record',
     },
-    { mono: 'PD', label: 'Mis pedidos', hint: '3', tint: '#FFF0E6', ink: '#C05A12', to: 'orders' },
+    {
+      mono: 'PD',
+      label: 'Mis pedidos',
+      hint: String(state.orders.length),
+      tint: '#FFF0E6',
+      ink: '#C05A12',
+      to: 'orders',
+    },
     {
       mono: 'DI',
       label: 'Direcciones de envío',
-      hint: '1',
+      hint: '2',
       tint: '#F0E6FF',
       ink: '#7A22C4',
-      to: 'checkout',
-      step: 1,
+      to: 'direcciones',
+      setting: true,
     },
     {
       mono: 'PA',
@@ -42,8 +49,8 @@ export function Profile() {
       hint: 'Visa ···· 4821',
       tint: '#E6F0FF',
       ink: '#2A55A0',
-      to: 'checkout',
-      step: 2,
+      to: 'pagos',
+      setting: true,
     },
     {
       mono: 'NO',
@@ -59,12 +66,12 @@ export function Profile() {
       hint: 'ARCO',
       tint: '#F1EDFD',
       ink: '#6F6AA0',
-      to: 'tips',
+      to: 'privacidad',
+      setting: true,
     },
   ]
 
-  const openRow = (r: Row) =>
-    r.step ? set({ screen: r.to, coStep: r.step }) : go(r.to)
+  const openRow = (r: Row) => (r.setting ? openSetting(r.to) : go(r.to))
 
   return (
     <section className="screen scroll scroll--tabbed profile">
@@ -74,7 +81,7 @@ export function Profile() {
           <h1 className="profile__name">Ana Robles</h1>
           <p className="profile__contact">ana.robles@correo.com · 55 4821 0093</p>
         </div>
-        <button type="button" className="profile__edit">
+        <button type="button" className="profile__edit" onClick={() => go('editperfil')}>
           Editar
         </button>
       </header>
@@ -83,7 +90,11 @@ export function Profile() {
         <div>
           <div className="section-head">
             <h2 className="section-title">Mis mascotas</h2>
-            <button type="button" className="link" onClick={() => go('petnew')}>
+            <button
+              type="button"
+              className="link"
+              onClick={() => set({ screen: 'petnew', settingFrom: 'home' })}
+            >
               Agregar
             </button>
           </div>

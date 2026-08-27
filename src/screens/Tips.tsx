@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Icon } from '../components/Icon'
-import { Chip, Note, SearchField } from '../components/ui'
+import { Chip, SearchField } from '../components/ui'
 import { FAQS, TIP_CATS } from '../data/content'
 import { useApp } from '../store'
 
@@ -72,10 +72,6 @@ export function Tips() {
           </div>
         )}
 
-        <Note decision>
-          Recomendación: administrar este contenido desde un CMS ligero para no republicar la app en
-          cada cambio.
-        </Note>
       </div>
     </section>
   )

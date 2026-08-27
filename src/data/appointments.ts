@@ -10,7 +10,7 @@ export const APPTS_UPCOMING: Appointment[] = [
     service: 'Consulta general',
     pet: 'Frida',
     provider: 'Dra. Marisol Cruz',
-    date: '28 ago',
+    date: '2 sep',
     time: '11:30 h',
     actionable: true,
   },
@@ -23,7 +23,7 @@ export const APPTS_UPCOMING: Appointment[] = [
     service: 'Baño y secado',
     pet: 'Nube',
     provider: 'Sofía Mena',
-    date: '31 ago',
+    date: '5 sep',
     time: '16:00 h',
     actionable: true,
   },
@@ -67,12 +67,12 @@ export const APPTS_PAST: Appointment[] = [
   },
 ]
 
-/** The appointment surfaced on the home screen. */
-export const NEXT_APPOINTMENT = {
-  day: '28',
-  month: 'AGO',
-  type: 'MÉDICO',
-  time: '11:30 h',
-  title: 'Consulta general · Frida',
-  provider: 'Dra. Marisol Cruz',
+/**
+ * Sort key for "d mes" dates so the soonest upcoming appointment comes first.
+ * The prototype only ever schedules within ago–oct.
+ */
+export function monthRank(date: string): number {
+  const months: Record<string, number> = { ago: 8, sep: 9, oct: 10 }
+  const [day, month] = String(date).split(' ')
+  return (months[month] ?? 9) * 100 + parseInt(day, 10)
 }
