@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#EEEAFB;font-family:'Nunito Sans',system-ui,sans-serif}
+a{color:#7A22C4;text-decoration:none}a:hover{color:#E9207F}
+*{-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:0;height:0}
+@keyframes pxpop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes pxslide{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:48px 24px;box-sizing:border-box">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+
+<div style="height:874px;display:flex;flex-direction:column;background:#F5F3FF;color:#1B1560;font-family:'Nunito Sans',system-ui,sans-serif;overflow:hidden;position:relative">
+
+<!-- ══════════ ONBOARDING ══════════ -->
+<sc-if value="{{ isOnboard }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;display:flex;flex-direction:column;background:linear-gradient(170deg,#2A1FA0 0%,#5B1EB8 55%,#7A22C4 100%);padding:74px 28px 34px;box-sizing:border-box">
+  <div style="display:flex;justify-content:flex-end">
+    <div onClick="{{ skipOnboard }}" style="font:700 14px 'Nunito Sans';color:rgba(255,255,255,.72);padding:8px 4px;cursor:pointer">Saltar</div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;text-align:center">
+    <div style="width:196px;height:196px;border-radius:50%;background:rgba(70,222,213,.14);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 18px rgba(70,222,213,.07)">
+      <img src="pixanpets-logo.png" alt="PIXANPETS" style="width:158px;height:158px;object-fit:cover;border-radius:50%;filter:drop-shadow(0 10px 24px rgba(0,0,0,.28))">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;padding:0 6px">
+      <div style="font:800 30px/1.12 'Baloo 2',cursive;color:#fff;letter-spacing:-.4px">{{ obTitle }}</div>
+      <div style="font:400 16px/1.5 'Nunito Sans';color:rgba(255,255,255,.78);max-width:290px;margin:0 auto;text-wrap:pretty">{{ obBody }}</div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:22px;align-items:center">
+    <div style="display:flex;gap:8px;align-items:center">
+      <div style="width:{{ obW0 }};height:7px;border-radius:99px;background:{{ obC0 }};transition:all .3s"></div>
+      <div style="width:{{ obW1 }};height:7px;border-radius:99px;background:{{ obC1 }};transition:all .3s"></div>
+      <div style="width:{{ obW2 }};height:7px;border-radius:99px;background:{{ obC2 }};transition:all .3s"></div>
+    </div>
+    <div onClick="{{ obNext }}" style="width:100%;height:56px;border-radius:20px;background:#46DED5;color:#14126B;font:800 17px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 26px rgba(70,222,213,.34)" style-active="transform:scale(.98)">{{ obCta }}</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ AUTH ══════════ -->
+<sc-if value="{{ isAuth }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;padding:70px 26px 26px;box-sizing:border-box;overflow:auto;background:#fff">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:26px">
+    <img src="pixanpets-logo.png" alt="" style="width:54px;height:54px;object-fit:contain">
+    <div>
+      <div style="font:800 20px/1 'Baloo 2',cursive;color:#2A1FA0">PIXANPETS</div>
+      <div style="font:600 10px/1.4 'Nunito Sans';color:#8E88BE;letter-spacing:.9px">SERVICIOS VETERINARIOS INTEGRALES</div>
+    </div>
+  </div>
+  <div style="font:800 27px/1.15 'Baloo 2',cursive;margin-bottom:6px">{{ authTitle }}</div>
+  <div style="font:400 15px/1.45 'Nunito Sans';color:#6F6AA0;margin-bottom:24px">Tu cuenta guarda a tus peluditos, sus citas y tus pedidos.</div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <sc-if value="{{ isRegister }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Nombre</div>
+      <div style="height:52px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;padding:0 16px;font:400 15px 'Nunito Sans';color:#1B1560">Ana Robles</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Teléfono</div>
+      <div style="height:52px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;padding:0 16px;font:400 15px 'Nunito Sans';color:#1B1560">55 4821 0093</div>
+    </div>
+    </sc-if>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Correo</div>
+      <div style="height:52px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;padding:0 16px;font:400 15px 'Nunito Sans';color:#1B1560">ana.robles@correo.com</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Contraseña</div>
+      <div style="height:52px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font:400 15px 'Nunito Sans';letter-spacing:3px;color:#1B1560">••••••••<span style="font:700 12px 'Nunito Sans';letter-spacing:0;color:#7A22C4">Ver</span></div>
+    </div>
+    <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+    <div style="align-self:flex-end;font:700 13px 'Nunito Sans';color:#7A22C4;cursor:pointer">¿Olvidaste tu contraseña?</div>
+    </sc-if>
+    <sc-if value="{{ isRegister }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:2px 2px 0">
+      <div style="width:20px;height:20px;border-radius:6px;background:#46DED5;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.3 4.8 8.6 9.5 3.6" fill="none" stroke="#14126B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font:400 12.5px/1.45 'Nunito Sans';color:#6F6AA0">Acepto el <a href="#">aviso de privacidad</a> y el tratamiento de mis datos (LFPDPPP, derechos ARCO).</div>
+    </div>
+    </sc-if>
+  </div>
+
+  <div onClick="{{ doAuth }}" style="margin-top:20px;height:56px;border-radius:20px;background:#E9207F;color:#fff;font:800 17px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 24px rgba(233,32,127,.3)" style-active="transform:scale(.985)">{{ authCta }}</div>
+
+  <div style="display:flex;align-items:center;gap:12px;margin:22px 0 16px">
+    <div style="flex:1;height:1px;background:#E4DEFB"></div><div style="font:600 12px 'Nunito Sans';color:#A29CCB">o continúa con</div><div style="flex:1;height:1px;background:#E4DEFB"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div onClick="{{ doAuth }}" style="height:52px;border-radius:16px;border:1.5px solid #E4DEFB;display:flex;align-items:center;justify-content:center;gap:10px;font:700 15px 'Nunito Sans';cursor:pointer;background:#fff">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.6 9.2c0-.6-.1-1.2-.2-1.7H9v3.3h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.5z" fill="#4285F4"/><path d="M9 18c2.4 0 4.5-.8 6-2.3l-2.9-2.2c-.8.5-1.8.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3A9 9 0 0 0 9 18z" fill="#34A853"/><path d="M3.9 10.6a5.4 5.4 0 0 1 0-3.5V4.8H.9a9 9 0 0 0 0 8.1l3-2.3z" fill="#FBBC05"/><path d="M9 3.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 0 0 .9 4.8l3 2.3C4.6 5 6.6 3.6 9 3.6z" fill="#EA4335"/></svg>
+      Google
+    </div>
+    <div onClick="{{ doAuth }}" style="height:52px;border-radius:16px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;gap:9px;font:700 15px 'Nunito Sans';cursor:pointer">
+      <svg width="16" height="19" viewBox="0 0 16 19" fill="#fff"><path d="M13.2 10c0-2 1.6-3 1.7-3.1-1-1.4-2.4-1.6-2.9-1.6-1.3-.1-2.5.7-3.2.7-.7 0-1.7-.7-2.8-.7-1.4 0-2.7.8-3.5 2.1-1.5 2.6-.4 6.4 1.1 8.5.7 1 1.6 2.1 2.7 2.1 1 0 1.4-.7 2.7-.7 1.2 0 1.6.7 2.7.7 1.1 0 1.8-1 2.5-2 .8-1.2 1.1-2.3 1.2-2.4-.1 0-2.2-.9-2.2-3.6zM11 3.6c.6-.7 1-1.7.9-2.6-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.5 1 .1 2-.5 2.5-1.2z"/></svg>
+      Apple
+    </div>
+  </div>
+  <div onClick="{{ toggleAuth }}" style="margin-top:22px;text-align:center;font:400 14px 'Nunito Sans';color:#6F6AA0;cursor:pointer">{{ authSwitch }}</div>
+</div>
+</sc-if>
+
+<!-- ══════════ ALTA DE MASCOTA ══════════ -->
+<sc-if value="{{ isPetNew }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#fff;overflow:auto">
+  <div style="padding:66px 24px 18px;background:linear-gradient(160deg,#2A1FA0,#7A22C4);color:#fff">
+    <div onClick="{{ skipPet }}" style="text-align:right;font:700 13px 'Nunito Sans';color:rgba(255,255,255,.72);cursor:pointer">Ahora no</div>
+    <div style="font:800 25px/1.15 'Baloo 2',cursive;margin-top:10px">¿A quién vamos a consentir?</div>
+    <div style="font:400 14px/1.45 'Nunito Sans';color:rgba(255,255,255,.76);margin-top:6px">Puedes agregar más peluditos después.</div>
+  </div>
+  <div style="padding:22px 24px 40px;display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:82px;height:82px;border-radius:26px;background:#F5F3FF;border:2px dashed #C9BEF6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7A22C4" stroke-width="2" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg>
+        <div style="font:700 9.5px 'Nunito Sans';color:#7A22C4">FOTO</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+        <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Nombre</div>
+        <div style="height:50px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;padding:0 15px;font:600 15px 'Nunito Sans'">Frida</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Especie</div>
+      <div style="display:flex;gap:9px">
+        <div onClick="{{ setSpDog }}" style="flex:1;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:7px;font:700 14px 'Nunito Sans';cursor:pointer;background:{{ spDogBg }};color:{{ spDogFg }};border:1.5px solid {{ spDogBd }}">Perro</div>
+        <div onClick="{{ setSpCat }}" style="flex:1;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:7px;font:700 14px 'Nunito Sans';cursor:pointer;background:{{ spCatBg }};color:{{ spCatFg }};border:1.5px solid {{ spCatBd }}">Gato</div>
+        <div style="flex:1;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;font:700 14px 'Nunito Sans';cursor:pointer;background:#fff;color:#6F6AA0;border:1.5px solid #E4DEFB">Otro</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Raza</div>
+        <div style="height:50px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;padding:0 15px;font:400 14px 'Nunito Sans'">Criolla</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Sexo</div>
+        <div style="height:50px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;padding:0 15px;font:400 14px 'Nunito Sans'">Hembra</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Nacimiento</div>
+        <div style="height:50px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;padding:0 15px;font:400 14px 'Nunito Sans'">14 / 03 / 2021</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Peso</div>
+        <div style="height:50px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;display:flex;align-items:center;padding:0 15px;font:400 14px 'Nunito Sans'">8.4 kg</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font:700 12px 'Nunito Sans';color:#6F6AA0">Notas para el veterinario</div>
+      <div style="height:78px;border-radius:16px;background:#F5F3FF;border:1.5px solid #E4DEFB;padding:13px 15px;font:400 14px/1.4 'Nunito Sans';color:#9A94C4">Alergias, medicamentos, temperamento…</div>
+    </div>
+    <div onClick="{{ savePet }}" style="height:56px;border-radius:20px;background:#E9207F;color:#fff;font:800 17px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 24px rgba(233,32,127,.28)">Guardar mascota</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ HOME ══════════ -->
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;padding-bottom:104px">
+  <div style="background:linear-gradient(160deg,#2A1FA0 0%,#5B1EB8 60%,#7A22C4 100%);padding:62px 22px 26px;border-radius:0 0 30px 30px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:11px">
+        <img src="pixanpets-logo.png" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:50%">
+        <div>
+          <div style="font:400 12.5px 'Nunito Sans';color:rgba(255,255,255,.7)">¡Hola, Ana!</div>
+          <div style="font:800 18px/1.1 'Baloo 2',cursive;color:#fff">Frida y Nube te esperan</div>
+        </div>
+      </div>
+      <div onClick="{{ goNotifs }}" style="width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7M13.7 20a2 2 0 0 1-3.4 0"/></svg>
+        <div style="position:absolute;top:8px;right:9px;width:9px;height:9px;border-radius:50%;background:#46DED5;border:2px solid #4A1BAF"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:11px;margin-top:22px">
+      <div onClick="{{ goBook }}" style="flex:1;background:#46DED5;border-radius:20px;padding:15px 15px 14px;cursor:pointer;box-shadow:0 8px 20px rgba(20,18,107,.22)" style-active="transform:scale(.98)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#14126B" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+        <div style="font:800 15.5px 'Nunito Sans';color:#14126B;margin-top:9px">Agendar cita</div>
+        <div style="font:600 11.5px 'Nunito Sans';color:rgba(20,18,107,.62)">Médico o estética</div>
+      </div>
+      <div onClick="{{ goShop }}" style="flex:1;background:#fff;border-radius:20px;padding:15px 15px 14px;cursor:pointer;box-shadow:0 8px 20px rgba(20,18,107,.16)" style-active="transform:scale(.98)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E9207F" stroke-width="2" stroke-linecap="round"><path d="M4 8h16l-1.4 11a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <div style="font:800 15.5px 'Nunito Sans';margin-top:9px">Comprar</div>
+        <div style="font:600 11.5px 'Nunito Sans';color:#8E88BE">Alimento y más</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:22px 22px 0;display:flex;flex-direction:column;gap:18px">
+    <div>
+      <div style="font:800 17px 'Baloo 2',cursive;margin-bottom:10px">Tu próxima cita</div>
+      <div onClick="{{ goCitas }}" style="background:#fff;border-radius:22px;padding:16px;display:flex;gap:14px;align-items:center;box-shadow:0 6px 18px rgba(27,21,96,.07);cursor:pointer">
+        <div style="width:56px;height:60px;border-radius:16px;background:#EAFBFA;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;border:1.5px solid #C4F1EE">
+          <div style="font:800 20px/1 'Baloo 2',cursive;color:#17B5AC">28</div>
+          <div style="font:700 10px 'Nunito Sans';color:#17B5AC;letter-spacing:.6px">AGO</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="padding:3px 9px;border-radius:99px;background:#EAFBFA;color:#0F8F88;font:800 10px 'Nunito Sans';letter-spacing:.5px">MÉDICO</div>
+            <div style="font:600 12px 'Nunito Sans';color:#8E88BE">11:30 h</div>
+          </div>
+          <div style="font:800 16px 'Nunito Sans';margin-top:5px">Consulta general · Frida</div>
+          <div style="font:400 12.5px 'Nunito Sans';color:#8E88BE">Dra. Marisol Cruz</div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9BEF6" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+    </div>
+
+    <div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
+        <div style="font:800 17px 'Baloo 2',cursive">Último pedido</div>
+        <div onClick="{{ goOrders }}" style="font:700 12.5px 'Nunito Sans';color:#7A22C4;cursor:pointer">Ver todos</div>
+      </div>
+      <div onClick="{{ goOrders }}" style="background:#fff;border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(27,21,96,.07);cursor:pointer">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font:800 14.5px 'Nunito Sans'">Pedido #PX-2841</div>
+          <div style="padding:4px 10px;border-radius:99px;background:#FFF0E6;color:#C05A12;font:800 10.5px 'Nunito Sans'">EN CAMINO</div>
+        </div>
+        <div style="font:400 12.5px 'Nunito Sans';color:#8E88BE;margin-top:4px">2 productos · $848.00 · Envío a domicilio</div>
+        <div style="display:flex;gap:5px;margin-top:13px">
+          <div style="flex:1;height:6px;border-radius:99px;background:#46DED5"></div>
+          <div style="flex:1;height:6px;border-radius:99px;background:#46DED5"></div>
+          <div style="flex:1;height:6px;border-radius:99px;background:#46DED5"></div>
+          <div style="flex:1;height:6px;border-radius:99px;background:#E4DEFB"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:7px;font:600 10px 'Nunito Sans';color:#A29CCB;letter-spacing:.3px">
+          <div>PAGADO</div><div>PREPARANDO</div><div>EN CAMINO</div><div>ENTREGADO</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font:800 17px 'Baloo 2',cursive;margin-bottom:10px">Mis peluditos</div>
+      <div style="display:flex;gap:11px;overflow:auto;padding-bottom:4px">
+        <sc-for list="{{ pets }}" as="p" hint-placeholder-count="2">
+          <div onClick="{{ p.open }}" style="flex:none;width:132px;background:#fff;border-radius:20px;padding:13px;box-shadow:0 6px 18px rgba(27,21,96,.07);cursor:pointer">
+            <div style="width:100%;height:74px;border-radius:14px;background:{{ p.tint }};display:flex;align-items:center;justify-content:center;font:800 30px 'Baloo 2',cursive;color:{{ p.ink }}">{{ p.initial }}</div>
+            <div style="font:800 14.5px 'Nunito Sans';margin-top:9px">{{ p.name }}</div>
+            <div style="font:400 11.5px 'Nunito Sans';color:#8E88BE">{{ p.meta }}</div>
+            <div style="margin-top:8px;padding:4px 8px;border-radius:99px;background:{{ p.badgeBg }};color:{{ p.badgeFg }};font:800 9.5px 'Nunito Sans';display:inline-block">{{ p.badge }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div onClick="{{ goEmergency }}" style="background:#14126B;border-radius:22px;padding:16px 18px;display:flex;align-items:center;gap:13px;cursor:pointer">
+      <div style="width:42px;height:42px;border-radius:14px;background:rgba(233,32,127,.22);display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6BAE" stroke-width="2" stroke-linecap="round"><path d="M6.6 3h3l1.4 4-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 4 1.4v3A2.4 2.4 0 0 1 18.6 20 15.6 15.6 0 0 1 4 5.4 2.4 2.4 0 0 1 6.6 3Z"/></svg>
+      </div>
+      <div style="flex:1">
+        <div style="font:800 15px 'Nunito Sans';color:#fff">Urgencias 24/7</div>
+        <div style="font:400 12px 'Nunito Sans';color:rgba(255,255,255,.62)">Llamar · Ruta a la sucursal · Horarios</div>
+      </div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ CITAS ══════════ -->
+<sc-if value="{{ isCitas }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;padding-bottom:104px">
+  <div style="padding:64px 22px 16px;background:#fff;border-bottom:1px solid #EFEBFD">
+    <div style="font:800 26px 'Baloo 2',cursive">Citas</div>
+    <div style="display:flex;gap:8px;margin-top:14px;background:#F5F3FF;padding:5px;border-radius:16px">
+      <div onClick="{{ setApptUp }}" style="flex:1;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font:800 13.5px 'Nunito Sans';cursor:pointer;background:{{ upBg }};color:{{ upFg }};box-shadow:{{ upSh }}">Próximas</div>
+      <div onClick="{{ setApptPast }}" style="flex:1;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font:800 13.5px 'Nunito Sans';cursor:pointer;background:{{ pastBg }};color:{{ pastFg }};box-shadow:{{ pastSh }}">Historial</div>
+    </div>
+  </div>
+  <div style="padding:18px 22px 0;display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ appts }}" as="a" hint-placeholder-count="3">
+      <div style="background:#fff;border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(27,21,96,.06);border-left:5px solid {{ a.accent }}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="min-width:0">
+            <div style="display:flex;gap:7px;align-items:center">
+              <div style="padding:3px 9px;border-radius:99px;background:{{ a.tagBg }};color:{{ a.tagFg }};font:800 10px 'Nunito Sans';letter-spacing:.5px">{{ a.type }}</div>
+              <div style="padding:3px 9px;border-radius:99px;background:#F5F3FF;color:#6F6AA0;font:800 10px 'Nunito Sans'">{{ a.status }}</div>
+            </div>
+            <div style="font:800 16px 'Nunito Sans';margin-top:7px">{{ a.service }}</div>
+            <div style="font:400 12.5px 'Nunito Sans';color:#8E88BE;margin-top:2px">{{ a.pet }} · {{ a.provider }}</div>
+          </div>
+          <div style="text-align:right;flex:none">
+            <div style="font:800 14px 'Nunito Sans';color:#2A1FA0">{{ a.date }}</div>
+            <div style="font:600 12px 'Nunito Sans';color:#8E88BE">{{ a.time }}</div>
+          </div>
+        </div>
+        <sc-if value="{{ a.actionable }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid #F1EDFD">
+          <div onClick="{{ goBook }}" style="flex:1;height:40px;border-radius:13px;background:#F5F3FF;color:#2A1FA0;font:800 13px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer">Reprogramar</div>
+          <div onClick="{{ cancelAppt }}" style="flex:1;height:40px;border-radius:13px;border:1.5px solid #FBD9E8;color:#E9207F;font:800 13px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer">Cancelar</div>
+        </div>
+        <div style="font:400 11px 'Nunito Sans';color:#A29CCB;margin-top:8px">Cancelación o cambio sin costo hasta 24 h antes.</div>
+        </sc-if>
+      </div>
+    </sc-for>
+    <div onClick="{{ goBook }}" style="margin-top:6px;height:54px;border-radius:20px;background:#E9207F;color:#fff;font:800 16px 'Nunito Sans';display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 10px 24px rgba(233,32,127,.26)">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg>
+      Agendar nueva cita
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ AGENDAR (wizard) ══════════ -->
+<sc-if value="{{ isBook }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden">
+  <div style="padding:62px 22px 14px;flex:none">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div onClick="{{ bookBack }}" style="width:38px;height:38px;border-radius:13px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;cursor:pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </div>
+      <div style="flex:1">
+        <div style="font:600 11px 'Nunito Sans';color:#8E88BE;letter-spacing:.6px">PASO {{ bookStepLabel }} DE 5</div>
+        <div style="font:800 20px/1.1 'Baloo 2',cursive">{{ bookTitle }}</div>
+      </div>
+    </div>
+    <div style="height:6px;border-radius:99px;background:#F1EDFD;margin-top:14px;overflow:hidden">
+      <div style="height:100%;width:{{ bookPct }};border-radius:99px;background:linear-gradient(90deg,#46DED5,#7A22C4);transition:width .35s cubic-bezier(.4,0,.2,1)"></div>
+    </div>
+  </div>
+
+  <div style="flex:1;overflow:auto;padding:8px 22px 24px">
+    <!-- paso 1: mascota -->
+    <sc-if value="{{ bs1 }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:11px;animation:pxslide .28s ease">
+      <sc-for list="{{ petPick }}" as="p" hint-placeholder-count="2">
+        <div onClick="{{ p.pick }}" style="display:flex;align-items:center;gap:13px;padding:14px;border-radius:20px;border:2px solid {{ p.bd }};background:{{ p.bg }};cursor:pointer">
+          <div style="width:52px;height:52px;border-radius:16px;background:{{ p.tint }};display:flex;align-items:center;justify-content:center;font:800 22px 'Baloo 2',cursive;color:{{ p.ink }};flex:none">{{ p.initial }}</div>
+          <div style="flex:1">
+            <div style="font:800 16px 'Nunito Sans'">{{ p.name }}</div>
+            <div style="font:400 12.5px 'Nunito Sans';color:#8E88BE">{{ p.meta }}</div>
+          </div>
+          <div style="width:24px;height:24px;border-radius:50%;border:2px solid {{ p.dotBd }};background:{{ p.dotBg }};display:flex;align-items:center;justify-content:center">
+            <sc-if value="{{ p.on }}" hint-placeholder-val="{{ false }}">
+              <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.3 4.8 8.6 9.5 3.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </sc-if>
+          </div>
+        </div>
+      </sc-for>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:18px;border:2px dashed #DDD5FA;color:#7A22C4;font:800 14px 'Nunito Sans';cursor:pointer">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7A22C4" stroke-width="2.4" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg>
+        Agregar otra mascota
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- paso 2: tipo + servicio -->
+    <sc-if value="{{ bs2 }}" hint-placeholder-val="{{ false }}">
+    <div style="animation:pxslide .28s ease">
+      <div style="display:flex;gap:11px">
+        <div onClick="{{ setTypeMed }}" style="flex:1;border-radius:20px;padding:16px;cursor:pointer;background:{{ medBg }};border:2px solid {{ medBd }}">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ medIc }}" stroke-width="2" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></svg>
+          <div style="font:800 16px 'Nunito Sans';margin-top:8px;color:{{ medFg }}">Médico</div>
+          <div style="font:600 11.5px 'Nunito Sans';color:{{ medSub }}">Consulta, vacunas, análisis</div>
+        </div>
+        <div onClick="{{ setTypeEst }}" style="flex:1;border-radius:20px;padding:16px;cursor:pointer;background:{{ estBg }};border:2px solid {{ estBd }}">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ estIc }}" stroke-width="2" stroke-linecap="round"><path d="M6 4l12 12M6 20 18 8"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>
+          <div style="font:800 16px 'Nunito Sans';margin-top:8px;color:{{ estFg }}">Estética</div>
+          <div style="font:600 11.5px 'Nunito Sans';color:{{ estSub }}">Baño, corte, uñas</div>
+        </div>
+      </div>
+      <div style="font:800 15px 'Baloo 2',cursive;margin:20px 0 10px">Servicios disponibles</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+          <div onClick="{{ s.pick }}" style="display:flex;align-items:center;gap:12px;padding:14px 15px;border-radius:18px;border:2px solid {{ s.bd }};background:{{ s.bg }};cursor:pointer">
+            <div style="flex:1">
+              <div style="font:800 15px 'Nunito Sans'">{{ s.name }}</div>
+              <div style="font:400 12px 'Nunito Sans';color:#8E88BE">{{ s.dur }} · desde {{ s.price }}</div>
+            </div>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C9BEF6" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top:14px;padding:12px 14px;border-radius:16px;background:#FFF9E8;font:400 11.5px/1.45 'Nunito Sans';color:#8A6A17">El catálogo y las duraciones los administra la veterinaria desde el panel web.</div>
+    </div>
+    </sc-if>
+
+    <!-- paso 3: prestador -->
+    <sc-if value="{{ bs3 }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:11px;animation:pxslide .28s ease">
+      <sc-for list="{{ providers }}" as="d" hint-placeholder-count="3">
+        <div onClick="{{ d.pick }}" style="display:flex;align-items:center;gap:13px;padding:14px;border-radius:20px;border:2px solid {{ d.bd }};background:{{ d.bg }};cursor:pointer">
+          <div style="width:50px;height:50px;border-radius:50%;background:{{ d.tint }};display:flex;align-items:center;justify-content:center;font:800 16px 'Baloo 2',cursive;color:{{ d.ink }};flex:none">{{ d.initials }}</div>
+          <div style="flex:1">
+            <div style="font:800 15.5px 'Nunito Sans'">{{ d.name }}</div>
+            <div style="font:400 12px 'Nunito Sans';color:#8E88BE">{{ d.role }}</div>
+          </div>
+          <div style="font:800 12px 'Nunito Sans';color:#17B5AC">{{ d.next }}</div>
+        </div>
+      </sc-for>
+    </div>
+    </sc-if>
+
+    <!-- paso 4: fecha y hora -->
+    <sc-if value="{{ bs4 }}" hint-placeholder-val="{{ false }}">
+    <div style="animation:pxslide .28s ease">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font:800 16px 'Baloo 2',cursive">Agosto 2026</div>
+        <div style="font:600 11.5px 'Nunito Sans';color:#8E88BE">Sucursal Del Valle · L–S</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px">
+        <div style="text-align:center;font:800 10px 'Nunito Sans';color:#A29CCB">L</div>
+        <div style="text-align:center;font:800 10px 'Nunito Sans';color:#A29CCB">M</div>
+        <div style="text-align:center;font:800 10px 'Nunito Sans';color:#A29CCB">M</div>
+        <div style="text-align:center;font:800 10px 'Nunito Sans';color:#A29CCB">J</div>
+        <div style="text-align:center;font:800 10px 'Nunito Sans';color:#A29CCB">V</div>
+        <div style="text-align:center;font:800 10px 'Nunito Sans';color:#A29CCB">S</div>
+        <div style="text-align:center;font:800 10px 'Nunito Sans';color:#DCD5F5">D</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+        <sc-for list="{{ days }}" as="d" hint-placeholder-count="28">
+          <div onClick="{{ d.pick }}" style="height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font:800 14px 'Nunito Sans';cursor:{{ d.cursor }};background:{{ d.bg }};color:{{ d.fg }};border:1.5px solid {{ d.bd }}">{{ d.n }}</div>
+        </sc-for>
+      </div>
+      <div style="font:800 15px 'Baloo 2',cursive;margin:22px 0 10px">Horarios libres · {{ pickedDayLabel }}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:9px">
+        <sc-for list="{{ slots }}" as="t" hint-placeholder-count="8">
+          <div onClick="{{ t.pick }}" style="padding:11px 15px;border-radius:14px;font:800 13.5px 'Nunito Sans';cursor:{{ t.cursor }};background:{{ t.bg }};color:{{ t.fg }};border:1.5px solid {{ t.bd }};text-decoration:{{ t.deco }}">{{ t.h }}</div>
+        </sc-for>
+      </div>
+      <div style="margin-top:16px;padding:12px 14px;border-radius:16px;background:#F5F3FF;font:400 11.5px/1.45 'Nunito Sans';color:#6F6AA0">Disponibilidad real según agenda del prestador, duración del servicio ({{ pickedDur }}) y horario de la sucursal.</div>
+    </div>
+    </sc-if>
+
+    <!-- paso 5: confirmar -->
+    <sc-if value="{{ bs5 }}" hint-placeholder-val="{{ false }}">
+    <div style="animation:pxslide .28s ease">
+      <div style="border-radius:24px;background:#F9F7FF;border:1.5px solid #EAE3FD;padding:18px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid #EAE3FD">
+          <div style="width:48px;height:48px;border-radius:15px;background:{{ sumTint }};display:flex;align-items:center;justify-content:center;font:800 20px 'Baloo 2',cursive;color:{{ sumInk }}">{{ sumInitial }}</div>
+          <div>
+            <div style="font:800 16px 'Nunito Sans'">{{ sumPet }}</div>
+            <div style="font:400 12px 'Nunito Sans';color:#8E88BE">{{ sumPetMeta }}</div>
+          </div>
+          <div style="margin-left:auto;padding:4px 10px;border-radius:99px;background:{{ sumTagBg }};color:{{ sumTagFg }};font:800 10px 'Nunito Sans';letter-spacing:.5px">{{ sumType }}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between"><div style="font:600 13px 'Nunito Sans';color:#8E88BE">Servicio</div><div style="font:800 13.5px 'Nunito Sans'">{{ sumService }}</div></div>
+        <div style="display:flex;justify-content:space-between"><div style="font:600 13px 'Nunito Sans';color:#8E88BE">Prestador</div><div style="font:800 13.5px 'Nunito Sans'">{{ sumProvider }}</div></div>
+        <div style="display:flex;justify-content:space-between"><div style="font:600 13px 'Nunito Sans';color:#8E88BE">Fecha y hora</div><div style="font:800 13.5px 'Nunito Sans'">{{ sumWhen }}</div></div>
+        <div style="display:flex;justify-content:space-between"><div style="font:600 13px 'Nunito Sans';color:#8E88BE">Duración</div><div style="font:800 13.5px 'Nunito Sans'">{{ pickedDur }}</div></div>
+        <div style="display:flex;justify-content:space-between;padding-top:14px;border-top:1px solid #EAE3FD"><div style="font:600 13px 'Nunito Sans';color:#8E88BE">Costo estimado</div><div style="font:800 15px 'Nunito Sans';color:#2A1FA0">{{ sumPrice }}</div></div>
+      </div>
+      <div style="margin-top:14px;padding:14px;border-radius:18px;background:#EAFBFA;border:1.5px solid #C4F1EE">
+        <div style="font:800 13px 'Nunito Sans';color:#0F8F88">Pago en sitio</div>
+        <div style="font:400 12px/1.45 'Nunito Sans';color:#12796F;margin-top:3px">Esta reserva solo aparta el espacio. El pago se realiza en la sucursal al terminar el servicio.</div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:flex-start;padding:0 2px">
+        <div style="width:20px;height:20px;border-radius:6px;background:#46DED5;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px">
+          <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.3 4.8 8.6 9.5 3.6" fill="none" stroke="#14126B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="font:400 12px/1.45 'Nunito Sans';color:#6F6AA0">Quiero recordatorios push 24 h y 2 h antes de la cita.</div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+
+  <div style="flex:none;padding:14px 22px 30px;background:#fff;border-top:1px solid #F1EDFD">
+    <div onClick="{{ bookNext }}" style="height:56px;border-radius:20px;background:{{ bookCtaBg }};color:{{ bookCtaFg }};font:800 17px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:{{ bookCtaSh }}" style-active="transform:scale(.99)">{{ bookCta }}</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ CITA CONFIRMADA ══════════ -->
+<sc-if value="{{ isBookDone }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:linear-gradient(170deg,#2A1FA0,#7A22C4);padding:80px 26px 34px;box-sizing:border-box;text-align:center;align-items:center">
+  <div style="width:104px;height:104px;border-radius:50%;background:#46DED5;display:flex;align-items:center;justify-content:center;animation:pxpop .45s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 0 20px rgba(70,222,213,.14)">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#14126B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4.5 4.5L19 7"/></svg>
+  </div>
+  <div style="font:800 28px/1.15 'Baloo 2',cursive;color:#fff;margin-top:26px">¡Cita confirmada!</div>
+  <div style="font:400 15px/1.5 'Nunito Sans';color:rgba(255,255,255,.78);margin-top:8px;max-width:280px">Te enviamos recordatorio 24 h y 2 h antes. {{ sumPet }} ya está en la agenda.</div>
+  <div style="width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:22px;padding:18px;margin-top:26px;text-align:left;display:flex;flex-direction:column;gap:11px">
+    <div style="display:flex;justify-content:space-between"><div style="font:600 12.5px 'Nunito Sans';color:rgba(255,255,255,.6)">Servicio</div><div style="font:800 13px 'Nunito Sans';color:#fff">{{ sumService }}</div></div>
+    <div style="display:flex;justify-content:space-between"><div style="font:600 12.5px 'Nunito Sans';color:rgba(255,255,255,.6)">Prestador</div><div style="font:800 13px 'Nunito Sans';color:#fff">{{ sumProvider }}</div></div>
+    <div style="display:flex;justify-content:space-between"><div style="font:600 12.5px 'Nunito Sans';color:rgba(255,255,255,.6)">Cuándo</div><div style="font:800 13px 'Nunito Sans';color:#46DED5">{{ sumWhen }}</div></div>
+    <div style="display:flex;justify-content:space-between"><div style="font:600 12.5px 'Nunito Sans';color:rgba(255,255,255,.6)">Dónde</div><div style="font:800 13px 'Nunito Sans';color:#fff">Sucursal Del Valle</div></div>
+  </div>
+  <div style="flex:1"></div>
+  <div style="width:100%;display:flex;flex-direction:column;gap:10px">
+    <div onClick="{{ goCitas }}" style="height:54px;border-radius:20px;background:#46DED5;color:#14126B;font:800 16px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer">Ver mis citas</div>
+    <div onClick="{{ goHome }}" style="height:54px;border-radius:20px;border:1.5px solid rgba(255,255,255,.3);color:#fff;font:800 16px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer">Volver al inicio</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ TIENDA ══════════ -->
+<sc-if value="{{ isShop }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;padding-bottom:104px">
+  <div style="padding:62px 22px 18px;background:#fff;border-bottom:1px solid #EFEBFD">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="font:800 26px 'Baloo 2',cursive">Tienda</div>
+      <div onClick="{{ goCart }}" style="width:44px;height:44px;border-radius:15px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2" stroke-linecap="round"><path d="M4 8h16l-1.4 11a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:99px;background:#E9207F;color:#fff;font:800 11px 'Nunito Sans';display:flex;align-items:center;justify-content:center;padding:0 5px;box-sizing:border-box">{{ cartCount }}</div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="margin-top:14px;height:46px;border-radius:15px;background:#F5F3FF;display:flex;align-items:center;gap:9px;padding:0 14px">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A29CCB" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+      <div style="font:400 14px 'Nunito Sans';color:#A29CCB">Croquetas, antipulgas, juguetes…</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:13px;overflow:auto;padding-bottom:2px">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+        <div onClick="{{ c.pick }}" style="flex:none;padding:9px 15px;border-radius:99px;font:800 12.5px 'Nunito Sans';cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1.5px solid {{ c.bd }}">{{ c.name }}</div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="padding:18px 22px 0">
+    <div onClick="{{ goRebuy }}" style="background:linear-gradient(120deg,#14126B,#4A1BAF);border-radius:22px;padding:16px 18px;display:flex;align-items:center;gap:13px;cursor:pointer">
+      <div style="width:44px;height:44px;border-radius:14px;background:rgba(70,222,213,.2);display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#46DED5" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4h-4"/></svg>
+      </div>
+      <div style="flex:1">
+        <div style="font:800 14.5px 'Nunito Sans';color:#fff">Volver a pedir</div>
+        <div style="font:400 12px 'Nunito Sans';color:rgba(255,255,255,.66)">Croquetas de Frida · cada 6 semanas</div>
+      </div>
+      <div style="padding:7px 12px;border-radius:99px;background:#46DED5;color:#14126B;font:800 12px 'Nunito Sans'">Añadir</div>
+    </div>
+
+    <div style="font:800 17px 'Baloo 2',cursive;margin:20px 0 11px">{{ shopSectionTitle }}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <sc-for list="{{ products }}" as="p" hint-placeholder-count="6">
+        <div onClick="{{ p.open }}" style="background:#fff;border-radius:20px;padding:11px;box-shadow:0 6px 18px rgba(27,21,96,.06);cursor:pointer;display:flex;flex-direction:column">
+          <div style="height:104px;border-radius:15px;background:{{ p.tint }};display:flex;align-items:center;justify-content:center;position:relative">
+            <div style="font:800 34px 'Baloo 2',cursive;color:{{ p.ink }};opacity:.9">{{ p.mono }}</div>
+            <sc-if value="{{ p.low }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:99px;background:#FFF0E6;color:#C05A12;font:800 9px 'Nunito Sans'">ÚLTIMAS {{ p.stock }}</div>
+            </sc-if>
+          </div>
+          <div style="font:400 10.5px 'Nunito Sans';color:#A29CCB;margin-top:9px;letter-spacing:.4px">{{ p.brand }}</div>
+          <div style="font:800 13.5px/1.25 'Nunito Sans';margin-top:2px;text-wrap:pretty">{{ p.name }}</div>
+          <div style="font:400 11px 'Nunito Sans';color:#8E88BE;margin-top:3px">{{ p.size }}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
+            <div style="font:800 15px 'Nunito Sans';color:#2A1FA0">{{ p.price }}</div>
+            <div onClick="{{ p.add }}" style="width:32px;height:32px;border-radius:11px;background:#E9207F;display:flex;align-items:center;justify-content:center;cursor:pointer">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ FICHA DE PRODUCTO ══════════ -->
+<sc-if value="{{ isProduct }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden">
+  <div style="flex:1;overflow:auto">
+    <div style="height:300px;background:{{ pdTint }};position:relative;display:flex;align-items:center;justify-content:center">
+      <div style="font:800 92px 'Baloo 2',cursive;color:{{ pdInk }};opacity:.85">{{ pdMono }}</div>
+      <div onClick="{{ goShop }}" style="position:absolute;top:60px;left:20px;width:40px;height:40px;border-radius:14px;background:rgba(255,255,255,.86);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </div>
+      <div style="position:absolute;bottom:14px;left:0;right:0;display:flex;gap:6px;justify-content:center">
+        <div style="width:22px;height:5px;border-radius:99px;background:rgba(27,21,96,.55)"></div>
+        <div style="width:5px;height:5px;border-radius:99px;background:rgba(27,21,96,.22)"></div>
+        <div style="width:5px;height:5px;border-radius:99px;background:rgba(27,21,96,.22)"></div>
+      </div>
+    </div>
+    <div style="padding:20px 22px 24px">
+      <div style="font:400 11px 'Nunito Sans';color:#A29CCB;letter-spacing:.5px">{{ pdBrand }}</div>
+      <div style="font:800 23px/1.2 'Baloo 2',cursive;margin-top:4px">{{ pdName }}</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+        <div style="font:800 26px 'Nunito Sans';color:#2A1FA0">{{ pdPrice }}</div>
+        <div style="padding:4px 10px;border-radius:99px;background:{{ pdStockBg }};color:{{ pdStockFg }};font:800 10.5px 'Nunito Sans'">{{ pdStock }}</div>
+      </div>
+      <div style="font:800 13px 'Nunito Sans';color:#6F6AA0;margin:20px 0 9px">Presentación</div>
+      <div style="display:flex;gap:9px">
+        <div style="padding:11px 16px;border-radius:14px;border:2px solid #7A22C4;background:#F7F2FF;font:800 13px 'Nunito Sans';color:#2A1FA0">{{ pdSize }}</div>
+        <div style="padding:11px 16px;border-radius:14px;border:1.5px solid #E4DEFB;font:800 13px 'Nunito Sans';color:#8E88BE">{{ pdSizeAlt }}</div>
+      </div>
+      <div style="font:800 13px 'Nunito Sans';color:#6F6AA0;margin:20px 0 7px">Descripción</div>
+      <div style="font:400 14px/1.6 'Nunito Sans';color:#4A4480;text-wrap:pretty">{{ pdDesc }}</div>
+      <div style="margin-top:18px;padding:14px;border-radius:18px;background:#F5F3FF;display:flex;gap:12px;align-items:center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7A22C4" stroke-width="2" stroke-linecap="round"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7zM6.5 20a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6M17.5 20a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6"/></svg>
+        <div style="font:400 12px/1.45 'Nunito Sans';color:#6F6AA0">Envío el mismo día en zona sur · o recoge en sucursal hoy después de las 14 h</div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:none;padding:14px 22px 30px;border-top:1px solid #F1EDFD;display:flex;gap:11px;align-items:center">
+    <div style="display:flex;align-items:center;gap:14px;padding:0 14px;height:56px;border-radius:20px;border:1.5px solid #E4DEFB">
+      <div onClick="{{ pdMinus }}" style="font:800 20px 'Nunito Sans';color:#7A22C4;cursor:pointer">−</div>
+      <div style="font:800 16px 'Nunito Sans';min-width:14px;text-align:center">{{ pdQty }}</div>
+      <div onClick="{{ pdPlus }}" style="font:800 20px 'Nunito Sans';color:#7A22C4;cursor:pointer">+</div>
+    </div>
+    <div onClick="{{ pdAdd }}" style="flex:1;height:56px;border-radius:20px;background:#E9207F;color:#fff;font:800 16.5px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 24px rgba(233,32,127,.26)">Agregar al carrito</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ CARRITO ══════════ -->
+<sc-if value="{{ isCart }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#F5F3FF;overflow:hidden">
+  <div style="flex:none;padding:62px 22px 14px;background:#fff;border-bottom:1px solid #EFEBFD;display:flex;align-items:center;gap:12px">
+    <div onClick="{{ goShop }}" style="width:38px;height:38px;border-radius:13px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </div>
+    <div style="font:800 22px 'Baloo 2',cursive">Tu carrito</div>
+  </div>
+  <div style="flex:1;overflow:auto;padding:16px 22px">
+    <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <sc-for list="{{ cart }}" as="c" hint-placeholder-count="2">
+        <div style="background:#fff;border-radius:20px;padding:12px;display:flex;gap:12px;align-items:center;box-shadow:0 4px 14px rgba(27,21,96,.05)">
+          <div style="width:64px;height:64px;border-radius:15px;background:{{ c.tint }};display:flex;align-items:center;justify-content:center;font:800 24px 'Baloo 2',cursive;color:{{ c.ink }};flex:none">{{ c.mono }}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font:800 13.5px/1.25 'Nunito Sans'">{{ c.name }}</div>
+            <div style="font:400 11.5px 'Nunito Sans';color:#8E88BE;margin-top:2px">{{ c.size }}</div>
+            <div style="font:800 14.5px 'Nunito Sans';color:#2A1FA0;margin-top:5px">{{ c.line }}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+            <div onClick="{{ c.plus }}" style="width:28px;height:28px;border-radius:9px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;font:800 15px 'Nunito Sans';color:#7A22C4;cursor:pointer">+</div>
+            <div style="font:800 13px 'Nunito Sans'">{{ c.qty }}</div>
+            <div onClick="{{ c.minus }}" style="width:28px;height:28px;border-radius:9px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;font:800 15px 'Nunito Sans';color:#7A22C4;cursor:pointer">−</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:#fff;border-radius:22px;padding:17px;margin-top:14px;display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;justify-content:space-between;font:600 13.5px 'Nunito Sans';color:#6F6AA0"><div>Subtotal</div><div style="font-weight:800;color:#1B1560">{{ subtotal }}</div></div>
+      <div style="display:flex;justify-content:space-between;font:600 13.5px 'Nunito Sans';color:#6F6AA0"><div>Envío estimado</div><div style="font-weight:800;color:#17B5AC">{{ shipLabel }}</div></div>
+      <div style="height:1px;background:#F1EDFD"></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font:800 15px 'Nunito Sans'">Total</div><div style="font:800 22px 'Nunito Sans';color:#2A1FA0">{{ total }}</div></div>
+      <div style="font:400 11px/1.4 'Nunito Sans';color:#A29CCB">Envío gratis a partir de $899. Te faltan {{ freeGap }}.</div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:70px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px">
+      <div style="width:90px;height:90px;border-radius:30px;background:#EDE8FD;display:flex;align-items:center;justify-content:center">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#A29CCB" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16l-1.4 11a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      </div>
+      <div style="font:800 18px 'Baloo 2',cursive">Tu carrito está vacío</div>
+      <div style="font:400 13.5px/1.5 'Nunito Sans';color:#8E88BE;max-width:230px">Croquetas, antipulgas y juguetes esperan a Frida y Nube.</div>
+      <div onClick="{{ goShop }}" style="margin-top:6px;padding:13px 24px;border-radius:18px;background:#E9207F;color:#fff;font:800 14.5px 'Nunito Sans';cursor:pointer">Ir a la tienda</div>
+    </div>
+    </sc-if>
+  </div>
+  <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:none;padding:14px 22px 30px;background:#fff;border-top:1px solid #EFEBFD">
+    <div onClick="{{ goCheckout }}" style="height:56px;border-radius:20px;background:#E9207F;color:#fff;font:800 17px 'Nunito Sans';display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;box-shadow:0 10px 24px rgba(233,32,127,.26)">Continuar · {{ total }}</div>
+  </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<!-- ══════════ CHECKOUT ══════════ -->
+<sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden">
+  <div style="flex:none;padding:62px 22px 14px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div onClick="{{ coBack }}" style="width:38px;height:38px;border-radius:13px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;cursor:pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </div>
+      <div style="font:800 22px 'Baloo 2',cursive">{{ coTitle }}</div>
+    </div>
+    <div style="display:flex;gap:7px;margin-top:16px;align-items:center">
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:99px;background:{{ co1 }}"></div><div style="font:800 10px 'Nunito Sans';color:{{ co1t }};letter-spacing:.4px">ENTREGA</div></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:99px;background:{{ co2 }}"></div><div style="font:800 10px 'Nunito Sans';color:{{ co2t }};letter-spacing:.4px">PAGO</div></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:5px;border-radius:99px;background:{{ co3 }}"></div><div style="font:800 10px 'Nunito Sans';color:{{ co3t }};letter-spacing:.4px">REVISIÓN</div></div>
+    </div>
+  </div>
+  <div style="flex:1;overflow:auto;padding:18px 22px 20px">
+    <!-- entrega -->
+    <sc-if value="{{ cs1 }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:11px;animation:pxslide .26s ease">
+      <div onClick="{{ setDelHome }}" style="border-radius:20px;border:2px solid {{ delHomeBd }};background:{{ delHomeBg }};padding:15px;cursor:pointer">
+        <div style="display:flex;align-items:center;gap:11px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2" stroke-linecap="round"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="6.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></svg>
+          <div style="flex:1"><div style="font:800 15px 'Nunito Sans'">Envío a domicilio</div><div style="font:400 12px 'Nunito Sans';color:#8E88BE">Llega mañana · $79 (gratis desde $899)</div></div>
+        </div>
+        <sc-if value="{{ delIsHome }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:13px;padding-top:13px;border-top:1px solid #EAE3FD">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font:800 12.5px 'Nunito Sans'">Casa · Ana Robles</div><div style="font:400 11.5px/1.4 'Nunito Sans';color:#8E88BE;margin-top:2px">Av. Coyoacán 1234, Del Valle Centro, 03100 CDMX</div></div>
+            <div style="font:800 12px 'Nunito Sans';color:#7A22C4;cursor:pointer">Cambiar</div>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+      <div onClick="{{ setDelPick }}" style="border-radius:20px;border:2px solid {{ delPickBd }};background:{{ delPickBg }};padding:15px;cursor:pointer">
+        <div style="display:flex;align-items:center;gap:11px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2" stroke-linecap="round"><path d="M4 9h16v11H4zM4 9l2-4h12l2 4M9 13h6"/></svg>
+          <div style="flex:1"><div style="font:800 15px 'Nunito Sans'">Recoger en sucursal</div><div style="font:400 12px 'Nunito Sans';color:#8E88BE">Hoy después de las 14 h · sin costo</div></div>
+        </div>
+        <sc-if value="{{ delIsPick }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:13px;padding-top:13px;border-top:1px solid #EAE3FD;font:400 11.5px/1.45 'Nunito Sans';color:#6F6AA0">Sucursal Del Valle · Av. Coyoacán 1234. Te avisamos por push cuando esté listo para recoger.</div>
+        </sc-if>
+      </div>
+      <div style="margin-top:6px;padding:14px;border-radius:18px;background:#FFF9E8;font:400 11.5px/1.45 'Nunito Sans';color:#8A6A17">Reglas de costo de envío por definir (fijo, por zona o gratis sobre monto).</div>
+    </div>
+    </sc-if>
+
+    <!-- pago -->
+    <sc-if value="{{ cs2 }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:11px;animation:pxslide .26s ease">
+      <div style="border-radius:20px;border:2px solid #7A22C4;background:#F9F7FF;padding:15px;display:flex;align-items:center;gap:12px">
+        <div style="width:44px;height:30px;border-radius:7px;background:linear-gradient(120deg,#2A1FA0,#7A22C4);flex:none"></div>
+        <div style="flex:1"><div style="font:800 14px 'Nunito Sans'">Visa ···· 4821</div><div style="font:400 11.5px 'Nunito Sans';color:#8E88BE">Vence 09/29</div></div>
+        <div style="width:22px;height:22px;border-radius:50%;background:#7A22C4;display:flex;align-items:center;justify-content:center">
+          <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 6.3 4.8 8.6 9.5 3.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div style="border-radius:20px;border:1.5px solid #E4DEFB;padding:15px;display:flex;align-items:center;gap:12px;cursor:pointer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7A22C4" stroke-width="2" stroke-linecap="round"><rect x="2.5" y="5.5" width="19" height="13" rx="3"/><path d="M2.5 10h19M12 6v12"/></svg>
+        <div style="flex:1"><div style="font:800 14px 'Nunito Sans'">Agregar otra tarjeta</div><div style="font:400 11.5px 'Nunito Sans';color:#8E88BE">Tokenizada por la pasarela · no se guarda en la app</div></div>
+      </div>
+      <div style="border-radius:20px;border:1.5px solid #E4DEFB;padding:15px;display:flex;align-items:center;gap:12px;cursor:pointer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#17B5AC" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9 12h6M12 9v6"/></svg>
+        <div style="flex:1"><div style="font:800 14px 'Nunito Sans'">Otro método</div><div style="font:400 11.5px 'Nunito Sans';color:#8E88BE">Pasarela por definir: Stripe / Mercado Pago / Conekta</div></div>
+      </div>
+      <div style="margin-top:8px;background:#F9F7FF;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font:800 13.5px 'Nunito Sans'">Factura fiscal (CFDI)</div><div style="font:400 11px 'Nunito Sans';color:#8E88BE">RFC, régimen y uso · por confirmar</div></div>
+          <div onClick="{{ toggleCfdi }}" style="width:48px;height:28px;border-radius:99px;background:{{ cfdiBg }};padding:3px;box-sizing:border-box;cursor:pointer;display:flex;justify-content:{{ cfdiPos }};transition:all .2s">
+            <div style="width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:0 2px;font:400 11.5px/1.45 'Nunito Sans';color:#A29CCB">Pago cifrado en tránsito (TLS). La app nunca almacena datos de tarjeta.</div>
+    </div>
+    </sc-if>
+
+    <!-- revisión -->
+    <sc-if value="{{ cs3 }}" hint-placeholder-val="{{ false }}">
+    <div style="animation:pxslide .26s ease;display:flex;flex-direction:column;gap:12px">
+      <div style="background:#F9F7FF;border-radius:22px;padding:17px;display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ cart }}" as="c" hint-placeholder-count="2">
+          <div style="display:flex;gap:11px;align-items:center">
+            <div style="width:44px;height:44px;border-radius:12px;background:{{ c.tint }};display:flex;align-items:center;justify-content:center;font:800 17px 'Baloo 2',cursive;color:{{ c.ink }};flex:none">{{ c.mono }}</div>
+            <div style="flex:1;min-width:0"><div style="font:800 13px/1.25 'Nunito Sans'">{{ c.name }}</div><div style="font:400 11px 'Nunito Sans';color:#8E88BE">{{ c.qty }} × {{ c.size }}</div></div>
+            <div style="font:800 13.5px 'Nunito Sans'">{{ c.line }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#fff;border:1.5px solid #EFEBFD;border-radius:22px;padding:17px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;font:600 13px 'Nunito Sans';color:#6F6AA0"><div>Entrega</div><div style="font-weight:800;color:#1B1560">{{ delLabel }}</div></div>
+        <div style="display:flex;justify-content:space-between;font:600 13px 'Nunito Sans';color:#6F6AA0"><div>Pago</div><div style="font-weight:800;color:#1B1560">Visa ···· 4821</div></div>
+        <div style="display:flex;justify-content:space-between;font:600 13px 'Nunito Sans';color:#6F6AA0"><div>Subtotal</div><div style="font-weight:800;color:#1B1560">{{ subtotal }}</div></div>
+        <div style="display:flex;justify-content:space-between;font:600 13px 'Nunito Sans';color:#6F6AA0"><div>Envío</div><div style="font-weight:800;color:#17B5AC">{{ shipLabel }}</div></div>
+        <div style="height:1px;background:#F1EDFD"></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font:800 15px 'Nunito Sans'">Total</div><div style="font:800 22px 'Nunito Sans';color:#2A1FA0">{{ total }}</div></div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+  <div style="flex:none;padding:14px 22px 30px;border-top:1px solid #F1EDFD">
+    <div onClick="{{ coNext }}" style="height:56px;border-radius:20px;background:#E9207F;color:#fff;font:800 17px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 24px rgba(233,32,127,.26)">{{ coCta }}</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ PEDIDO CONFIRMADO ══════════ -->
+<sc-if value="{{ isOrderDone }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;background:#fff;padding:80px 26px 34px;box-sizing:border-box;align-items:center;text-align:center">
+  <div style="width:104px;height:104px;border-radius:50%;background:#EAFBFA;display:flex;align-items:center;justify-content:center;animation:pxpop .45s cubic-bezier(.34,1.56,.64,1)">
+    <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#17B5AC" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4.5 4.5L19 7"/></svg>
+  </div>
+  <div style="font:800 27px/1.15 'Baloo 2',cursive;margin-top:24px">¡Pedido confirmado!</div>
+  <div style="font:400 14.5px/1.5 'Nunito Sans';color:#6F6AA0;margin-top:8px;max-width:270px">Te avisamos por push en cada cambio de estado.</div>
+  <div style="width:100%;background:#F9F7FF;border-radius:22px;padding:18px;margin-top:24px;text-align:left;display:flex;flex-direction:column;gap:11px">
+    <div style="display:flex;justify-content:space-between"><div style="font:600 12.5px 'Nunito Sans';color:#8E88BE">Número de orden</div><div style="font:800 13px 'Nunito Sans'">#PX-2857</div></div>
+    <div style="display:flex;justify-content:space-between"><div style="font:600 12.5px 'Nunito Sans';color:#8E88BE">Estado</div><div style="font:800 13px 'Nunito Sans';color:#17B5AC">Pagado</div></div>
+    <div style="display:flex;justify-content:space-between"><div style="font:600 12.5px 'Nunito Sans';color:#8E88BE">Entrega</div><div style="font:800 13px 'Nunito Sans'">{{ delLabel }}</div></div>
+    <div style="display:flex;justify-content:space-between"><div style="font:600 12.5px 'Nunito Sans';color:#8E88BE">Total</div><div style="font:800 15px 'Nunito Sans';color:#2A1FA0">{{ total }}</div></div>
+  </div>
+  <div style="flex:1"></div>
+  <div style="width:100%;display:flex;flex-direction:column;gap:10px">
+    <div onClick="{{ goOrders }}" style="height:54px;border-radius:20px;background:#2A1FA0;color:#fff;font:800 16px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer">Seguir mi pedido</div>
+    <div onClick="{{ finishOrder }}" style="height:54px;border-radius:20px;background:#F5F3FF;color:#2A1FA0;font:800 16px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer">Volver al inicio</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ PEDIDOS ══════════ -->
+<sc-if value="{{ isOrders }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;background:#F5F3FF;padding-bottom:40px">
+  <div style="padding:62px 22px 14px;background:#fff;border-bottom:1px solid #EFEBFD;display:flex;align-items:center;gap:12px">
+    <div onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:13px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </div>
+    <div style="font:800 22px 'Baloo 2',cursive">Mis pedidos</div>
+  </div>
+  <div style="padding:16px 22px;display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ orders }}" as="o" hint-placeholder-count="3">
+      <div style="background:#fff;border-radius:22px;padding:16px;box-shadow:0 5px 16px rgba(27,21,96,.05)">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font:800 14.5px 'Nunito Sans'">{{ o.id }}</div>
+          <div style="padding:4px 10px;border-radius:99px;background:{{ o.tagBg }};color:{{ o.tagFg }};font:800 10.5px 'Nunito Sans'">{{ o.status }}</div>
+        </div>
+        <div style="font:400 12.5px 'Nunito Sans';color:#8E88BE;margin-top:4px">{{ o.meta }}</div>
+        <div style="display:flex;gap:9px;margin-top:13px;align-items:center">
+          <div style="font:800 15px 'Nunito Sans';color:#2A1FA0">{{ o.total }}</div>
+          <div style="flex:1"></div>
+          <div onClick="{{ goShop }}" style="padding:9px 14px;border-radius:13px;background:#F5F3FF;color:#2A1FA0;font:800 12.5px 'Nunito Sans';cursor:pointer">Volver a pedir</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ CONSEJOS / FAQ ══════════ -->
+<sc-if value="{{ isTips }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;padding-bottom:104px">
+  <div style="padding:62px 22px 18px;background:#fff;border-bottom:1px solid #EFEBFD">
+    <div style="font:800 26px 'Baloo 2',cursive">Consejos</div>
+    <div style="font:400 13.5px 'Nunito Sans';color:#8E88BE;margin-top:3px">Curado por el equipo de PIXANPETS</div>
+    <div style="margin-top:14px;height:46px;border-radius:15px;background:#F5F3FF;display:flex;align-items:center;gap:9px;padding:0 14px">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A29CCB" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+      <div style="font:400 14px 'Nunito Sans';color:#A29CCB">Buscar en consejos y preguntas</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:13px;overflow:auto">
+      <sc-for list="{{ tipCats }}" as="c" hint-placeholder-count="5">
+        <div onClick="{{ c.pick }}" style="flex:none;padding:9px 15px;border-radius:99px;font:800 12.5px 'Nunito Sans';cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1.5px solid {{ c.bd }}">{{ c.name }}</div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="padding:18px 22px 0">
+    <div onClick="{{ openArticle }}" style="border-radius:24px;overflow:hidden;background:linear-gradient(135deg,#2A1FA0,#7A22C4);padding:20px;cursor:pointer;position:relative">
+      <div style="position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:rgba(70,222,213,.12)"></div>
+      <div style="padding:4px 10px;border-radius:99px;background:rgba(70,222,213,.22);color:#46DED5;font:800 10px 'Nunito Sans';letter-spacing:.6px;display:inline-block">DESTACADO · SALUD</div>
+      <div style="font:800 21px/1.2 'Baloo 2',cursive;color:#fff;margin-top:11px;max-width:250px">Calendario de vacunas: qué toca y cuándo</div>
+      <div style="font:400 13px/1.5 'Nunito Sans';color:rgba(255,255,255,.72);margin-top:7px;max-width:265px">Guía rápida por edad para cachorros, gatitos y adultos.</div>
+      <div style="font:800 12.5px 'Nunito Sans';color:#46DED5;margin-top:13px">Leer · 4 min</div>
+    </div>
+    <div style="font:800 17px 'Baloo 2',cursive;margin:22px 0 11px">Preguntas frecuentes</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+        <div onClick="{{ f.toggle }}" style="background:#fff;border-radius:20px;padding:15px 16px;box-shadow:0 4px 14px rgba(27,21,96,.05);cursor:pointer">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="flex:1;font:800 14.5px/1.3 'Nunito Sans';text-wrap:pretty">{{ f.q }}</div>
+            <div style="width:26px;height:26px;border-radius:9px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;flex:none;transform:rotate({{ f.rot }});transition:transform .22s">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A22C4" stroke-width="2.8" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+          <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}">
+            <div style="font:400 13.5px/1.6 'Nunito Sans';color:#6F6AA0;margin-top:11px;padding-top:11px;border-top:1px solid #F1EDFD;text-wrap:pretty">{{ f.a }}</div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:16px;padding:14px 16px;border-radius:18px;background:#FFF9E8;font:400 11.5px/1.45 'Nunito Sans';color:#8A6A17">Recomendación: administrar este contenido desde un CMS ligero para no republicar la app en cada cambio.</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ ARTÍCULO ══════════ -->
+<sc-if value="{{ isArticle }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;background:#fff">
+  <div style="height:230px;background:linear-gradient(135deg,#2A1FA0,#7A22C4);position:relative;display:flex;align-items:flex-end;padding:22px">
+    <div onClick="{{ goTips }}" style="position:absolute;top:60px;left:20px;width:40px;height:40px;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </div>
+    <div>
+      <div style="padding:4px 10px;border-radius:99px;background:rgba(70,222,213,.22);color:#46DED5;font:800 10px 'Nunito Sans';letter-spacing:.6px;display:inline-block">SALUD</div>
+      <div style="font:800 24px/1.2 'Baloo 2',cursive;color:#fff;margin-top:9px;max-width:290px">Calendario de vacunas: qué toca y cuándo</div>
+    </div>
+  </div>
+  <div style="padding:22px;display:flex;flex-direction:column;gap:14px">
+    <div style="font:600 12px 'Nunito Sans';color:#A29CCB">Dra. Marisol Cruz · 4 min de lectura</div>
+    <div style="font:400 15px/1.65 'Nunito Sans';color:#3D3775;text-wrap:pretty">Las primeras vacunas se aplican entre las 6 y 8 semanas de vida y se refuerzan cada 21 días hasta completar el esquema. Después, la mayoría de los biológicos se revacunan una vez al año.</div>
+    <div style="background:#F5F3FF;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:11px">
+      <div style="font:800 14px 'Nunito Sans'">Esquema típico en perros</div>
+      <div style="display:flex;gap:11px;align-items:center"><div style="width:52px;font:800 12px 'Nunito Sans';color:#7A22C4;flex:none">6–8 sem</div><div style="font:400 13px/1.4 'Nunito Sans';color:#6F6AA0">Primera múltiple + desparasitación</div></div>
+      <div style="display:flex;gap:11px;align-items:center"><div style="width:52px;font:800 12px 'Nunito Sans';color:#7A22C4;flex:none">9–11 sem</div><div style="font:400 13px/1.4 'Nunito Sans';color:#6F6AA0">Refuerzo múltiple</div></div>
+      <div style="display:flex;gap:11px;align-items:center"><div style="width:52px;font:800 12px 'Nunito Sans';color:#7A22C4;flex:none">12+ sem</div><div style="font:400 13px/1.4 'Nunito Sans';color:#6F6AA0">Rabia + refuerzo final</div></div>
+    </div>
+    <div style="font:400 15px/1.65 'Nunito Sans';color:#3D3775;text-wrap:pretty">Si no estás segura de en qué punto va tu peludito, revisa su cartilla digital en la app: ahí marcamos la última dosis aplicada y la siguiente fecha sugerida.</div>
+    <div onClick="{{ goRecord }}" style="margin-top:6px;height:52px;border-radius:18px;background:#46DED5;color:#14126B;font:800 15px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer">Ver la cartilla de Frida</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ PERFIL ══════════ -->
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;padding-bottom:104px;background:#F5F3FF">
+  <div style="padding:62px 22px 24px;background:linear-gradient(160deg,#2A1FA0,#7A22C4)">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:64px;height:64px;border-radius:22px;background:rgba(70,222,213,.9);display:flex;align-items:center;justify-content:center;font:800 26px 'Baloo 2',cursive;color:#14126B">AR</div>
+      <div style="flex:1">
+        <div style="font:800 21px/1.1 'Baloo 2',cursive;color:#fff">Ana Robles</div>
+        <div style="font:400 12.5px 'Nunito Sans';color:rgba(255,255,255,.7);margin-top:3px">ana.robles@correo.com · 55 4821 0093</div>
+      </div>
+      <div style="padding:8px 13px;border-radius:13px;background:rgba(255,255,255,.16);color:#fff;font:800 12px 'Nunito Sans';cursor:pointer">Editar</div>
+    </div>
+  </div>
+  <div style="padding:18px 22px 0;display:flex;flex-direction:column;gap:16px">
+    <div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
+        <div style="font:800 17px 'Baloo 2',cursive">Mis mascotas</div>
+        <div onClick="{{ goPetNew }}" style="font:700 12.5px 'Nunito Sans';color:#7A22C4;cursor:pointer">Agregar</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ pets }}" as="p" hint-placeholder-count="2">
+          <div onClick="{{ p.open }}" style="background:#fff;border-radius:20px;padding:13px;display:flex;align-items:center;gap:13px;box-shadow:0 4px 14px rgba(27,21,96,.05);cursor:pointer">
+            <div style="width:52px;height:52px;border-radius:16px;background:{{ p.tint }};display:flex;align-items:center;justify-content:center;font:800 21px 'Baloo 2',cursive;color:{{ p.ink }};flex:none">{{ p.initial }}</div>
+            <div style="flex:1">
+              <div style="font:800 15px 'Nunito Sans'">{{ p.name }}</div>
+              <div style="font:400 12px 'Nunito Sans';color:#8E88BE">{{ p.meta }}</div>
+            </div>
+            <div style="padding:4px 9px;border-radius:99px;background:{{ p.badgeBg }};color:{{ p.badgeFg }};font:800 9.5px 'Nunito Sans'">{{ p.badge }}</div>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C9BEF6" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 4px 14px rgba(27,21,96,.05)">
+      <sc-for list="{{ profileRows }}" as="r" hint-placeholder-count="6">
+        <div onClick="{{ r.go }}" style="display:flex;align-items:center;gap:13px;padding:15px 16px;border-bottom:1px solid #F5F3FF;cursor:pointer">
+          <div style="width:34px;height:34px;border-radius:11px;background:{{ r.tint }};display:flex;align-items:center;justify-content:center;flex:none;font:800 13px 'Baloo 2',cursive;color:{{ r.ink }}">{{ r.mono }}</div>
+          <div style="flex:1;font:700 14.5px 'Nunito Sans';color:{{ r.fg }}">{{ r.label }}</div>
+          <div style="font:600 12px 'Nunito Sans';color:#A29CCB">{{ r.hint }}</div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C9BEF6" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px;padding:0 2px 8px">
+      <div onClick="{{ logout }}" style="height:50px;border-radius:18px;background:#fff;color:#2A1FA0;font:800 14.5px 'Nunito Sans';display:flex;align-items:center;justify-content:center;cursor:pointer">Cerrar sesión</div>
+      <div style="text-align:center;font:700 12.5px 'Nunito Sans';color:#C97BA6;cursor:pointer;padding:8px">Eliminar mi cuenta y mis datos</div>
+      <div style="text-align:center;font:400 10.5px/1.5 'Nunito Sans';color:#A29CCB">PIXANPETS v1.0 · Aviso de privacidad · Derechos ARCO</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ CARTILLA / EXPEDIENTE ══════════ -->
+<sc-if value="{{ isRecord }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;background:#F5F3FF;padding-bottom:40px">
+  <div style="padding:62px 22px 22px;background:#fff;border-bottom:1px solid #EFEBFD">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div onClick="{{ recBack }}" style="width:38px;height:38px;border-radius:13px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;cursor:pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </div>
+      <div style="font:800 20px 'Baloo 2',cursive">Cartilla digital</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:18px">
+      <div style="width:70px;height:70px;border-radius:22px;background:{{ recTint }};display:flex;align-items:center;justify-content:center;font:800 28px 'Baloo 2',cursive;color:{{ recInk }};flex:none">{{ recInitial }}</div>
+      <div style="flex:1">
+        <div style="font:800 20px/1.1 'Baloo 2',cursive">{{ recName }}</div>
+        <div style="font:400 12.5px 'Nunito Sans';color:#8E88BE;margin-top:3px">{{ recMeta }}</div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <div style="padding:4px 9px;border-radius:99px;background:#EAFBFA;color:#0F8F88;font:800 9.5px 'Nunito Sans'">ESQUEMA AL DÍA</div>
+          <div style="padding:4px 9px;border-radius:99px;background:#F5F3FF;color:#6F6AA0;font:800 9.5px 'Nunito Sans'">{{ recWeight }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:18px 22px 0;display:flex;flex-direction:column;gap:16px">
+    <div style="background:linear-gradient(120deg,#14126B,#4A1BAF);border-radius:22px;padding:17px;display:flex;gap:13px;align-items:center">
+      <div style="width:46px;height:46px;border-radius:15px;background:rgba(70,222,213,.2);display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#46DED5" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+      </div>
+      <div style="flex:1">
+        <div style="font:800 14.5px 'Nunito Sans';color:#fff">Próximo refuerzo en 3 semanas</div>
+        <div style="font:400 12px 'Nunito Sans';color:rgba(255,255,255,.66)">Rabia anual · sugerido 18 sep 2026</div>
+      </div>
+      <div onClick="{{ goBook }}" style="padding:8px 13px;border-radius:13px;background:#46DED5;color:#14126B;font:800 12px 'Nunito Sans';cursor:pointer">Agendar</div>
+    </div>
+    <div>
+      <div style="font:800 16px 'Baloo 2',cursive;margin-bottom:10px">Vacunas y desparasitaciones</div>
+      <div style="background:#fff;border-radius:22px;padding:6px 16px;box-shadow:0 4px 14px rgba(27,21,96,.05)">
+        <sc-for list="{{ vaccines }}" as="v" hint-placeholder-count="4">
+          <div style="display:flex;gap:13px;padding:14px 0;border-bottom:1px solid #F5F3FF;align-items:center">
+            <div style="width:11px;height:11px;border-radius:50%;background:{{ v.dot }};flex:none;box-shadow:0 0 0 4px {{ v.halo }}"></div>
+            <div style="flex:1">
+              <div style="font:800 14px 'Nunito Sans'">{{ v.name }}</div>
+              <div style="font:400 11.5px 'Nunito Sans';color:#8E88BE;margin-top:2px">{{ v.note }}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font:800 12px 'Nunito Sans';color:{{ v.dateFg }}">{{ v.date }}</div>
+              <div style="font:600 10.5px 'Nunito Sans';color:#A29CCB">{{ v.status }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div>
+      <div style="font:800 16px 'Baloo 2',cursive;margin-bottom:10px">Consultas</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:#fff;border-radius:20px;padding:15px;box-shadow:0 4px 14px rgba(27,21,96,.05)">
+          <div style="display:flex;justify-content:space-between"><div style="font:800 14px 'Nunito Sans'">Consulta general</div><div style="font:600 12px 'Nunito Sans';color:#8E88BE">12 jun 2026</div></div>
+          <div style="font:400 12.5px/1.5 'Nunito Sans';color:#6F6AA0;margin-top:5px">Dra. Marisol Cruz · Otitis leve oído izquierdo. Tratamiento 7 días.</div>
+        </div>
+        <div style="background:#fff;border-radius:20px;padding:15px;box-shadow:0 4px 14px rgba(27,21,96,.05)">
+          <div style="display:flex;justify-content:space-between"><div style="font:800 14px 'Nunito Sans'">Estética · baño y corte</div><div style="font:600 12px 'Nunito Sans';color:#8E88BE">3 may 2026</div></div>
+          <div style="font:400 12.5px/1.5 'Nunito Sans';color:#6F6AA0;margin-top:5px">Estilista Beto Lara · Corte verano, uñas y limpieza de oídos.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ NOTIFICACIONES ══════════ -->
+<sc-if value="{{ isNotifs }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;overflow:auto;background:#F5F3FF">
+  <div style="padding:62px 22px 14px;background:#fff;border-bottom:1px solid #EFEBFD;display:flex;align-items:center;gap:12px">
+    <div onClick="{{ goHome }}" style="width:38px;height:38px;border-radius:13px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1FA0" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </div>
+    <div style="font:800 22px 'Baloo 2',cursive">Notificaciones</div>
+  </div>
+  <div style="padding:16px 22px;display:flex;flex-direction:column;gap:11px">
+    <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="4">
+      <div onClick="{{ n.go }}" style="background:{{ n.bg }};border-radius:20px;padding:15px;display:flex;gap:12px;cursor:pointer;box-shadow:0 4px 14px rgba(27,21,96,.04)">
+        <div style="width:38px;height:38px;border-radius:13px;background:{{ n.tint }};display:flex;align-items:center;justify-content:center;flex:none;font:800 13px 'Baloo 2',cursive;color:{{ n.ink }}">{{ n.mono }}</div>
+        <div style="flex:1">
+          <div style="font:800 14px/1.3 'Nunito Sans'">{{ n.title }}</div>
+          <div style="font:400 12.5px/1.45 'Nunito Sans';color:#6F6AA0;margin-top:3px;text-wrap:pretty">{{ n.body }}</div>
+          <div style="font:600 11px 'Nunito Sans';color:#A29CCB;margin-top:6px">{{ n.when }}</div>
+        </div>
+        <sc-if value="{{ n.unread }}" hint-placeholder-val="{{ true }}">
+          <div style="width:9px;height:9px;border-radius:50%;background:#E9207F;flex:none;margin-top:4px"></div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<!-- ══════════ TAB BAR ══════════ -->
+<sc-if value="{{ showTabs }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;bottom:0;left:0;right:0;height:88px;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-top:1px solid #EFEBFD;display:flex;align-items:flex-start;padding:11px 8px 0;z-index:40">
+  <div onClick="{{ goHome }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ tHome }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    <div style="font:800 10px 'Nunito Sans';color:{{ tHome }}">Inicio</div>
+  </div>
+  <div onClick="{{ goCitas }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ tCitas }}" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="4"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+    <div style="font:800 10px 'Nunito Sans';color:{{ tCitas }}">Citas</div>
+  </div>
+  <div onClick="{{ goShop }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;position:relative">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ tShop }}" stroke-width="2" stroke-linecap="round"><path d="M4 8h16l-1.4 11a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8L4 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+    <div style="font:800 10px 'Nunito Sans';color:{{ tShop }}">Tienda</div>
+    <sc-if value="{{ hasCart }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;top:-3px;right:16px;min-width:18px;height:18px;border-radius:99px;background:#E9207F;color:#fff;font:800 10px 'Nunito Sans';display:flex;align-items:center;justify-content:center;padding:0 5px;box-sizing:border-box">{{ cartCount }}</div>
+    </sc-if>
+  </div>
+  <div onClick="{{ goTips }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ tTips }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 1 3.5 10.9V15h-7v-1.1A6 6 0 0 1 12 3Z"/></svg>
+    <div style="font:800 10px 'Nunito Sans';color:{{ tTips }}">Consejos</div>
+  </div>
+  <div onClick="{{ goProfile }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ tProfile }}" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg>
+    <div style="font:800 10px 'Nunito Sans';color:{{ tProfile }}">Perfil</div>
+  </div>
+</div>
+</sc-if>
+
+</div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:530,&quot;height&quot;:990}}">
+const P = { ink:'#1B1560', indigo:'#2A1FA0', purple:'#7A22C4', teal:'#46DED5', tealD:'#17B5AC', pink:'#E9207F', muted:'#8E88BE', idle:'#A29CCB' };
+const money = n => '$' + n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+const PETS = [
+  { name:'Frida', meta:'Perro · Criolla · 5 años', initial:'F', tint:'#DFF9F7', ink:'#0F8F88', badge:'ESQUEMA AL DÍA', badgeBg:'#EAFBFA', badgeFg:'#0F8F88', weight:'8.4 kg' },
+  { name:'Nube', meta:'Gato · Doméstico · 2 años', initial:'N', tint:'#F0E6FF', ink:'#7A22C4', badge:'VACUNA EN 3 SEM', badgeBg:'#FFF0E6', badgeFg:'#C05A12', weight:'4.1 kg' },
+];
+
+const CATALOG = {
+  Médico: [
+    { name:'Consulta general', dur:'30 min', price:'$450' },
+    { name:'Vacunación', dur:'20 min', price:'$380' },
+    { name:'Desparasitación', dur:'15 min', price:'$260' },
+    { name:'Análisis clínicos', dur:'40 min', price:'$690' },
+  ],
+  Estética: [
+    { name:'Baño y secado', dur:'60 min', price:'$390' },
+    { name:'Baño + corte de raza', dur:'90 min', price:'$620' },
+    { name:'Corte de uñas y oídos', dur:'20 min', price:'$180' },
+  ],
+};
+
+const PROVIDERS = {
+  Médico: [
+    { name:'Sin preferencia', role:'La primera disponibilidad', initials:'??', tint:'#F1EDFD', ink:'#7A22C4', next:'Hoy' },
+    { name:'Dra. Marisol Cruz', role:'Medicina general · 12 años', initials:'MC', tint:'#DFF9F7', ink:'#0F8F88', next:'28 ago' },
+    { name:'MVZ Iván Peña', role:'Medicina interna', initials:'IP', tint:'#F0E6FF', ink:'#7A22C4', next:'29 ago' },
+  ],
+  Estética: [
+    { name:'Sin preferencia', role:'La primera disponibilidad', initials:'??', tint:'#F1EDFD', ink:'#7A22C4', next:'Hoy' },
+    { name:'Beto Lara', role:'Estilista canino', initials:'BL', tint:'#FFE6F1', ink:'#E9207F', next:'28 ago' },
+    { name:'Sofía Mena', role:'Estética felina', initials:'SM', tint:'#DFF9F7', ink:'#0F8F88', next:'31 ago' },
+  ],
+};
+
+const PRODUCTS = [
+  { id:1, mono:'C', brand:'NUTRIPET', name:'Croquetas adulto pollo', size:'8 kg', price:449, tint:'#DFF9F7', ink:'#0F8F88', stock:12, cat:'Alimento', desc:'Alimento completo para perro adulto de raza mediana. Proteína de pollo como primer ingrediente, con omega 3 y 6 para piel y pelo sanos.', sizeAlt:'15 kg' },
+  { id:2, mono:'A', brand:'DERMAVET', name:'Antipulgas spot-on', size:'3 pipetas', price:389, tint:'#F0E6FF', ink:'#7A22C4', stock:4, cat:'Higiene', desc:'Protección mensual contra pulgas y garrapatas. Aplicación tópica, apto desde 8 semanas de edad.', sizeAlt:'6 pipetas' },
+  { id:3, mono:'S', brand:'PIXANPETS', name:'Shampoo hipoalergénico', size:'500 ml', price:219, tint:'#FFE6F1', ink:'#E9207F', stock:20, cat:'Higiene', desc:'Fórmula suave con avena para pieles sensibles. pH balanceado para perros y gatos.', sizeAlt:'1 L' },
+  { id:4, mono:'J', brand:'PLAYPAW', name:'Juguete mordedera resistente', size:'Talla M', price:189, tint:'#FFF3D9', ink:'#B0840E', stock:15, cat:'Accesorios', desc:'Caucho natural resistente para masticadores intensos. Ayuda a la salud dental y reduce la ansiedad.', sizeAlt:'Talla L' },
+  { id:5, mono:'A', brand:'FELINOVA', name:'Arena aglutinante sin polvo', size:'10 kg', price:279, tint:'#E6F0FF', ink:'#2A55A0', stock:3, cat:'Higiene', desc:'Control de olores por 21 días. Aglutina en bloques firmes y no genera polvo.', sizeAlt:'20 kg' },
+  { id:6, mono:'V', brand:'VITAVET', name:'Multivitamínico masticable', size:'60 tabs', price:329, tint:'#DFF9F7', ink:'#0F8F88', stock:9, cat:'Medicamentos', desc:'Suplemento de vitaminas y minerales para perros adultos. Sabor hígado, una tableta al día.', sizeAlt:'120 tabs' },
+];
+
+const FAQS = [
+  { q:'¿Cuánto tiempo antes puedo cancelar una cita?', a:'Puedes cancelar o reprogramar sin costo hasta 24 horas antes. Después de ese margen el espacio se libera y podría no haber disponibilidad el mismo día.' },
+  { q:'¿Cada cuánto debo bañar a mi perro?', a:'En general cada 3 o 4 semanas. Los baños muy frecuentes remueven la capa de grasa natural de la piel; si tu peludito tiene dermatitis, sigue la indicación del médico.' },
+  { q:'¿Qué vacunas son obligatorias en CDMX?', a:'La antirrábica es obligatoria por ley y se aplica anualmente. Las múltiples (parvovirus, moquillo, hepatitis) son altamente recomendadas y forman parte del esquema básico.' },
+  { q:'¿Puedo pagar la cita en la app?', a:'Por ahora la app solo aparta el espacio; el pago del servicio se realiza en la sucursal. Las compras de la tienda sí se pagan en línea.' },
+  { q:'¿Mi gato necesita desparasitación si no sale de casa?', a:'Sí. Los parásitos entran por calzado, alimento crudo y otros animales. Recomendamos desparasitar cada 3 a 6 meses según su estilo de vida.' },
+];
+
+const VACCINES = [
+  { name:'Rabia', note:'Lote R-2841 · Dra. Marisol Cruz', date:'18 sep 2025', status:'Aplicada', dot:'#17B5AC', halo:'rgba(23,181,172,.16)', dateFg:'#1B1560' },
+  { name:'Múltiple (DHPPi)', note:'Refuerzo anual', date:'18 sep 2025', status:'Aplicada', dot:'#17B5AC', halo:'rgba(23,181,172,.16)', dateFg:'#1B1560' },
+  { name:'Desparasitación interna', note:'Praziquantel · 8.4 kg', date:'2 jun 2026', status:'Aplicada', dot:'#17B5AC', halo:'rgba(23,181,172,.16)', dateFg:'#1B1560' },
+  { name:'Rabia (refuerzo)', note:'Recordatorio push activado', date:'18 sep 2026', status:'Sugerida', dot:'#E9207F', halo:'rgba(233,32,127,.14)', dateFg:'#E9207F' },
+];
+
+const ORDERS = [
+  { id:'#PX-2841', status:'EN CAMINO', tagBg:'#FFF0E6', tagFg:'#C05A12', meta:'2 productos · Envío a domicilio · 24 ago', total:'$848.00' },
+  { id:'#PX-2790', status:'ENTREGADO', tagBg:'#EAFBFA', tagFg:'#0F8F88', meta:'1 producto · Recolección en tienda · 2 ago', total:'$449.00' },
+  { id:'#PX-2712', status:'ENTREGADO', tagBg:'#EAFBFA', tagFg:'#0F8F88', meta:'3 productos · Envío a domicilio · 14 jul', total:'$1,067.00' },
+];
+
+const APPTS_UP = [
+  { type:'MÉDICO', tagBg:'#EAFBFA', tagFg:'#0F8F88', accent:'#46DED5', status:'CONFIRMADA', service:'Consulta general', pet:'Frida', provider:'Dra. Marisol Cruz', date:'28 ago', time:'11:30 h', actionable:true },
+  { type:'ESTÉTICA', tagBg:'#FFE6F1', tagFg:'#C0186A', accent:'#E9207F', status:'SOLICITADA', service:'Baño y secado', pet:'Nube', provider:'Sofía Mena', date:'31 ago', time:'16:00 h', actionable:true },
+];
+const APPTS_PAST = [
+  { type:'MÉDICO', tagBg:'#F1EDFD', tagFg:'#6F6AA0', accent:'#DDD5FA', status:'COMPLETADA', service:'Consulta general', pet:'Frida', provider:'Dra. Marisol Cruz', date:'12 jun', time:'10:00 h', actionable:false },
+  { type:'ESTÉTICA', tagBg:'#F1EDFD', tagFg:'#6F6AA0', accent:'#DDD5FA', status:'COMPLETADA', service:'Baño + corte', pet:'Frida', provider:'Beto Lara', date:'3 may', time:'12:30 h', actionable:false },
+  { type:'MÉDICO', tagBg:'#F1EDFD', tagFg:'#6F6AA0', accent:'#DDD5FA', status:'NO-SHOW', service:'Vacunación', pet:'Nube', provider:'MVZ Iván Peña', date:'20 abr', time:'17:00 h', actionable:false },
+];
+
+const NOTIFS = [
+  { mono:'C', tint:'#EAFBFA', ink:'#0F8F88', title:'Tu cita es mañana a las 11:30', body:'Consulta general con la Dra. Marisol Cruz. Llega 10 min antes.', when:'Hace 2 h', unread:true, to:'citas' },
+  { mono:'P', tint:'#FFF0E6', ink:'#C05A12', title:'Tu pedido #PX-2841 va en camino', body:'Llega hoy entre 4 y 7 pm. Puedes seguirlo desde Mis pedidos.', when:'Hace 5 h', unread:true, to:'orders' },
+  { mono:'V', tint:'#FFE6F1', ink:'#E9207F', title:'A Nube le toca refuerzo de rabia', body:'Sugerido el 18 de septiembre. Agenda desde su cartilla digital.', when:'Ayer', unread:false, to:'record' },
+  { mono:'T', tint:'#F0E6FF', ink:'#7A22C4', title:'Nuevo consejo: calendario de vacunas', body:'Guía por edad para cachorros, gatitos y adultos.', when:'Hace 3 días', unread:false, to:'article' },
+];
+
+const TIP_CATS = ['Todos', 'Alimentación', 'Salud', 'Higiene', 'Comportamiento'];
+const SHOP_CATS = ['Todo', 'Alimento', 'Higiene', 'Accesorios', 'Medicamentos'];
+const OB = [
+  { t:'Todo tu peludito, en un lugar', b:'Perfiles, cartilla de vacunas y su historial de visitas, siempre a la mano.' },
+  { t:'Agenda sin llamadas', b:'Citas médicas y de estética con disponibilidad real, y recordatorios antes de cada visita.' },
+  { t:'Su alimento, a tu puerta', b:'Compra en la tienda y elige envío a domicilio o recolección en la sucursal.' },
+];
+
+class Component extends DCLogic {
+  state = {
+    screen: 'onboard', ob: 0, authMode: 'login', species: 'Perro',
+    apptTab: 'up', bookStep: 1,
+    bk: { pet: 0, type: 'Médico', service: null, provider: null, day: null, time: null },
+    shopCat: 'Todo', tipCat: 'Todos', faqOpen: null,
+    productId: 1, pdQty: 1,
+    cart: [{ id: 1, qty: 1 }, { id: 3, qty: 2 }],
+    coStep: 1, delivery: 'home', cfdi: false, recPet: 0,
+  };
+
+  go = s => this.setState({ screen: s });
+  set = o => this.setState(o);
+
+  cartLines() {
+    return this.state.cart.map(c => {
+      const p = PRODUCTS.find(x => x.id === c.id);
+      return { ...p, qty: c.qty, sub: p.price * c.qty };
+    });
+  }
+  subtotalN() { return this.cartLines().reduce((a, l) => a + l.sub, 0); }
+  shipN() {
+    if (this.state.delivery === 'pickup') return 0;
+    return this.subtotalN() >= 899 ? 0 : 79;
+  }
+  addToCart(id, qty) {
+    this.setState(s => {
+      const cart = s.cart.slice();
+      const i = cart.findIndex(c => c.id === id);
+      if (i >= 0) cart[i] = { ...cart[i], qty: cart[i].qty + qty };
+      else cart.push({ id, qty });
+      return { cart };
+    });
+  }
+  bump(id, d) {
+    this.setState(s => ({
+      cart: s.cart.map(c => c.id === id ? { ...c, qty: Math.max(0, c.qty + d) } : c).filter(c => c.qty > 0),
+    }));
+  }
+
+  chip(on) {
+    return on
+      ? { bg: '#F7F2FF', bd: '#7A22C4', fg: '#2A1FA0' }
+      : { bg: '#FFFFFF', bd: '#E4DEFB', fg: '#6F6AA0' };
+  }
+
+  renderVals() {
+    const s = this.state, sc = s.screen;
+    const svc = CATALOG[s.bk.type];
+    const picked = s.bk.service != null ? svc[s.bk.service] : null;
+    const prov = s.bk.provider != null ? PROVIDERS[s.bk.type][s.bk.provider] : null;
+    const pet = PETS[s.bk.pet];
+    const lines = this.cartLines();
+    const sub = this.subtotalN(), ship = this.shipN();
+    const prod = PRODUCTS.find(p => p.id === s.productId) || PRODUCTS[0];
+    const tabScreens = ['home', 'citas', 'shop', 'tips', 'profile'];
+    const tab = c => (sc === c ? P.indigo : P.idle);
+
+    const shopList = s.shopCat === 'Todo' ? PRODUCTS : PRODUCTS.filter(p => p.cat === s.shopCat);
+    const appts = s.apptTab === 'up' ? APPTS_UP : APPTS_PAST;
+
+    const bookReady = [true, s.bk.service != null, s.bk.provider != null, s.bk.day != null && s.bk.time != null, true][s.bookStep - 1];
+    const bookTitles = ['¿Quién viene a la cita?', 'Tipo de servicio', 'Elige prestador', 'Fecha y hora', 'Confirma tu cita'];
+    const bookCtas = ['Continuar', 'Continuar', 'Continuar', 'Continuar', 'Confirmar cita'];
+
+    const daysAvail = [26, 27, 28, 29, 31, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12];
+    const days = [];
+    for (let n = 1; n <= 31; n++) {
+      const avail = daysAvail.includes(n) && n >= 26;
+      const on = s.bk.day === n;
+      days.push({
+        n, cursor: avail ? 'pointer' : 'default',
+        bg: on ? '#2A1FA0' : avail ? '#F9F7FF' : '#FFFFFF',
+        fg: on ? '#FFFFFF' : avail ? '#2A1FA0' : '#DCD5F5',
+        bd: on ? '#2A1FA0' : avail ? '#E4DEFB' : 'transparent',
+        pick: avail ? () => this.setState(st => ({ bk: { ...st.bk, day: n } })) : () => {},
+      });
+    }
+    const slotDefs = [['09:00', 1], ['09:40', 1], ['10:20', 0], ['11:00', 1], ['11:40', 1], ['12:20', 0], ['13:00', 1], ['16:00', 1], ['16:40', 1], ['17:20', 1]];
+    const slots = slotDefs.map(([h, free]) => {
+      const on = s.bk.time === h;
+      return {
+        h, cursor: free ? 'pointer' : 'default',
+        bg: on ? '#46DED5' : free ? '#F9F7FF' : '#F5F3FF',
+        fg: on ? '#14126B' : free ? '#2A1FA0' : '#C9C3E4',
+        bd: on ? '#46DED5' : free ? '#E4DEFB' : 'transparent',
+        deco: free ? 'none' : 'line-through',
+        pick: free ? () => this.setState(st => ({ bk: { ...st.bk, time: h } })) : () => {},
+      };
+    });
+
+    const medOn = s.bk.type === 'Médico', estOn = s.bk.type === 'Estética';
+    const spDog = s.species === 'Perro', spCat = s.species === 'Gato';
+
+    return {
+      // ── routing flags
+      isOnboard: sc === 'onboard', isAuth: sc === 'auth', isPetNew: sc === 'petnew',
+      isHome: sc === 'home', isCitas: sc === 'citas', isBook: sc === 'book', isBookDone: sc === 'bookdone',
+      isShop: sc === 'shop', isProduct: sc === 'product', isCart: sc === 'cart', isCheckout: sc === 'checkout',
+      isOrderDone: sc === 'orderdone', isOrders: sc === 'orders', isTips: sc === 'tips', isArticle: sc === 'article',
+      isProfile: sc === 'profile', isRecord: sc === 'record', isNotifs: sc === 'notifs',
+      showTabs: tabScreens.includes(sc),
+
+      // ── nav
+      goHome: () => this.go('home'), goCitas: () => this.go('citas'), goShop: () => this.go('shop'),
+      goTips: () => this.go('tips'), goProfile: () => this.go('profile'), goCart: () => this.go('cart'),
+      goOrders: () => this.go('orders'), goNotifs: () => this.go('notifs'), goRecord: () => this.go('record'),
+      goPetNew: () => this.go('petnew'), goEmergency: () => this.go('notifs'),
+      openArticle: () => this.go('article'),
+      goRebuy: () => { this.addToCart(1, 1); this.go('cart'); },
+      goBook: () => this.setState({ screen: 'book', bookStep: 1, bk: { pet: 0, type: 'Médico', service: null, provider: null, day: null, time: null } }),
+      goCheckout: () => this.setState({ screen: 'checkout', coStep: 1 }),
+      logout: () => this.setState({ screen: 'auth', authMode: 'login' }),
+      tHome: tab('home'), tCitas: tab('citas'), tShop: tab('shop'), tTips: tab('tips'), tProfile: tab('profile'),
+
+      // ── onboarding
+      obTitle: OB[s.ob].t, obBody: OB[s.ob].b,
+      obCta: s.ob === 2 ? 'Crear mi cuenta' : 'Siguiente',
+      obNext: () => s.ob === 2 ? this.setState({ screen: 'auth', authMode: 'register' }) : this.setState({ ob: s.ob + 1 }),
+      skipOnboard: () => this.setState({ screen: 'auth', authMode: 'login' }),
+      obW0: s.ob === 0 ? '26px' : '7px', obW1: s.ob === 1 ? '26px' : '7px', obW2: s.ob === 2 ? '26px' : '7px',
+      obC0: s.ob === 0 ? '#46DED5' : 'rgba(255,255,255,.3)',
+      obC1: s.ob === 1 ? '#46DED5' : 'rgba(255,255,255,.3)',
+      obC2: s.ob === 2 ? '#46DED5' : 'rgba(255,255,255,.3)',
+
+      // ── auth
+      isLogin: s.authMode === 'login', isRegister: s.authMode === 'register',
+      authTitle: s.authMode === 'login' ? 'Bienvenida de vuelta' : 'Crea tu cuenta',
+      authCta: s.authMode === 'login' ? 'Entrar' : 'Registrarme',
+      authSwitch: s.authMode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión',
+      toggleAuth: () => this.setState({ authMode: s.authMode === 'login' ? 'register' : 'login' }),
+      doAuth: () => this.go(s.authMode === 'login' ? 'home' : 'petnew'),
+
+      // ── alta mascota
+      setSpDog: () => this.setState({ species: 'Perro' }), setSpCat: () => this.setState({ species: 'Gato' }),
+      spDogBg: spDog ? '#F7F2FF' : '#fff', spDogFg: spDog ? '#2A1FA0' : '#6F6AA0', spDogBd: spDog ? '#7A22C4' : '#E4DEFB',
+      spCatBg: spCat ? '#F7F2FF' : '#fff', spCatFg: spCat ? '#2A1FA0' : '#6F6AA0', spCatBd: spCat ? '#7A22C4' : '#E4DEFB',
+      savePet: () => this.go('home'), skipPet: () => this.go('home'),
+
+      // ── pets
+      pets: PETS.map((p, i) => ({ ...p, open: () => this.setState({ screen: 'record', recPet: i }) })),
+      petPick: PETS.map((p, i) => {
+        const on = s.bk.pet === i;
+        return { ...p, on, bg: on ? '#F7F2FF' : '#fff', bd: on ? '#7A22C4' : '#EFEBFD',
+          dotBd: on ? '#7A22C4' : '#DDD5FA', dotBg: on ? '#7A22C4' : '#fff',
+          pick: () => this.setState(st => ({ bk: { ...st.bk, pet: i } })) };
+      }),
+
+      // ── citas
+      appts, setApptUp: () => this.setState({ apptTab: 'up' }), setApptPast: () => this.setState({ apptTab: 'past' }),
+      upBg: s.apptTab === 'up' ? '#fff' : 'transparent', upFg: s.apptTab === 'up' ? '#2A1FA0' : '#8E88BE',
+      upSh: s.apptTab === 'up' ? '0 2px 8px rgba(27,21,96,.1)' : 'none',
+      pastBg: s.apptTab === 'past' ? '#fff' : 'transparent', pastFg: s.apptTab === 'past' ? '#2A1FA0' : '#8E88BE',
+      pastSh: s.apptTab === 'past' ? '0 2px 8px rgba(27,21,96,.1)' : 'none',
+      cancelAppt: () => this.setState({ apptTab: 'past' }),
+
+      // ── wizard
+      bs1: s.bookStep === 1, bs2: s.bookStep === 2, bs3: s.bookStep === 3, bs4: s.bookStep === 4, bs5: s.bookStep === 5,
+      bookStepLabel: String(s.bookStep), bookTitle: bookTitles[s.bookStep - 1],
+      bookPct: (s.bookStep / 5 * 100) + '%',
+      bookCta: bookCtas[s.bookStep - 1],
+      bookCtaBg: bookReady ? '#E9207F' : '#F1EDFD',
+      bookCtaFg: bookReady ? '#fff' : '#B4AEDA',
+      bookCtaSh: bookReady ? '0 10px 24px rgba(233,32,127,.26)' : 'none',
+      bookBack: () => s.bookStep === 1 ? this.go('citas') : this.setState({ bookStep: s.bookStep - 1 }),
+      bookNext: () => { if (!bookReady) return; s.bookStep === 5 ? this.go('bookdone') : this.setState({ bookStep: s.bookStep + 1 }); },
+      setTypeMed: () => this.setState(st => ({ bk: { ...st.bk, type: 'Médico', service: null, provider: null } })),
+      setTypeEst: () => this.setState(st => ({ bk: { ...st.bk, type: 'Estética', service: null, provider: null } })),
+      medBg: medOn ? '#EAFBFA' : '#fff', medBd: medOn ? '#46DED5' : '#EFEBFD', medIc: medOn ? '#0F8F88' : '#A29CCB',
+      medFg: medOn ? '#0F8F88' : '#6F6AA0', medSub: medOn ? '#3FA69E' : '#A29CCB',
+      estBg: estOn ? '#FFE6F1' : '#fff', estBd: estOn ? '#E9207F' : '#EFEBFD', estIc: estOn ? '#E9207F' : '#A29CCB',
+      estFg: estOn ? '#C0186A' : '#6F6AA0', estSub: estOn ? '#D45F97' : '#A29CCB',
+      services: svc.map((x, i) => {
+        const on = s.bk.service === i;
+        return { ...x, bg: on ? '#F7F2FF' : '#fff', bd: on ? '#7A22C4' : '#EFEBFD',
+          pick: () => this.setState(st => ({ bk: { ...st.bk, service: i } })) };
+      }),
+      providers: PROVIDERS[s.bk.type].map((d, i) => {
+        const on = s.bk.provider === i;
+        return { ...d, bg: on ? '#F7F2FF' : '#fff', bd: on ? '#7A22C4' : '#EFEBFD',
+          pick: () => this.setState(st => ({ bk: { ...st.bk, provider: i } })) };
+      }),
+      days, slots,
+      pickedDayLabel: s.bk.day ? s.bk.day + ' de agosto' : 'elige un día',
+      pickedDur: picked ? picked.dur : '30 min',
+      sumPet: pet.name, sumPetMeta: pet.meta, sumInitial: pet.initial, sumTint: pet.tint, sumInk: pet.ink,
+      sumType: s.bk.type.toUpperCase(),
+      sumTagBg: medOn ? '#EAFBFA' : '#FFE6F1', sumTagFg: medOn ? '#0F8F88' : '#C0186A',
+      sumService: picked ? picked.name : '—',
+      sumProvider: prov ? prov.name : '—',
+      sumWhen: (s.bk.day ? s.bk.day + ' ago' : '—') + ' · ' + (s.bk.time || '—'),
+      sumPrice: picked ? picked.price : '—',
+
+      // ── tienda
+      cats: SHOP_CATS.map(n => ({ name: n, ...this.chip(s.shopCat === n), pick: () => this.setState({ shopCat: n }) })),
+      shopSectionTitle: s.shopCat === 'Todo' ? 'Más pedidos por aquí' : s.shopCat,
+      products: shopList.map(p => ({
+        ...p, price: money(p.price), low: p.stock <= 4,
+        open: () => this.setState({ screen: 'product', productId: p.id, pdQty: 1 }),
+        add: e => { if (e && e.stopPropagation) e.stopPropagation(); this.addToCart(p.id, 1); },
+      })),
+
+      // ── producto
+      pdMono: prod.mono, pdTint: prod.tint, pdInk: prod.ink, pdBrand: prod.brand, pdName: prod.name,
+      pdPrice: money(prod.price), pdSize: prod.size, pdSizeAlt: prod.sizeAlt, pdDesc: prod.desc, pdQty: s.pdQty,
+      pdStock: prod.stock <= 4 ? 'Últimas ' + prod.stock : 'En stock',
+      pdStockBg: prod.stock <= 4 ? '#FFF0E6' : '#EAFBFA', pdStockFg: prod.stock <= 4 ? '#C05A12' : '#0F8F88',
+      pdPlus: () => this.setState({ pdQty: s.pdQty + 1 }),
+      pdMinus: () => this.setState({ pdQty: Math.max(1, s.pdQty - 1) }),
+      pdAdd: () => { this.addToCart(prod.id, s.pdQty); this.go('cart'); },
+
+      // ── carrito
+      cart: lines.map(l => ({ ...l, price: money(l.price), line: money(l.sub),
+        plus: () => this.bump(l.id, 1), minus: () => this.bump(l.id, -1) })),
+      hasCart: lines.length > 0, cartEmpty: lines.length === 0,
+      cartCount: String(lines.reduce((a, l) => a + l.qty, 0)),
+      subtotal: money(sub), total: money(sub + ship),
+      shipLabel: ship === 0 ? 'Gratis' : money(ship),
+      freeGap: money(Math.max(0, 899 - sub)),
+
+      // ── checkout
+      cs1: s.coStep === 1, cs2: s.coStep === 2, cs3: s.coStep === 3,
+      coTitle: ['Entrega', 'Método de pago', 'Revisa tu pedido'][s.coStep - 1],
+      coCta: ['Continuar al pago', 'Revisar pedido', 'Pagar ' + money(sub + ship)][s.coStep - 1],
+      coNext: () => s.coStep === 3 ? this.go('orderdone') : this.setState({ coStep: s.coStep + 1 }),
+      coBack: () => s.coStep === 1 ? this.go('cart') : this.setState({ coStep: s.coStep - 1 }),
+      co1: '#7A22C4', co1t: '#2A1FA0',
+      co2: s.coStep >= 2 ? '#7A22C4' : '#F1EDFD', co2t: s.coStep >= 2 ? '#2A1FA0' : '#C9C3E4',
+      co3: s.coStep >= 3 ? '#7A22C4' : '#F1EDFD', co3t: s.coStep >= 3 ? '#2A1FA0' : '#C9C3E4',
+      setDelHome: () => this.setState({ delivery: 'home' }), setDelPick: () => this.setState({ delivery: 'pickup' }),
+      delIsHome: s.delivery === 'home', delIsPick: s.delivery === 'pickup',
+      delHomeBd: s.delivery === 'home' ? '#7A22C4' : '#EFEBFD', delHomeBg: s.delivery === 'home' ? '#F9F7FF' : '#fff',
+      delPickBd: s.delivery === 'pickup' ? '#7A22C4' : '#EFEBFD', delPickBg: s.delivery === 'pickup' ? '#F9F7FF' : '#fff',
+      delLabel: s.delivery === 'home' ? 'Envío a domicilio' : 'Recolección en tienda',
+      toggleCfdi: () => this.setState({ cfdi: !s.cfdi }),
+      cfdiBg: s.cfdi ? '#46DED5' : '#E4DEFB', cfdiPos: s.cfdi ? 'flex-end' : 'flex-start',
+      finishOrder: () => this.setState({ screen: 'home', cart: [], coStep: 1 }),
+      orders: ORDERS,
+
+      // ── consejos
+      tipCats: TIP_CATS.map(n => ({ name: n, ...this.chip(s.tipCat === n), pick: () => this.setState({ tipCat: n }) })),
+      faqs: FAQS.map((f, i) => ({ ...f, open: s.faqOpen === i, rot: s.faqOpen === i ? '180deg' : '0deg',
+        toggle: () => this.setState({ faqOpen: s.faqOpen === i ? null : i }) })),
+
+      // ── perfil / cartilla
+      profileRows: [
+        { mono:'CD', label:'Cartilla digital de mis mascotas', hint:'2', tint:'#EAFBFA', ink:'#0F8F88', fg:'#1B1560', go: () => this.go('record') },
+        { mono:'PD', label:'Mis pedidos', hint:'3', tint:'#FFF0E6', ink:'#C05A12', fg:'#1B1560', go: () => this.go('orders') },
+        { mono:'DI', label:'Direcciones de envío', hint:'1', tint:'#F0E6FF', ink:'#7A22C4', fg:'#1B1560', go: () => this.go('checkout') },
+        { mono:'PA', label:'Métodos de pago', hint:'Visa ···· 4821', tint:'#E6F0FF', ink:'#2A55A0', fg:'#1B1560', go: () => this.setState({ screen: 'checkout', coStep: 2 }) },
+        { mono:'NO', label:'Notificaciones', hint:'Push activado', tint:'#FFE6F1', ink:'#E9207F', fg:'#1B1560', go: () => this.go('notifs') },
+        { mono:'PR', label:'Privacidad y datos', hint:'ARCO', tint:'#F1EDFD', ink:'#6F6AA0', fg:'#1B1560', go: () => this.go('tips') },
+      ],
+      recName: PETS[s.recPet].name, recMeta: PETS[s.recPet].meta, recInitial: PETS[s.recPet].initial,
+      recTint: PETS[s.recPet].tint, recInk: PETS[s.recPet].ink, recWeight: PETS[s.recPet].weight,
+      vaccines: VACCINES,
+      recBack: () => this.go('profile'),
+
+      // ── notificaciones
+      notifs: NOTIFS.map(n => ({ ...n, bg: n.unread ? '#fff' : '#FBFAFF', go: () => this.go(n.to) })),
+    };
+  }
+}
+</script>
+</body>
+</html>
