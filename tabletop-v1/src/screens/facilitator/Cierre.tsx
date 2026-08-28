@@ -96,7 +96,57 @@ export function Cierre() {
             Descargar paquete de evidencia D5 (JSON)
           </a>
         </div>
+        <hr className="tt-sep" />
+        <Reinicio />
       </div>
+    </div>
+  )
+}
+
+/** Purga la cronología para repetir un recorrido de prueba (solo director). */
+function Reinicio() {
+  const { config, events } = useStore()
+  const [confirma, setConfirma] = useState(false)
+  const [error, setError] = useState('')
+  const [trabajando, setTrabajando] = useState(false)
+
+  const reiniciar = async () => {
+    setTrabajando(true)
+    setError('')
+    const res = await fetch(`/api/ejercicios/${config.id}/reset`, { method: 'POST' })
+    if (res.ok) {
+      window.location.reload()
+      return
+    }
+    const data = (await res.json().catch(() => null)) as { error?: string } | null
+    setError(data?.error ?? 'No fue posible reiniciar.')
+    setTrabajando(false)
+  }
+
+  return (
+    <div>
+      <h3>Reiniciar ejercicio</h3>
+      <p className="tt-small tt-suave">
+        Borra permanentemente la cronología completa ({events.length} eventos: decisiones,
+        escalamientos, observaciones, participantes…) y conserva la configuración y el código de
+        sala, para repetir un recorrido de prueba. Exporta la evidencia antes si quieres conservarla.
+        Los participantes conectados volverán al check-in.
+      </p>
+      {error && <p className="tt-small" style={{ color: 'var(--critico)' }}>{error}</p>}
+      {!confirma ? (
+        <button className="tt-btn" onClick={() => setConfirma(true)}>
+          Reiniciar ejercicio…
+        </button>
+      ) : (
+        <div className="tt-fila">
+          <button className="tt-btn tt-btn--peligro" disabled={trabajando} onClick={reiniciar}>
+            {trabajando ? 'Reiniciando…' : `Borrar ${events.length} eventos y reiniciar`}
+          </button>
+          <button className="tt-btn tt-btn--fantasma" onClick={() => setConfirma(false)}>
+            Cancelar
+          </button>
+        </div>
+      )}
     </div>
   )
 }

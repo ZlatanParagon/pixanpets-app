@@ -2,9 +2,24 @@
 // Superficie del participante: check-in y ejecución sobre la misma URL de sala.
 
 import { use, useEffect, useState } from 'react'
-import { StoreProvider } from '@/store'
+import { StoreProvider, useStore } from '@/store'
 import { Checkin, getSesionParticipante, type SesionParticipante } from '@/screens/participant/Checkin'
 import { Play } from '@/screens/participant/Play'
+
+/**
+ * Si el ejercicio fue reiniciado, el check-in previo ya no existe en la
+ * cronología: se limpia la sesión local y se vuelve al check-in.
+ */
+function SesionVigente({ sesion, onInvalida }: { sesion: SesionParticipante; onInvalida: () => void }) {
+  const { estado, sincronizado } = useStore()
+  useEffect(() => {
+    if (sincronizado && !estado.participantes.some((p) => p.id === sesion.participante_id)) {
+      sessionStorage.removeItem('arseg-tabletop:participante')
+      onInvalida()
+    }
+  }, [sincronizado, estado.participantes, sesion.participante_id, onInvalida])
+  return <Play />
+}
 
 export default function ParticipantePage({
   params,
@@ -47,7 +62,7 @@ export default function ParticipantePage({
   }
   return (
     <StoreProvider ejercicioId={ejercicioId}>
-      <Play />
+      <SesionVigente sesion={sesion} onInvalida={() => setSesion(null)} />
     </StoreProvider>
   )
 }

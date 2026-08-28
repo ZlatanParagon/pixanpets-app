@@ -30,6 +30,8 @@ interface StoreValue {
   presencias: Presencia[]
   /** Fuerza una recarga de la configuración (tras editarla). */
   recargarConfig: () => Promise<void>
+  /** true cuando ya se completó al menos una lectura de eventos del servidor. */
+  sincronizado: boolean
 }
 
 const StoreContext = createContext<StoreValue | null>(null)
@@ -52,7 +54,9 @@ export function StoreProvider({
   const [presencias, setPresencias] = useState<Presencia[]>([])
   const [ultimoError, setUltimoError] = useState<string | null>(null)
   const [now, setNow] = useState(() => Date.now())
+  const [sincronizado, setSincronizado] = useState(false)
   const seqRef = useRef(0)
+  const baseRef = useRef<number | null | undefined>(undefined)
   const salaQS = sala ? '&sala=1' : ''
 
   const recargarConfig = useCallback(async () => {
@@ -74,7 +78,24 @@ export function StoreProvider({
           eventos: EventoBitacora[]
           seq: number
           presencias?: Presencia[]
+          base: number | null
         }
+        // Reinicio del ejercicio detectado: la cronología del servidor fue
+        // purgada, así que la copia local se descarta y se vuelve a sincronizar.
+        // (null → número es solo el primer evento de una cronología nueva.)
+        if (
+          baseRef.current !== undefined &&
+          baseRef.current !== null &&
+          data.base !== baseRef.current
+        ) {
+          baseRef.current = data.base
+          seqRef.current = 0
+          setServerEvents([])
+          setPending([])
+          setPresencias([])
+          return
+        }
+        baseRef.current = data.base
         seqRef.current = Math.max(seqRef.current, data.seq)
         if (data.eventos.length > 0) {
           setServerEvents((prev) => mergeEvents(prev, data.eventos))
@@ -82,6 +103,7 @@ export function StoreProvider({
           setPending((prev) => prev.filter((e) => !llegaron.has(e.id)))
         }
         if (data.presencias) setPresencias(data.presencias)
+        setSincronizado(true)
       } catch {
         // Sin red: el estado local sigue visible; se reintenta en el siguiente tick.
       }
@@ -125,9 +147,9 @@ export function StoreProvider({
   const value = useMemo<StoreValue | null>(
     () =>
       config && estado
-        ? { config, events, estado, now, append, ultimoError, presencias, recargarConfig }
+        ? { config, events, estado, now, append, ultimoError, presencias, recargarConfig, sincronizado }
         : null,
-    [config, events, estado, now, append, ultimoError, presencias, recargarConfig],
+    [config, events, estado, now, append, ultimoError, presencias, recargarConfig, sincronizado],
   )
 
   if (!value) {

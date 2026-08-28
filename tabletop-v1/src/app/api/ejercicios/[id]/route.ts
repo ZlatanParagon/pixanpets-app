@@ -59,3 +59,16 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
   })
   return NextResponse.json({ ok: true })
 }
+
+/** Elimina el ejercicio completo (config + cronología). Solo director. */
+export async function DELETE(_req: Request, ctx: { params: Promise<{ id: string }> }) {
+  const { id } = await ctx.params
+  const sesion = await getSesionArseg()
+  if (sesion?.perfil !== 'director') {
+    return NextResponse.json({ error: 'Solo el director puede eliminar un ejercicio.' }, { status: 403 })
+  }
+  const ejercicio = await getEjercicio(id)
+  if (!ejercicio) return NextResponse.json({ error: 'Ejercicio no encontrado.' }, { status: 404 })
+  await prisma.ejercicio.delete({ where: { id } }) // cascada: eventos y presencia
+  return NextResponse.json({ ok: true })
+}

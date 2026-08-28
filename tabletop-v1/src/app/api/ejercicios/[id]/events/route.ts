@@ -4,9 +4,11 @@ import { NextResponse } from 'next/server'
 import { getSesionArseg, getSesionParticipante } from '@/lib/auth'
 import {
   appendEvento,
+  estadoDerivado,
   getEjercicio,
   getEventos,
   getPresencias,
+  getPrimeraSeq,
   tocarPresencia,
 } from '@/lib/ejercicios'
 import { puedeRegistrar } from '@/lib/rbac'
@@ -38,7 +40,9 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
   const eventos = eventosParaViewer(filas.map((f) => f.evento), viewer, config)
   const maxSeq = filas.length > 0 ? filas[filas.length - 1].seq : after
   const presencias = viewer.tipo === 'arseg' ? await getPresencias(id) : undefined
-  return NextResponse.json({ eventos, seq: maxSeq, presencias })
+  // `base` cambia únicamente si la cronología fue purgada (reinicio del ejercicio).
+  const base = await getPrimeraSeq(id)
+  return NextResponse.json({ eventos, seq: maxSeq, presencias, base })
 }
 
 export async function POST(req: Request, ctx: { params: Promise<{ id: string }> }) {
@@ -62,6 +66,18 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
 
   const permiso = puedeRegistrar(sesion, evento)
   if (!permiso.ok) return NextResponse.json({ error: permiso.motivo }, { status: 403 })
+
+  // Una sesión de participante anterior a un reinicio del ejercicio ya no
+  // corresponde a ningún check-in registrado: debe volver a hacer check-in.
+  if (participante) {
+    const estado = await estadoDerivado(config, id)
+    if (!estado.participantes.some((p) => p.id === participante.participante_id)) {
+      return NextResponse.json(
+        { error: 'Tu sesión ya no corresponde a este ejercicio. Vuelve a hacer check-in.' },
+        { status: 403 },
+      )
+    }
+  }
 
   const resultado = await appendEvento(config, evento)
   if (!resultado.ok) return NextResponse.json({ error: resultado.motivo }, { status: 409 })

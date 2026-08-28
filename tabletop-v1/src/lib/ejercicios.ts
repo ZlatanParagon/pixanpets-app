@@ -34,6 +34,17 @@ export async function getEventos(ejercicio_id: string, afterSeq = 0) {
   }))
 }
 
+/** Primera secuencia existente del ejercicio; null si la cronología está vacía.
+ * Cambia solo cuando la cronología se purga: sirve como marcador de época. */
+export async function getPrimeraSeq(ejercicio_id: string): Promise<number | null> {
+  const primera = await prisma.evento.findFirst({
+    where: { ejercicio_id },
+    orderBy: { seq: 'asc' },
+    select: { seq: true },
+  })
+  return primera?.seq ?? null
+}
+
 export async function estadoDerivado(config: EjercicioConfig, ejercicio_id: string) {
   const eventos = (await getEventos(ejercicio_id)).map((x) => x.evento)
   return deriveState(config, sortEvents(eventos))

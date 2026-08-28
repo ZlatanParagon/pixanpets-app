@@ -162,7 +162,26 @@ export default function ConsolaIndex() {
                       <td><Chip tone={est.tone}>{est.label}</Chip></td>
                       <td className="tt-mono">{e.eventos}</td>
                       <td>
-                        <a className="tt-btn" href={`/consola/${e.id}`}>Abrir</a>
+                        <span className="tt-fila" style={{ flexWrap: 'nowrap' }}>
+                          <a className="tt-btn" href={`/consola/${e.id}`}>Abrir</a>
+                          {me.perfil === 'director' && (
+                            <button
+                              className="tt-btn tt-btn--fantasma"
+                              onClick={async () => {
+                                if (
+                                  !window.confirm(
+                                    `¿Eliminar «${e.nombre}» y sus ${e.eventos} eventos? Esta acción es permanente.`,
+                                  )
+                                )
+                                  return
+                                const res = await fetch(`/api/ejercicios/${e.id}`, { method: 'DELETE' })
+                                if (res.ok) void cargar()
+                              }}
+                            >
+                              Eliminar
+                            </button>
+                          )}
+                        </span>
                       </td>
                     </tr>
                   )

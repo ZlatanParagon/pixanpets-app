@@ -61,6 +61,19 @@ Ejercicio de referencia sembrado: código de sala `PH-CRISIS`.
 - **Rate limiting** en login, check-in, consulta de salas y append (s.27).
 - **Cabeceras**: CSP, nosniff, frame-ancestors, referrer-policy (next.config.ts).
 
+## Recorridos de prueba repetibles
+
+Para recorrer el producto n veces con datos de prueba hay dos mecanismos (solo director):
+
+- **Reiniciar ejercicio** — consola → *Cierre y exportación* → *Reiniciar ejercicio…*. Purga
+  permanentemente la cronología completa (decisiones, escalamientos, observaciones, participantes,
+  presencia) y conserva la configuración y el **mismo código de sala/QR**. Los participantes con la
+  pestaña abierta vuelven solos al check-in (el cliente detecta la purga por el marcador de época
+  del polling) y una sesión previa al reinicio no puede registrar (403). Exporta la evidencia antes
+  si quieres conservar la corrida.
+- **Eliminar ejercicio** — en la lista de `/consola`, botón *Eliminar* (borra config y cronología).
+  Alternativa: crear un ejercicio nuevo desde plantilla por cada prueba, cada uno con su código.
+
 ## Límites conocidos del v1 (siguiente iteración)
 
 - Offline Fase D: el cliente tolera cortes (reintenta el polling y conserva el estado en memoria),
