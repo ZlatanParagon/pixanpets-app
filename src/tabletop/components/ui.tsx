@@ -75,7 +75,29 @@ export function Vacio({ children }: { children: ReactNode }) {
   return <div className="tt-vacio">{children}</div>
 }
 
-export function descargar(nombre: string, contenido: string, mime: string) {
+interface DownloadsNS {
+  save: (r: { filename: string; data: string }) => Promise<unknown>
+}
+interface ClaudeRuntime {
+  use?: (name: string) => Promise<DownloadsNS | null>
+}
+
+export async function descargar(nombre: string, contenido: string, mime: string) {
+  // En el visor de Artifacts de claude.ai la descarga directa está bloqueada:
+  // ahí el archivo se ofrece mediante la capacidad `downloads` del visor.
+  const claude = (window as { claude?: ClaudeRuntime }).claude
+  if (claude?.use) {
+    try {
+      const downloads = await claude.use('downloads')
+      if (downloads) {
+        await downloads.save({ filename: nombre, data: contenido })
+        return
+      }
+    } catch {
+      // El visor rechazó la extensión o la persona declinó: no insistir.
+      return
+    }
+  }
   const blob = new Blob([contenido], { type: mime + ';charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
