@@ -4,7 +4,8 @@
 > PIXANPETS en `index.html` (documentada abajo), **AAE — Arseg Academy Express** en
 > `aae.html` (documentada en [`AAE.md`](AAE.md)) y **ARSEG Tabletop** en `tabletop.html`
 > (SPEC, arquitectura y backlog en [`docs/tabletop/`](docs/tabletop/); tests de dominio con
-> `npm test`). `npm run build` compila las tres.
+> `npm test`). `npm run build` compila las tres. El **producto v1** de ARSEG Tabletop
+> (Next.js + PostgreSQL, desplegable en Vercel) vive aparte en [`tabletop-v1/`](tabletop-v1/README.md).
 
 Implementación en **React + Vite + TypeScript** del prototipo diseñado en Claude Design
 (`project/PIXANPETS App.dc.html`). Es una app móvil responsiva en español (MX): a pantalla

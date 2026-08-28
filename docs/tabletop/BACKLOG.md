@@ -55,6 +55,23 @@ Estado: ✅ implementado en este prototipo (Fase A) · 🔜 fase posterior · �
 | Dependencias en el formulario de decisión | s.19 P3 | ✅ |
 | Visualización de cadenas de escalamiento como árbol | s.14 | 🔜 (hoy se presentan como lista con tiempos en F3) |
 
+## Producto v1 (`/tabletop-v1`, Vercel)
+
+| Elemento | Estado |
+|---|---|
+| Backend Next.js + PostgreSQL (Prisma), servidor autoritativo (s.32) | ✅ |
+| Tiempo casi real multi-dispositivo (polling 1.5 s; s.26 degradación) | ✅ (CA-3) |
+| Autenticación ARSEG (login, cookies firmadas) y tokens de sala con expiración | ✅ (CA-27) |
+| RBAC por tipo de evento en servidor; aislamiento por ejercicio | ✅ (CA-25/26) |
+| Información asimétrica aplicada en servidor (config y eventos filtrados) | ✅ (CA-14, s.18) |
+| Editor de preparación (Etapa 0): ficha, objetivos, fases, roles, MSEL, ramas | ✅ |
+| Multi-ejercicio con lista y creación desde plantilla | ✅ |
+| Presencia conectado/desconectado de participantes | ✅ |
+| Árbol de cadenas de escalamiento (s.14) | ✅ |
+| Informe imprimible (PDF vía imprimir) + exportaciones CSV/matriz/JSON por API | ✅ |
+| Rate limiting y cabeceras de seguridad (CSP, nosniff…) | ✅ (por instancia) |
+| Pendiente: cola offline IndexedDB (D), purga/retención y auditoría exportable (E), XLSX/ZIP | 🏗️ |
+
 ## Fase D — Resiliencia 🏗️
 
 PWA, IndexedDB, cola offline con conservación de hora original (CA-18, CA-19), reconciliación

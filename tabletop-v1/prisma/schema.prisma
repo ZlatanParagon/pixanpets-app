@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Usuarios ARSEG (s.7): director de ejercicio u observador.
+model Usuario {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  nombre    String
+  hash      String
+  perfil    String // "director" | "observador"
+  creado_en DateTime @default(now())
+}
+
+// La configuración del ejercicio (Etapa 0) vive como JSON con la forma
+// EjercicioConfig del dominio; la cronología vive en Evento (s.10.13).
+model Ejercicio {
+  id          String      @id
+  codigo_sala String      @unique
+  config      Json
+  creado_por  String
+  creado_en   DateTime    @default(now())
+  eventos     Evento[]
+  presencias  Presencia[]
+}
+
+model Evento {
+  id           String    @id // UUID generado en cliente (sincronización idempotente, s.25)
+  ejercicio_id String
+  ejercicio    Ejercicio @relation(fields: [ejercicio_id], references: [id], onDelete: Cascade)
+  type         String
+  actor_tipo   String
+  actor_id     String?
+  client_ts    Float // epoch ms del cliente (se conserva, s.32)
+  server_ts    DateTime  @default(now())
+  seq          Int       @unique @default(autoincrement()) // orden autoritativo del servidor
+  payload      Json
+
+  @@index([ejercicio_id, seq])
+}
+
+// Última actividad de cada participante (estado conectado/desconectado).
+model Presencia {
+  ejercicio_id    String
+  participante_id String
+  last_seen       DateTime
+  ejercicio       Ejercicio @relation(fields: [ejercicio_id], references: [id], onDelete: Cascade)
+
+  @@id([ejercicio_id, participante_id])
+}

@@ -1,0 +1,260 @@
+/* ARSEG Tabletop — sistema visual (SPEC s.33) y accesibilidad (s.35). */
+
+:root {
+  --fondo: #f5f6fc;
+  --tarjeta: #ffffff;
+  --tinta: #0a1128;
+  --tinta-suave: #5c6a93;
+  --acento: #3a6cf4;
+  --acento-2: #8a2be2;
+  --critico: #e23d4e;
+  --atencion: #e08a00;
+  --estable: #109e7c;
+  --borde: #e4e7f5;
+  --radio-tarjeta: 12px;
+  --radio-control: 8px;
+  --sombra: 0 2px 10px rgba(10, 17, 40, 0.06);
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+#root { min-height: 100vh; }
+
+h1 { font-size: 24px; margin: 0; }
+h2 { font-size: 18px; margin: 0; }
+h3 { font-size: 15px; margin: 0; }
+small, .tt-small { font-size: 13px; }
+.tt-micro { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.tt-mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.tt-suave { color: var(--tinta-suave); }
+
+/* Layout */
+.tt-shell { max-width: 1180px; margin: 0 auto; padding: 20px 16px 56px; }
+.tt-shell--movil { max-width: 460px; }
+
+.tt-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 0 16px;
+}
+
+.tt-brand { display: flex; align-items: baseline; gap: 8px; }
+.tt-brand strong { font-size: 15px; letter-spacing: 0.02em; }
+.tt-brand span { font-size: 11px; color: var(--tinta-suave); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Tarjetas */
+.tt-card {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra);
+  padding: 16px;
+}
+.tt-card + .tt-card { margin-top: 12px; }
+.tt-card--critica { border-left: 4px solid var(--critico); }
+.tt-card--alta { border-left: 4px solid var(--atencion); }
+.tt-card--media { border-left: 4px solid var(--acento); }
+.tt-card--baja { border-left: 4px solid var(--estable); }
+
+.tt-grid { display: grid; gap: 12px; }
+@media (min-width: 900px) {
+  .tt-grid--2 { grid-template-columns: 1fr 1fr; }
+  .tt-grid--3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Botones (áreas táctiles suficientes — s.35) */
+.tt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: var(--radio-control);
+  border: 1px solid var(--borde);
+  background: var(--tarjeta);
+  color: var(--tinta);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tt-btn:hover { border-color: var(--acento); }
+.tt-btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+}
+.tt-btn--primario { background: var(--acento); border-color: var(--acento); color: #fff; }
+.tt-btn--primario:hover { background: #2f5ad4; }
+.tt-btn--peligro { background: var(--critico); border-color: var(--critico); color: #fff; }
+.tt-btn--fantasma { background: transparent; box-shadow: none; }
+.tt-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.tt-btn--bloque { width: 100%; }
+
+/* Chips y severidad (etiqueta textual, no solo color — s.35) */
+.tt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid var(--borde);
+  color: var(--tinta-suave);
+  background: var(--fondo);
+}
+.tt-chip--critica { color: #fff; background: var(--critico); border-color: var(--critico); }
+.tt-chip--alta { color: #fff; background: var(--atencion); border-color: var(--atencion); }
+.tt-chip--media { color: #fff; background: var(--acento); border-color: var(--acento); }
+.tt-chip--baja { color: #fff; background: var(--estable); border-color: var(--estable); }
+.tt-chip--activa { color: #fff; background: var(--acento-2); border-color: var(--acento-2); }
+.tt-chip--ok { color: var(--estable); border-color: var(--estable); background: #eafaf5; }
+.tt-chip--warn { color: var(--atencion); border-color: var(--atencion); background: #fdf3e3; }
+.tt-chip--err { color: var(--critico); border-color: var(--critico); background: #fdecee; }
+
+/* Formularios */
+.tt-field { display: block; margin-bottom: 14px; }
+.tt-field > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-suave);
+  margin-bottom: 6px;
+}
+.tt-field input, .tt-field select, .tt-field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-control);
+  background: #fff;
+  color: var(--tinta);
+  font: inherit;
+}
+.tt-field textarea { min-height: 88px; resize: vertical; }
+
+/* Reloj */
+.tt-reloj {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.tt-reloj__real { font-family: var(--mono); font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tt-reloj__narrativo { font-family: var(--mono); font-size: 16px; color: var(--acento-2); font-variant-numeric: tabular-nums; }
+
+/* Barra de fases */
+.tt-fases { display: flex; gap: 6px; flex-wrap: wrap; }
+.tt-fase {
+  flex: 1 1 0;
+  min-width: 90px;
+  text-align: center;
+  padding: 8px 6px;
+  border-radius: var(--radio-control);
+  border: 1px solid var(--borde);
+  background: var(--tarjeta);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tinta-suave);
+}
+.tt-fase--actual { background: var(--tinta); border-color: var(--tinta); color: #fff; }
+.tt-fase--pasada { color: var(--estable); border-color: var(--estable); }
+
+/* Tablas */
+.tt-tabla-wrap { overflow-x: auto; }
+table.tt-tabla { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tt-tabla th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--borde);
+}
+.tt-tabla td { padding: 8px 10px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+
+/* Pestañas de consola */
+.tt-tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 2px solid var(--borde); margin-bottom: 16px; }
+.tt-tab {
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--tinta-suave);
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+.tt-tab--activa { color: var(--acento); border-bottom-color: var(--acento); }
+
+/* Pantalla de sala */
+.tt-sala {
+  min-height: 100vh;
+  background: var(--tinta);
+  color: #fff;
+  padding: 32px clamp(16px, 5vw, 64px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.tt-sala .tt-reloj__real { font-size: clamp(48px, 8vw, 96px); }
+.tt-sala .tt-reloj__narrativo { font-size: clamp(18px, 2.5vw, 28px); color: #b9a6ff; }
+.tt-sala__card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radio-tarjeta);
+  padding: clamp(16px, 3vw, 32px);
+}
+.tt-sala__inyeccion h2 { font-size: clamp(22px, 3.4vw, 40px); margin-bottom: 12px; }
+.tt-sala__inyeccion p { font-size: clamp(15px, 1.8vw, 22px); line-height: 1.5; margin: 0; color: #dfe4f7; }
+.tt-sala .tt-fase { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.18); color: #aab3d6; }
+.tt-sala .tt-fase--actual { background: var(--acento); border-color: var(--acento); color: #fff; }
+
+/* Lista de eventos */
+.tt-evento { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--borde); font-size: 13px; }
+.tt-evento time { font-family: var(--mono); color: var(--tinta-suave); white-space: nowrap; }
+
+/* Utilidades */
+.tt-fila { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tt-sep { height: 1px; background: var(--borde); margin: 14px 0; border: none; }
+.tt-vacio { text-align: center; padding: 40px 16px; color: var(--tinta-suave); }
+.tt-cta-lista { display: grid; gap: 10px; margin-top: 14px; }
+.tt-aviso {
+  border: 1px dashed var(--borde);
+  border-radius: var(--radio-control);
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--tinta-suave);
+  background: var(--fondo);
+}
+
+/* Impresión del paquete de evidencia */
+@media print {
+  .tt-no-imprimir { display: none !important; }
+  body { background: #fff; }
+  .tt-card { box-shadow: none; break-inside: avoid; }
+  .tt-informe { max-width: none; padding: 0; }
+}

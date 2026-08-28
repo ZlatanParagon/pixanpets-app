@@ -1,7 +1,15 @@
 # ARSEG Tabletop — Arquitectura
 
 **Fuente de requisitos:** [`SPEC.md`](SPEC.md) v0.2 (documento rector).
-**Estado de esta implementación:** prototipo funcional de la **Fase A** (sección 40 del SPEC), integrado como tercera app del proyecto Vite de este repositorio.
+
+Hay **dos implementaciones** en este repositorio:
+
+1. **Producto v1** en [`/tabletop-v1`](../../tabletop-v1/README.md) — Next.js + PostgreSQL (Prisma)
+   + polling, con auth ARSEG, editor de preparación, RBAC e información asimétrica en servidor,
+   listo para desplegar en Vercel. Es el código canónico en adelante.
+2. **Prototipo/maqueta** (`src/tabletop/`, app Vite) — demostración sin backend que se publica como
+   Artifact; se conserva como referencia. Lo descrito a continuación corresponde al prototipo; el
+   dominio es idéntico en ambos.
 
 ---
 
