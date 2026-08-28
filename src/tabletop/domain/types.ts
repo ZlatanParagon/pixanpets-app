@@ -85,6 +85,93 @@ export interface Decision {
   latencia_seg: number | null // en tiempo de ejercicio (excluye pausas)
 }
 
+export type Urgencia = 'normal' | 'alta' | 'critica'
+
+export interface Escalamiento {
+  id: string
+  inyeccion_id: string
+  participante_origen_id: string
+  rol_origen_id: string
+  rol_destino_id: string
+  motivo: string
+  urgencia: Urgencia | null
+  escalado_en: number // epoch ms
+}
+
+/** Escalamiento con los campos que se derivan de eventos posteriores (s.10.8). */
+export interface EscalamientoDerivado extends Escalamiento {
+  reconocido_en: number | null
+  reconocido_por_participante_id: string | null
+  /** Primera decisión del rol destino sobre la misma inyección tras el escalamiento (CA-11). */
+  decision_destino_id: string | null
+  accion_destino_en: number | null
+}
+
+export interface SolicitudInformacion {
+  id: string
+  inyeccion_id: string
+  solicitada_por_participante_id: string
+  solicitada_por_rol_id: string
+  dirigida_a_rol_id: string | null // null = al facilitador / plenaria
+  pregunta: string
+  solicitada_en: number
+}
+
+export type FuenteRespuesta = 'facilitador' | 'participante'
+
+export interface SolicitudDerivada extends SolicitudInformacion {
+  respuesta: string | null
+  respondida_en: number | null
+  fuente_respuesta: FuenteRespuesta | null
+}
+
+export interface Compromiso {
+  id: string
+  inyeccion_id: string
+  descripcion: string
+  participante_responsable_id: string | null
+  rol_responsable_id: string
+  rol_solicitante_id: string | null
+  plazo_simulado: string | null
+  criterio_cumplimiento: string | null
+  declarado_en: number
+}
+
+export type TipoObservacion =
+  | 'practica_efectiva'
+  | 'brecha'
+  | 'oportunidad_mejora'
+  | 'decision_pendiente'
+  | 'accion_prioritaria'
+
+export interface Observacion {
+  id: string
+  inyeccion_id: string | null
+  objetivo_id: string | null
+  rol_id: string | null
+  fase_id: string | null
+  tipo: TipoObservacion
+  descripcion: string
+  severidad: Severidad | null
+  marcada_en: number
+  creada_por_usuario_id: string
+}
+
+export type TipoReferenciaEvidencia =
+  | 'decision'
+  | 'escalamiento'
+  | 'solicitud_informacion'
+  | 'compromiso'
+  | 'inyeccion'
+  | 'evento'
+
+export interface EvidenciaVinculo {
+  id: string
+  observacion_id: string
+  tipo_referencia: TipoReferenciaEvidencia
+  referencia_id: string
+}
+
 export interface Participante {
   id: string
   rol_id: string

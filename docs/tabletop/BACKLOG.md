@@ -23,11 +23,22 @@ Estado: ✅ implementado en este prototipo (Fase A) · 🔜 fase posterior · �
 | Ejercicio cerrado no acepta nuevos eventos | s.43 | ✅ |
 | Tests de dominio de reglas críticas | s.43 | ✅ (`domain/rules.test.ts`, vitest) |
 
-## Fase B — TableTop trazable 🔜
+## Fase B — TableTop trazable (implementada en este prototipo)
 
-Escalamiento (CA-10, CA-11) · solicitudes de información (CA-12) · compromisos (CA-13) ·
-observaciones ARSEG de un toque con herencia de contexto (CA-6, CA-7) · evidencia vinculada ·
-cobertura de objetivos sin score (CA-17) · matriz objetivo → evidencia (CA-21) · exportaciones D5.
+| Historia | Criterios | Estado |
+|---|---|---|
+| Escalamiento con origen, destino, motivo, urgencia y hora | CA-10 | ✅ |
+| Reconocimiento del destino y vínculo automático con su acción posterior | CA-11 | ✅ (derivado en dominio, con test) |
+| Solicitud de información con pregunta, destino y tiempos de respuesta | CA-12 | ✅ (responden el rol destino o el facilitador) |
+| Compromiso con responsable, plazo narrativo y criterio | CA-13 | ✅ |
+| Observación ARSEG de una acción principal con herencia de contexto | CA-6, CA-7 | ✅ (hereda inyección activa, fase, hora, usuario) |
+| Evidencia vinculada a observaciones (s.10.12, s.11) | — | ✅ (idempotente, con test) |
+| Cobertura de objetivos con los tres estados permitidos, sin score | CA-17, CA-22 | ✅ (`domain/coverage.ts`, con test) |
+| Matriz objetivo → evidencia | CA-21 | ✅ (CSV) |
+| Paquete D5 completo | s.37 | ✅ (JSON con escalamientos, solicitudes, compromisos, observaciones y cobertura) |
+| Bitácora personal unificada del participante | s.19 P4 | ✅ |
+
+Pendiente de Fase B: preguntas de debriefing (acciones a 30 días) y encuestas D5.
 
 ## Fase C — Intensividad 🔜
 

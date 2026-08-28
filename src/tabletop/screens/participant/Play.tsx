@@ -11,9 +11,20 @@ import {
   latenciaSeg,
   ventanaExpirada,
 } from '../../domain/rules'
-import type { Decision, Inyeccion, Severidad, TipoDecision } from '../../domain/types'
+import type {
+  Compromiso,
+  Decision,
+  Escalamiento,
+  Inyeccion,
+  Severidad,
+  SolicitudInformacion,
+  TipoDecision,
+  Urgencia,
+} from '../../domain/types'
 import { useStore } from '../../store'
 import { getSesionParticipante } from './Checkin'
+
+type Accion = TipoDecision | 'solicitud' | 'escalar' | 'compromiso'
 
 export function Play() {
   const { config, events, estado, now } = useStore()
@@ -41,6 +52,12 @@ export function Play() {
   const misDecisiones = estado.decisiones
     .filter((d) => d.participante_id === sesion.participante_id)
     .sort((a, b) => b.registrada_en - a.registrada_en)
+
+  const misRegistros =
+    misDecisiones.length +
+    estado.solicitudes.filter((s) => s.solicitada_por_participante_id === sesion.participante_id).length +
+    estado.escalamientos.filter((x) => x.participante_origen_id === sesion.participante_id).length +
+    estado.compromisos.filter((c) => c.participante_responsable_id === sesion.participante_id).length
 
   return (
     <div className="tt-shell tt-shell--movil">
@@ -78,23 +95,27 @@ export function Play() {
           className={'tt-tab' + (tab === 'bitacora' ? ' tt-tab--activa' : '')}
           onClick={() => setTab('bitacora')}
         >
-          Mi bitácora ({misDecisiones.length})
+          Mi bitácora ({misRegistros})
         </button>
       </div>
 
-      {tab === 'inyecciones' &&
-        (visibles.length === 0 ? (
-          <Vacio>
-            <h2>Esperando la siguiente inyección</h2>
-            <p className="tt-small">El reloj sigue corriendo. Mantente atento.</p>
-          </Vacio>
-        ) : (
-          visibles.map((iny) => (
-            <InyeccionCard key={iny.id} iny={iny} sesion={sesion} elapsedMs={elapsedMs} />
-          ))
-        ))}
+      {tab === 'inyecciones' && (
+        <>
+          <ParaTuRol sesion={sesion} />
+          {visibles.length === 0 ? (
+            <Vacio>
+              <h2>Esperando la siguiente inyección</h2>
+              <p className="tt-small">El reloj sigue corriendo. Mantente atento.</p>
+            </Vacio>
+          ) : (
+            visibles.map((iny) => (
+              <InyeccionCard key={iny.id} iny={iny} sesion={sesion} elapsedMs={elapsedMs} />
+            ))
+          )}
+        </>
+      )}
 
-      {tab === 'bitacora' && <Bitacora decisiones={misDecisiones} />}
+      {tab === 'bitacora' && <Bitacora sesion={sesion} decisiones={misDecisiones} />}
     </div>
   )
 }
@@ -110,7 +131,7 @@ function InyeccionCard({
 }) {
   const { config, estado, append, events, now } = useStore()
   const est = estado.inyecciones[iny.id]
-  const [accion, setAccion] = useState<TipoDecision | null>(null)
+  const [accion, setAccion] = useState<Accion | null>(null)
   const [registrada, setRegistrada] = useState(false)
 
   const seEsperaDeMi = iny.respuesta_esperada_rol_ids.includes(sesion.rol_id)
@@ -193,14 +214,31 @@ function InyeccionCard({
             Registrar mi decisión
           </button>
           <div className="tt-fila">
-            <button className="tt-btn" style={{ flex: 1 }} onClick={() => setAccion('posponer')}>
-              Posponer
+            <button className="tt-btn" style={{ flex: 1 }} onClick={() => setAccion('solicitud')}>
+              Solicitar información
+            </button>
+            <button className="tt-btn" style={{ flex: 1 }} onClick={() => setAccion('escalar')}>
+              Escalar
+            </button>
+          </div>
+          <div className="tt-fila">
+            <button className="tt-btn" style={{ flex: 1 }} onClick={() => setAccion('compromiso')}>
+              Registrar compromiso
             </button>
             <button className="tt-btn" style={{ flex: 1 }} onClick={() => setAccion('no_actuar')}>
               No actuar por ahora
             </button>
           </div>
+          <button className="tt-btn tt-btn--fantasma tt-btn--bloque" onClick={() => setAccion('posponer')}>
+            Posponer
+          </button>
         </div>
+      ) : accion === 'solicitud' ? (
+        <FormSolicitud iny={iny} sesion={sesion} onDone={() => { setAccion(null); setRegistrada(true) }} onCancel={() => setAccion(null)} />
+      ) : accion === 'escalar' ? (
+        <FormEscalar iny={iny} sesion={sesion} onDone={() => { setAccion(null); setRegistrada(true) }} onCancel={() => setAccion(null)} />
+      ) : accion === 'compromiso' ? (
+        <FormCompromiso iny={iny} sesion={sesion} onDone={() => { setAccion(null); setRegistrada(true) }} onCancel={() => setAccion(null)} />
       ) : (
         <FormDecision
           iny={iny}
@@ -210,6 +248,248 @@ function InyeccionCard({
           onSubmit={registrar}
         />
       )}
+    </div>
+  )
+}
+
+interface FormProps {
+  iny: Inyeccion
+  sesion: { participante_id: string; rol_id: string }
+  onDone: () => void
+  onCancel: () => void
+}
+
+function FormSolicitud({ iny, sesion, onDone, onCancel }: FormProps) {
+  const { config, append } = useStore()
+  const [pregunta, setPregunta] = useState('')
+  const [destino, setDestino] = useState('')
+  const [error, setError] = useState('')
+  const enviar = () => {
+    if (!pregunta.trim()) return setError('Escribe la pregunta.')
+    const t = Date.now()
+    const solicitud: SolicitudInformacion = {
+      id: uuid(),
+      inyeccion_id: iny.id,
+      solicitada_por_participante_id: sesion.participante_id,
+      solicitada_por_rol_id: sesion.rol_id,
+      dirigida_a_rol_id: destino || null,
+      pregunta: pregunta.trim(),
+      solicitada_en: t,
+    }
+    if (append(makeEvent(config.id, EVENT_TYPES.INFORMATION_REQUESTED, { solicitud }, 'participante', sesion.participante_id, t))) onDone()
+  }
+  return (
+    <div style={{ marginTop: 14 }}>
+      <h3>Solicitar información</h3>
+      <Field label="¿Qué necesitas saber?">
+        <textarea value={pregunta} onChange={(e) => setPregunta(e.target.value)} />
+      </Field>
+      <Field label="Dirigida a">
+        <select value={destino} onChange={(e) => setDestino(e.target.value)}>
+          <option value="">Al facilitador</option>
+          {config.roles
+            .filter((r) => r.id !== sesion.rol_id)
+            .map((r) => (
+              <option key={r.id} value={r.id}>{r.nombre}</option>
+            ))}
+        </select>
+      </Field>
+      {error && <p className="tt-small" style={{ color: 'var(--critico)' }}>{error}</p>}
+      <div className="tt-fila">
+        <button className="tt-btn tt-btn--primario" style={{ flex: 1 }} onClick={enviar}>Enviar solicitud</button>
+        <button className="tt-btn tt-btn--fantasma" onClick={onCancel}>Cancelar</button>
+      </div>
+    </div>
+  )
+}
+
+function FormEscalar({ iny, sesion, onDone, onCancel }: FormProps) {
+  const { config, append } = useStore()
+  const [destino, setDestino] = useState('')
+  const [motivo, setMotivo] = useState('')
+  const [urgencia, setUrgencia] = useState<Urgencia | ''>('')
+  const [error, setError] = useState('')
+  const enviar = () => {
+    if (!destino) return setError('Selecciona el rol al que escalas.')
+    if (!motivo.trim()) return setError('Describe el motivo del escalamiento.')
+    const t = Date.now()
+    const escalamiento: Escalamiento = {
+      id: uuid(),
+      inyeccion_id: iny.id,
+      participante_origen_id: sesion.participante_id,
+      rol_origen_id: sesion.rol_id,
+      rol_destino_id: destino,
+      motivo: motivo.trim(),
+      urgencia: urgencia || null,
+      escalado_en: t,
+    }
+    if (append(makeEvent(config.id, EVENT_TYPES.ESCALATION_CREATED, { escalamiento }, 'participante', sesion.participante_id, t))) onDone()
+  }
+  return (
+    <div style={{ marginTop: 14 }}>
+      <h3>Escalar</h3>
+      <Field label="Escalar a">
+        <select value={destino} onChange={(e) => setDestino(e.target.value)}>
+          <option value="">Selecciona rol…</option>
+          {config.roles
+            .filter((r) => r.id !== sesion.rol_id)
+            .map((r) => (
+              <option key={r.id} value={r.id}>{r.nombre}</option>
+            ))}
+        </select>
+      </Field>
+      <Field label="Motivo">
+        <textarea value={motivo} onChange={(e) => setMotivo(e.target.value)} />
+      </Field>
+      <Field label="Urgencia (opcional)">
+        <select value={urgencia} onChange={(e) => setUrgencia(e.target.value as Urgencia | '')}>
+          <option value="">Sin registrar</option>
+          <option value="normal">Normal</option>
+          <option value="alta">Alta</option>
+          <option value="critica">Crítica</option>
+        </select>
+      </Field>
+      {error && <p className="tt-small" style={{ color: 'var(--critico)' }}>{error}</p>}
+      <div className="tt-fila">
+        <button className="tt-btn tt-btn--primario" style={{ flex: 1 }} onClick={enviar}>Escalar ahora</button>
+        <button className="tt-btn tt-btn--fantasma" onClick={onCancel}>Cancelar</button>
+      </div>
+    </div>
+  )
+}
+
+function FormCompromiso({ iny, sesion, onDone, onCancel }: FormProps) {
+  const { config, append } = useStore()
+  const [descripcion, setDescripcion] = useState('')
+  const [plazo, setPlazo] = useState('')
+  const [criterio, setCriterio] = useState('')
+  const [error, setError] = useState('')
+  const enviar = () => {
+    if (!descripcion.trim()) return setError('Describe el compromiso.')
+    const t = Date.now()
+    const compromiso: Compromiso = {
+      id: uuid(),
+      inyeccion_id: iny.id,
+      descripcion: descripcion.trim(),
+      participante_responsable_id: sesion.participante_id,
+      rol_responsable_id: sesion.rol_id,
+      rol_solicitante_id: null,
+      plazo_simulado: plazo.trim() || null,
+      criterio_cumplimiento: criterio.trim() || null,
+      declarado_en: t,
+    }
+    if (append(makeEvent(config.id, EVENT_TYPES.COMMITMENT_CREATED, { compromiso }, 'participante', sesion.participante_id, t))) onDone()
+  }
+  return (
+    <div style={{ marginTop: 14 }}>
+      <h3>Registrar compromiso</h3>
+      <Field label="¿Qué te comprometes a hacer?">
+        <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+      </Field>
+      <Field label="Plazo narrativo (opcional)">
+        <input value={plazo} onChange={(e) => setPlazo(e.target.value)} placeholder="p. ej. 2 horas / antes de abrir tiendas" />
+      </Field>
+      <Field label="Criterio de cumplimiento (opcional)">
+        <input value={criterio} onChange={(e) => setCriterio(e.target.value)} />
+      </Field>
+      {error && <p className="tt-small" style={{ color: 'var(--critico)' }}>{error}</p>}
+      <div className="tt-fila">
+        <button className="tt-btn tt-btn--primario" style={{ flex: 1 }} onClick={enviar}>Guardar compromiso</button>
+        <button className="tt-btn tt-btn--fantasma" onClick={onCancel}>Cancelar</button>
+      </div>
+    </div>
+  )
+}
+
+/** Escalamientos y solicitudes dirigidos al rol del participante. */
+function ParaTuRol({ sesion }: { sesion: { participante_id: string; rol_id: string } }) {
+  const { config, estado, append } = useStore()
+  const [respuestas, setRespuestas] = useState<Record<string, string>>({})
+
+  const escalamientos = estado.escalamientos.filter((x) => x.rol_destino_id === sesion.rol_id)
+  const solicitudes = estado.solicitudes.filter((s) => s.dirigida_a_rol_id === sesion.rol_id)
+  if (escalamientos.length === 0 && solicitudes.length === 0) return null
+
+  const rol = (id: string) => config.roles.find((r) => r.id === id)?.nombre ?? id
+  const clave = (id: string) => config.inyecciones.find((i) => i.id === id)?.clave ?? id
+
+  return (
+    <div className="tt-card" style={{ borderLeft: '4px solid var(--acento-2)' }}>
+      <h2>Para tu rol</h2>
+      {escalamientos.map((x) => (
+        <div key={x.id} style={{ borderTop: '1px solid var(--borde)', padding: '10px 0' }}>
+          <div className="tt-fila">
+            <Chip tone="activa">Escalamiento</Chip>
+            <span className="tt-small tt-suave">
+              de {rol(x.rol_origen_id)} · {clave(x.inyeccion_id)} · <span className="tt-mono">{fmtHora(x.escalado_en)}</span>
+            </span>
+            {x.urgencia && <Chip tone={x.urgencia === 'critica' ? 'err' : x.urgencia === 'alta' ? 'warn' : undefined}>Urgencia {x.urgencia}</Chip>}
+          </div>
+          <p style={{ margin: '6px 0' }}>«{x.motivo}»</p>
+          {x.reconocido_en == null ? (
+            <button
+              className="tt-btn"
+              onClick={() =>
+                append(
+                  makeEvent(
+                    config.id,
+                    EVENT_TYPES.ESCALATION_ACKNOWLEDGED,
+                    { escalamiento_id: x.id, participante_id: sesion.participante_id },
+                    'participante',
+                    sesion.participante_id,
+                  ),
+                )
+              }
+            >
+              Reconocer recepción
+            </button>
+          ) : (
+            <Chip tone="ok">Reconocido {fmtHora(x.reconocido_en)}</Chip>
+          )}
+        </div>
+      ))}
+      {solicitudes.map((s) => (
+        <div key={s.id} style={{ borderTop: '1px solid var(--borde)', padding: '10px 0' }}>
+          <div className="tt-fila">
+            <Chip>Solicitud de información</Chip>
+            <span className="tt-small tt-suave">
+              de {rol(s.solicitada_por_rol_id)} · {clave(s.inyeccion_id)} · <span className="tt-mono">{fmtHora(s.solicitada_en)}</span>
+            </span>
+          </div>
+          <p style={{ margin: '6px 0' }}>«{s.pregunta}»</p>
+          {s.respondida_en == null ? (
+            <>
+              <Field label="Tu respuesta">
+                <textarea
+                  value={respuestas[s.id] ?? ''}
+                  onChange={(e) => setRespuestas((r) => ({ ...r, [s.id]: e.target.value }))}
+                />
+              </Field>
+              <button
+                className="tt-btn tt-btn--primario"
+                disabled={!(respuestas[s.id] ?? '').trim()}
+                onClick={() =>
+                  append(
+                    makeEvent(
+                      config.id,
+                      EVENT_TYPES.INFORMATION_RESPONDED,
+                      { solicitud_id: s.id, respuesta: respuestas[s.id].trim(), fuente_respuesta: 'participante' },
+                      'participante',
+                      sesion.participante_id,
+                    ),
+                  )
+                }
+              >
+                Responder
+              </button>
+            </>
+          ) : (
+            <p className="tt-small tt-suave">
+              Respondida <span className="tt-mono">{fmtHora(s.respondida_en)}</span>: «{s.respuesta}»
+            </p>
+          )}
+        </div>
+      ))}
     </div>
   )
 }
@@ -314,9 +594,80 @@ function FormDecision({
   )
 }
 
-function Bitacora({ decisiones }: { decisiones: Decision[] }) {
-  const { config } = useStore()
-  if (decisiones.length === 0) {
+interface EntradaBitacora {
+  id: string
+  hora: number
+  inyeccion_id: string
+  etiqueta: string
+  titulo: string
+  detalle: string | null
+  extra: string | null
+}
+
+function Bitacora({
+  sesion,
+  decisiones,
+}: {
+  sesion: { participante_id: string; rol_id: string }
+  decisiones: Decision[]
+}) {
+  const { config, estado } = useStore()
+  const rol = (id: string | null) => (id ? (config.roles.find((r) => r.id === id)?.nombre ?? id) : '')
+
+  const entradas: EntradaBitacora[] = [
+    ...decisiones.map((d) => ({
+      id: d.id,
+      hora: d.registrada_en,
+      inyeccion_id: d.inyeccion_id,
+      etiqueta: d.tipo === 'no_actuar' ? 'No actuar' : d.tipo === 'posponer' ? 'Posponer' : 'Decisión',
+      titulo:
+        d.tipo === 'no_actuar'
+          ? 'No actuar por ahora'
+          : d.tipo === 'posponer'
+            ? 'Posponer'
+            : (d.accion_elegida ?? d.accion_libre ?? 'Decisión'),
+      detalle: `«${d.justificacion}»`,
+      extra: d.latencia_seg != null ? `latencia ${d.latencia_seg}s` : null,
+    })),
+    ...estado.solicitudes
+      .filter((s) => s.solicitada_por_participante_id === sesion.participante_id)
+      .map((s) => ({
+        id: s.id,
+        hora: s.solicitada_en,
+        inyeccion_id: s.inyeccion_id,
+        etiqueta: 'Solicitud',
+        titulo: s.pregunta,
+        detalle:
+          s.respondida_en != null
+            ? `Respondida ${fmtHora(s.respondida_en)}: «${s.respuesta}»`
+            : 'Sin respuesta todavía',
+        extra: s.dirigida_a_rol_id ? `a ${rol(s.dirigida_a_rol_id)}` : 'al facilitador',
+      })),
+    ...estado.escalamientos
+      .filter((x) => x.participante_origen_id === sesion.participante_id)
+      .map((x) => ({
+        id: x.id,
+        hora: x.escalado_en,
+        inyeccion_id: x.inyeccion_id,
+        etiqueta: 'Escalamiento',
+        titulo: `A ${rol(x.rol_destino_id)}`,
+        detalle: `«${x.motivo}»${x.reconocido_en != null ? ` · reconocido ${fmtHora(x.reconocido_en)}` : ''}`,
+        extra: x.urgencia ? `urgencia ${x.urgencia}` : null,
+      })),
+    ...estado.compromisos
+      .filter((c) => c.participante_responsable_id === sesion.participante_id)
+      .map((c) => ({
+        id: c.id,
+        hora: c.declarado_en,
+        inyeccion_id: c.inyeccion_id,
+        etiqueta: 'Compromiso',
+        titulo: c.descripcion,
+        detalle: c.criterio_cumplimiento ? `Criterio: ${c.criterio_cumplimiento}` : null,
+        extra: c.plazo_simulado ? `plazo ${c.plazo_simulado}` : null,
+      })),
+  ].sort((a, b) => b.hora - a.hora)
+
+  if (entradas.length === 0) {
     return (
       <Vacio>
         <h2>Tu bitácora está vacía</h2>
@@ -326,29 +677,19 @@ function Bitacora({ decisiones }: { decisiones: Decision[] }) {
   }
   return (
     <>
-      {decisiones.map((d) => {
-        const iny = config.inyecciones.find((i) => i.id === d.inyeccion_id)
+      {entradas.map((e) => {
+        const iny = config.inyecciones.find((i) => i.id === e.inyeccion_id)
         return (
-          <div key={d.id} className="tt-card">
+          <div key={e.id} className="tt-card">
             <div className="tt-fila">
+              <Chip>{e.etiqueta}</Chip>
               <span className="tt-mono tt-small tt-suave">{iny?.clave}</span>
-              <span className="tt-mono tt-small tt-suave">{fmtHora(d.registrada_en)}</span>
-              {d.latencia_seg != null && (
-                <span className="tt-mono tt-small tt-suave">latencia {d.latencia_seg}s</span>
-              )}
+              <span className="tt-mono tt-small tt-suave">{fmtHora(e.hora)}</span>
+              {e.extra && <span className="tt-mono tt-small tt-suave">{e.extra}</span>}
               <Chip tone="ok">Sincronizada</Chip>
             </div>
-            <h3 style={{ margin: '6px 0' }}>
-              {d.tipo === 'no_actuar'
-                ? 'No actuar por ahora'
-                : d.tipo === 'posponer'
-                  ? 'Posponer'
-                  : (d.accion_elegida ?? d.accion_libre)}
-            </h3>
-            {d.tipo === 'decision' && d.accion_elegida && d.accion_libre && (
-              <p className="tt-small">{d.accion_libre}</p>
-            )}
-            <p className="tt-small tt-suave">«{d.justificacion}»</p>
+            <h3 style={{ margin: '6px 0' }}>{e.titulo}</h3>
+            {e.detalle && <p className="tt-small tt-suave">{e.detalle}</p>}
           </div>
         )
       })}

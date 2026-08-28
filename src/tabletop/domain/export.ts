@@ -3,11 +3,19 @@
 
 import { elapsedMsAt, fmtHMS, fmtHora } from './clock'
 import { sortEvents } from './events'
+import { COBERTURA_LABEL, coberturaObjetivos } from './coverage'
 import { deriveState } from './reducer'
 import type { EjercicioConfig, EventoBitacora } from './types'
 import type {
+  CommitmentCreatedPayload,
   DecisionCreatedPayload,
+  EscalationAcknowledgedPayload,
+  EscalationCreatedPayload,
+  InformationRequestedPayload,
+  InformationRespondedPayload,
   InjectPayload,
+  ObservationCreatedPayload,
+  ObservationLinkedPayload,
   ParticipantConnectedPayload,
   PhaseChangedPayload,
   TimeJumpPayload,
@@ -26,6 +34,21 @@ const TIPO_LABEL: Record<string, string> = {
   'inject.omitted': 'Inyección omitida',
   'participant.connected': 'Participante conectado',
   'decision.created': 'Decisión registrada',
+  'escalation.created': 'Escalamiento',
+  'escalation.acknowledged': 'Escalamiento reconocido',
+  'information.requested': 'Solicitud de información',
+  'information.responded': 'Información respondida',
+  'commitment.created': 'Compromiso declarado',
+  'observation.created': 'Observación ARSEG',
+  'observation.linked': 'Evidencia vinculada a observación',
+}
+
+export const TIPO_OBSERVACION_LABEL: Record<string, string> = {
+  practica_efectiva: 'Práctica efectiva',
+  brecha: 'Brecha',
+  oportunidad_mejora: 'Oportunidad de mejora',
+  decision_pendiente: 'Decisión pendiente',
+  accion_prioritaria: 'Acción prioritaria',
 }
 
 export function describeEvento(config: EjercicioConfig, e: EventoBitacora): string {
@@ -62,6 +85,37 @@ export function describeEvento(config: EjercicioConfig, e: EventoBitacora): stri
             : (d.accion_elegida ?? d.accion_libre ?? 'Decisión')
       const lat = d.latencia_seg != null ? ` · latencia ${d.latencia_seg}s` : ''
       return `${rol(d.rol_id)} · ${que} — «${d.justificacion}»${lat}`
+    }
+    case 'escalation.created': {
+      const x = (e.payload as EscalationCreatedPayload).escalamiento
+      return `${rol(x.rol_origen_id)} escala a ${rol(x.rol_destino_id)} — «${x.motivo}»`
+    }
+    case 'escalation.acknowledged': {
+      const p = e.payload as EscalationAcknowledgedPayload
+      return `escalamiento ${p.escalamiento_id}`
+    }
+    case 'information.requested': {
+      const s = (e.payload as InformationRequestedPayload).solicitud
+      const destino = s.dirigida_a_rol_id ? rol(s.dirigida_a_rol_id) : 'facilitador'
+      return `${rol(s.solicitada_por_rol_id)} pregunta a ${destino}: «${s.pregunta}»`
+    }
+    case 'information.responded': {
+      const p = e.payload as InformationRespondedPayload
+      return `«${p.respuesta}» (${p.fuente_respuesta})`
+    }
+    case 'commitment.created': {
+      const c = (e.payload as CommitmentCreatedPayload).compromiso
+      return `${rol(c.rol_responsable_id)}: «${c.descripcion}»${c.plazo_simulado ? ` · plazo ${c.plazo_simulado}` : ''}`
+    }
+    case 'observation.created': {
+      const o = (e.payload as ObservationCreatedPayload).observacion
+      const partes = [TIPO_OBSERVACION_LABEL[o.tipo] ?? o.tipo]
+      if (o.rol_id) partes.push(rol(o.rol_id))
+      return `${partes.join(' · ')} — «${o.descripcion}»`
+    }
+    case 'observation.linked': {
+      const v = (e.payload as ObservationLinkedPayload).vinculo
+      return `${v.tipo_referencia} ${v.referencia_id} → observación ${v.observacion_id}`
     }
     default:
       return ''
@@ -103,14 +157,15 @@ export function cronologiaCSV(config: EjercicioConfig, events: EventoBitacora[])
   return rows.map((r) => r.map(csvCell).join(',')).join('\n')
 }
 
-/** Paquete de evidencia JSON (contenido de la Fase A; se amplía en Fase B). */
+/** Paquete de evidencia D5 (SPEC s.36/s.37). No es informe final ni dictamen. */
 export function paqueteEvidenciaJSON(config: EjercicioConfig, events: EventoBitacora[]): string {
   const ordered = sortEvents(events)
   const estado = deriveState(config, ordered)
+  const cobertura = coberturaObjetivos(config, estado)
   return JSON.stringify(
     {
       generado_en: new Date().toISOString(),
-      nota: 'Paquete de evidencia del ejercicio. No constituye informe final ni dictamen; ARSEG interpreta la evidencia.',
+      nota: 'Paquete de evidencia del ejercicio (D5). No constituye informe final ni dictamen; ARSEG interpreta la evidencia (D6).',
       ficha: {
         id: config.id,
         nombre: config.nombre,
@@ -127,9 +182,67 @@ export function paqueteEvidenciaJSON(config: EjercicioConfig, events: EventoBita
       participantes: estado.participantes,
       msel: config.inyecciones.map((i) => ({ ...i, ...estado.inyecciones[i.id] })),
       decisiones: estado.decisiones,
+      escalamientos: estado.escalamientos,
+      solicitudes_informacion: estado.solicitudes,
+      compromisos: estado.compromisos,
+      observaciones: estado.observaciones.map((o) => ({
+        ...o,
+        evidencia_vinculada: estado.vinculos.filter((v) => v.observacion_id === o.id),
+      })),
+      cobertura_objetivos: cobertura.map((c) => ({
+        ...c,
+        clave: config.objetivos.find((o) => o.id === c.objetivo_id)?.clave,
+        estado_texto: COBERTURA_LABEL[c.estado],
+      })),
       cronologia: ordered,
     },
     null,
     2,
   )
+}
+
+/** Matriz objetivo → evidencia (CA-21): una fila por pieza de evidencia. */
+export function matrizObjetivoEvidenciaCSV(
+  config: EjercicioConfig,
+  events: EventoBitacora[],
+): string {
+  const ordered = sortEvents(events)
+  const estado = deriveState(config, ordered)
+  const cobertura = coberturaObjetivos(config, estado)
+  const rol = (id: string | null) =>
+    id ? (config.roles.find((r) => r.id === id)?.nombre ?? id) : ''
+
+  const rows: (string | number | null)[][] = [
+    ['objetivo', 'nombre_objetivo', 'estado_cobertura', 'tipo_evidencia', 'referencia_id', 'inyeccion', 'rol', 'hora', 'detalle'],
+  ]
+  for (const obj of config.objetivos.filter((o) => o.activo)) {
+    const cob = cobertura.find((c) => c.objetivo_id === obj.id)!
+    const inys = config.inyecciones.filter((i) => i.objetivo_ids.includes(obj.id))
+    const inyIds = new Set(inys.map((i) => i.id))
+    const clave = (id: string) => config.inyecciones.find((i) => i.id === id)?.clave ?? id
+    const base = [obj.clave, obj.nombre, COBERTURA_LABEL[cob.estado]]
+
+    const piezas: (string | number | null)[][] = []
+    for (const d of estado.decisiones.filter((d) => inyIds.has(d.inyeccion_id))) {
+      piezas.push(['decision', d.id, clave(d.inyeccion_id), rol(d.rol_id), fmtHora(d.registrada_en), d.justificacion])
+    }
+    for (const x of estado.escalamientos.filter((x) => inyIds.has(x.inyeccion_id))) {
+      piezas.push(['escalamiento', x.id, clave(x.inyeccion_id), `${rol(x.rol_origen_id)} → ${rol(x.rol_destino_id)}`, fmtHora(x.escalado_en), x.motivo])
+    }
+    for (const x of estado.solicitudes.filter((x) => inyIds.has(x.inyeccion_id))) {
+      piezas.push(['solicitud_informacion', x.id, clave(x.inyeccion_id), rol(x.solicitada_por_rol_id), fmtHora(x.solicitada_en), x.pregunta])
+    }
+    for (const x of estado.compromisos.filter((x) => inyIds.has(x.inyeccion_id))) {
+      piezas.push(['compromiso', x.id, clave(x.inyeccion_id), rol(x.rol_responsable_id), fmtHora(x.declarado_en), x.descripcion])
+    }
+    for (const o of estado.observaciones.filter(
+      (o) => o.objetivo_id === obj.id || (o.inyeccion_id != null && inyIds.has(o.inyeccion_id)),
+    )) {
+      piezas.push(['observacion', o.id, o.inyeccion_id ? clave(o.inyeccion_id) : '', rol(o.rol_id), fmtHora(o.marcada_en), `${TIPO_OBSERVACION_LABEL[o.tipo]}: ${o.descripcion}`])
+    }
+
+    if (piezas.length === 0) rows.push([...base, 'sin evidencia', '', '', '', '', ''])
+    else for (const p of piezas) rows.push([...base, ...p])
+  }
+  return rows.map((r) => r.map(csvCell).join(',')).join('\n')
 }

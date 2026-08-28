@@ -158,6 +158,177 @@ describe('reloj compartido (s.15)', () => {
   })
 })
 
+describe('escalamiento (s.14, CA-10, CA-11)', () => {
+  const iny02 = cfg.inyecciones.find((i) => i.clave === 'INY-02')!
+  const esc = {
+    id: 'esc-1',
+    inyeccion_id: iny02.id,
+    participante_origen_id: 'p1',
+    rol_origen_id: ROLES.CISO,
+    rol_destino_id: ROLES.DG,
+    motivo: 'Requiere decisión ejecutiva',
+    urgencia: 'alta' as const,
+    escalado_en: T0 + 20_000,
+  }
+
+  it('registra origen, destino y hora, y el reconocimiento conserva la hora', () => {
+    const events = sortEvents([
+      started(),
+      dispatched(iny02.id, T0 + 10_000),
+      makeEvent(EID, EVENT_TYPES.ESCALATION_CREATED, { escalamiento: esc }, 'participante', 'p1', T0 + 20_000),
+      makeEvent(
+        EID,
+        EVENT_TYPES.ESCALATION_ACKNOWLEDGED,
+        { escalamiento_id: 'esc-1', participante_id: 'p2' },
+        'participante',
+        'p2',
+        T0 + 30_000,
+      ),
+    ])
+    const derivado = deriveState(cfg, events).escalamientos[0]
+    expect(derivado.rol_origen_id).toBe(ROLES.CISO)
+    expect(derivado.rol_destino_id).toBe(ROLES.DG)
+    expect(derivado.escalado_en).toBe(T0 + 20_000)
+    expect(derivado.reconocido_en).toBe(T0 + 30_000)
+  })
+
+  it('se vincula con la primera acción posterior del rol destino (CA-11)', () => {
+    const dDG = mkDecision({
+      id: 'dec-dg',
+      inyeccion_id: iny02.id,
+      rol_id: ROLES.DG,
+      participante_id: 'p2',
+      registrada_en: T0 + 45_000,
+    })
+    const events = sortEvents([
+      started(),
+      dispatched(iny02.id, T0 + 10_000),
+      makeEvent(EID, EVENT_TYPES.ESCALATION_CREATED, { escalamiento: esc }, 'participante', 'p1', T0 + 20_000),
+      makeEvent(EID, EVENT_TYPES.DECISION_CREATED, { decision: dDG }, 'participante', 'p2', T0 + 45_000),
+    ])
+    const derivado = deriveState(cfg, events).escalamientos[0]
+    expect(derivado.decision_destino_id).toBe('dec-dg')
+    expect(derivado.accion_destino_en).toBe(T0 + 45_000)
+  })
+})
+
+describe('solicitudes y compromisos (CA-12, CA-13)', () => {
+  const iny01 = cfg.inyecciones.find((i) => i.clave === 'INY-01')!
+
+  it('una solicitud registra pregunta y tiempos de solicitud y respuesta', () => {
+    const sol = {
+      id: 'sol-1',
+      inyeccion_id: iny01.id,
+      solicitada_por_participante_id: 'p1',
+      solicitada_por_rol_id: ROLES.DG,
+      dirigida_a_rol_id: ROLES.CISO,
+      pregunta: '¿Cuál es el alcance confirmado?',
+      solicitada_en: T0 + 15_000,
+    }
+    const events = sortEvents([
+      started(),
+      dispatched(iny01.id, T0 + 10_000),
+      makeEvent(EID, EVENT_TYPES.INFORMATION_REQUESTED, { solicitud: sol }, 'participante', 'p1', T0 + 15_000),
+      makeEvent(
+        EID,
+        EVENT_TYPES.INFORMATION_RESPONDED,
+        { solicitud_id: 'sol-1', respuesta: 'Dos sistemas confirmados', fuente_respuesta: 'participante' },
+        'participante',
+        'p2',
+        T0 + 90_000,
+      ),
+    ])
+    const s = deriveState(cfg, events).solicitudes[0]
+    expect(s.pregunta).toContain('alcance')
+    expect(s.solicitada_en).toBe(T0 + 15_000)
+    expect(s.respondida_en).toBe(T0 + 90_000)
+    expect(s.respuesta).toBe('Dos sistemas confirmados')
+  })
+
+  it('un compromiso registra responsable y momento', () => {
+    const com = {
+      id: 'com-1',
+      inyeccion_id: iny01.id,
+      descripcion: 'Entregar evaluación de alcance',
+      participante_responsable_id: 'p1',
+      rol_responsable_id: ROLES.CISO,
+      rol_solicitante_id: ROLES.DG,
+      plazo_simulado: '2 horas',
+      criterio_cumplimiento: 'Reporte entregado al comité',
+      declarado_en: T0 + 20_000,
+    }
+    const events = sortEvents([
+      started(),
+      dispatched(iny01.id, T0 + 10_000),
+      makeEvent(EID, EVENT_TYPES.COMMITMENT_CREATED, { compromiso: com }, 'participante', 'p1', T0 + 20_000),
+    ])
+    const c = deriveState(cfg, events).compromisos[0]
+    expect(c.rol_responsable_id).toBe(ROLES.CISO)
+    expect(c.declarado_en).toBe(T0 + 20_000)
+  })
+})
+
+describe('observaciones y evidencia vinculada (s.11)', () => {
+  const obs = {
+    id: 'obs-1',
+    inyeccion_id: 'iny-02',
+    objetivo_id: 'tt-02',
+    rol_id: ROLES.LEGAL,
+    fase_id: 'fase-activacion',
+    tipo: 'oportunidad_mejora' as const,
+    descripcion: 'El escalamiento tardó en ser reconocido',
+    severidad: null,
+    marcada_en: T0 + 50_000,
+    creada_por_usuario_id: 'arseg-obs-1',
+  }
+
+  it('la observación vive como evento y el vínculo de evidencia es idempotente', () => {
+    const vinculo = {
+      id: 'vin-1',
+      observacion_id: 'obs-1',
+      tipo_referencia: 'decision' as const,
+      referencia_id: 'dec-038',
+    }
+    const events = sortEvents([
+      started(),
+      makeEvent(EID, EVENT_TYPES.OBSERVATION_CREATED, { observacion: obs }, 'facilitador', 'arseg', T0 + 50_000),
+      makeEvent(EID, EVENT_TYPES.OBSERVATION_LINKED, { vinculo }, 'facilitador', 'arseg', T0 + 51_000),
+      makeEvent(EID, EVENT_TYPES.OBSERVATION_LINKED, { vinculo: { ...vinculo, id: 'vin-2' } }, 'facilitador', 'arseg', T0 + 52_000),
+    ])
+    const st = deriveState(cfg, events)
+    expect(st.observaciones).toHaveLength(1)
+    expect(st.vinculos).toHaveLength(1) // misma referencia, no se duplica
+  })
+})
+
+describe('cobertura de objetivos (s.12, CA-17)', () => {
+  it('usa solo los tres estados permitidos, sin lenguaje de calificación', async () => {
+    const { COBERTURA_LABEL, coberturaObjetivos } = await import('./coverage')
+    for (const label of Object.values(COBERTURA_LABEL)) {
+      expect(label.toLowerCase()).not.toMatch(/aproba|reproba|cumple|madur|score/)
+    }
+    const iny01 = cfg.inyecciones.find((i) => i.clave === 'INY-01')!
+
+    // Sin eventos: todo "aún no ejercitado".
+    const vacio = coberturaObjetivos(cfg, deriveState(cfg, sortEvents([started()])))
+    expect(vacio.every((c) => c.estado === 'no_ejercitado')).toBe(true)
+
+    // INY-01 disparada sin respuestas: TT-01 pasa a evidencia parcial.
+    const disparado = sortEvents([started(), dispatched(iny01.id, T0 + 10_000)])
+    const parcial = coberturaObjetivos(cfg, deriveState(cfg, disparado))
+    expect(parcial.find((c) => c.objetivo_id === 'tt-01')!.estado).toBe('evidencia_parcial')
+
+    // Con decisión de un rol esperado (CISO): evidencia obtenida.
+    const d = mkDecision({ inyeccion_id: iny01.id, rol_id: ROLES.CISO, registrada_en: T0 + 60_000 })
+    const conEvidencia = sortEvents([
+      ...disparado,
+      makeEvent(EID, EVENT_TYPES.DECISION_CREATED, { decision: d }, 'participante', 'p1', T0 + 60_000),
+    ])
+    const obtenida = coberturaObjetivos(cfg, deriveState(cfg, conEvidencia))
+    expect(obtenida.find((c) => c.objetivo_id === 'tt-01')!.estado).toBe('evidencia_obtenida')
+  })
+})
+
 describe('validación del MSEL (CA-8)', () => {
   it('el ejercicio de referencia es válido: toda inyección tiene objetivo', () => {
     expect(validarConfig(cfg)).toEqual([])

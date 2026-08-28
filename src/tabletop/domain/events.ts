@@ -1,6 +1,17 @@
 // Tipos de evento — SPEC sección 31 (subconjunto de la Fase A).
 
-import type { ActorTipo, Decision, EventoBitacora, Participante } from './types'
+import type {
+  ActorTipo,
+  Compromiso,
+  Decision,
+  Escalamiento,
+  EventoBitacora,
+  EvidenciaVinculo,
+  FuenteRespuesta,
+  Observacion,
+  Participante,
+  SolicitudInformacion,
+} from './types'
 
 export const EVENT_TYPES = {
   EXERCISE_STARTED: 'exercise.started',
@@ -15,6 +26,13 @@ export const EVENT_TYPES = {
   INJECT_OMITTED: 'inject.omitted',
   PARTICIPANT_CONNECTED: 'participant.connected',
   DECISION_CREATED: 'decision.created',
+  ESCALATION_CREATED: 'escalation.created',
+  ESCALATION_ACKNOWLEDGED: 'escalation.acknowledged',
+  INFORMATION_REQUESTED: 'information.requested',
+  INFORMATION_RESPONDED: 'information.responded',
+  COMMITMENT_CREATED: 'commitment.created',
+  OBSERVATION_CREATED: 'observation.created',
+  OBSERVATION_LINKED: 'observation.linked',
 } as const
 
 export type EventType = (typeof EVENT_TYPES)[keyof typeof EVENT_TYPES]
@@ -35,6 +53,30 @@ export interface ParticipantConnectedPayload {
 }
 export interface DecisionCreatedPayload {
   decision: Decision
+}
+export interface EscalationCreatedPayload {
+  escalamiento: Escalamiento
+}
+export interface EscalationAcknowledgedPayload {
+  escalamiento_id: string
+  participante_id: string
+}
+export interface InformationRequestedPayload {
+  solicitud: SolicitudInformacion
+}
+export interface InformationRespondedPayload {
+  solicitud_id: string
+  respuesta: string
+  fuente_respuesta: FuenteRespuesta
+}
+export interface CommitmentCreatedPayload {
+  compromiso: Compromiso
+}
+export interface ObservationCreatedPayload {
+  observacion: Observacion
+}
+export interface ObservationLinkedPayload {
+  vinculo: EvidenciaVinculo
 }
 
 export function uuid(): string {

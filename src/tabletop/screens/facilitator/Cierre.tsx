@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Chip, descargar } from '../../components/ui'
 import { EVENT_TYPES, makeEvent } from '../../domain/events'
-import { cronologiaCSV, paqueteEvidenciaJSON } from '../../domain/export'
+import { cronologiaCSV, matrizObjetivoEvidenciaCSV, paqueteEvidenciaJSON } from '../../domain/export'
 import { useStore } from '../../store'
 import { FACILITADOR_ID } from './Console'
 
@@ -20,6 +20,11 @@ export function Cierre() {
     ['Participantes', estado.participantes.length],
     ['Inyecciones disparadas', disparadas],
     ['Decisiones registradas', estado.decisiones.length],
+    ['Escalamientos', estado.escalamientos.length],
+    ['Solicitudes de información', estado.solicitudes.length],
+    ['Compromisos', estado.compromisos.length],
+    ['Observaciones ARSEG', estado.observaciones.length],
+    ['Evidencias vinculadas', estado.vinculos.length],
     ['Eventos de bitácora', events.length],
   ]
 
@@ -90,10 +95,18 @@ export function Cierre() {
           <button
             className="tt-btn tt-btn--bloque"
             onClick={() =>
-              descargar(`evidencia-${config.id}-${stamp}.json`, paqueteEvidenciaJSON(config, events), 'application/json')
+              descargar(`matriz-objetivo-evidencia-${config.id}-${stamp}.csv`, matrizObjetivoEvidenciaCSV(config, events), 'text/csv')
             }
           >
-            Descargar paquete de evidencia (JSON)
+            Descargar matriz objetivo → evidencia (CSV)
+          </button>
+          <button
+            className="tt-btn tt-btn--bloque"
+            onClick={() =>
+              descargar(`evidencia-d5-${config.id}-${stamp}.json`, paqueteEvidenciaJSON(config, events), 'application/json')
+            }
+          >
+            Descargar paquete de evidencia D5 (JSON)
           </button>
         </div>
         <hr className="tt-sep" />

@@ -6,9 +6,11 @@ import { Chip, Field, Reloj, BarraFases } from '../../components/ui'
 import { elapsedMsAt, fmtHora, narrativeSecAt } from '../../domain/clock'
 import { EVENT_TYPES, makeEvent, sortEvents } from '../../domain/events'
 import { describeEvento, tipoLabel } from '../../domain/export'
+import { COBERTURA_LABEL, coberturaObjetivos, type EstadoCobertura } from '../../domain/coverage'
 import { useStore } from '../../store'
 import { Msel } from './Msel'
 import { Decisiones } from './Decisiones'
+import { Observaciones } from './Observaciones'
 import { Cierre } from './Cierre'
 
 const AUTH_KEY = 'arseg-tabletop:facilitador'
@@ -16,7 +18,7 @@ const AUTH_KEY = 'arseg-tabletop:facilitador'
 const DEMO_PASSCODE = 'ARSEG'
 export const FACILITADOR_ID = 'arseg-facilitador'
 
-type Tab = 'tablero' | 'msel' | 'decisiones' | 'cierre'
+type Tab = 'tablero' | 'msel' | 'decisiones' | 'observaciones' | 'cierre'
 
 export function Console() {
   const [auth, setAuth] = useState(() => sessionStorage.getItem(AUTH_KEY) === 'ok')
@@ -40,6 +42,7 @@ export function Console() {
             ['tablero', 'Tablero'],
             ['msel', 'MSEL / Inyecciones'],
             ['decisiones', 'Sala de decisiones'],
+            ['observaciones', 'Observaciones'],
             ['cierre', 'Cierre y exportación'],
           ] as [Tab, string][]
         ).map(([id, label]) => (
@@ -58,6 +61,7 @@ export function Console() {
       {tab === 'tablero' && <Tablero />}
       {tab === 'msel' && <Msel />}
       {tab === 'decisiones' && <Decisiones />}
+      {tab === 'observaciones' && <Observaciones />}
       {tab === 'cierre' && <Cierre />}
     </div>
   )
@@ -111,6 +115,46 @@ function EstadoChip() {
   } as const
   const [label, tone] = map[estado.estado]
   return <Chip tone={tone as never}>{label}</Chip>
+}
+
+/** Cobertura de objetivos (s.12, CA-17): evidencia disponible, nunca calificación. */
+function Cobertura() {
+  const { config, estado } = useStore()
+  const cobertura = coberturaObjetivos(config, estado)
+  const tone: Record<EstadoCobertura, 'ok' | 'warn' | undefined> = {
+    evidencia_obtenida: 'ok',
+    evidencia_parcial: 'warn',
+    no_ejercitado: undefined,
+  }
+  return (
+    <div className="tt-card">
+      <h2>Cobertura de objetivos</h2>
+      <p className="tt-small tt-suave">
+        Muestra qué objetivos ya cuentan con evidencia; no califica conductas.
+      </p>
+      <div className="tt-tabla-wrap">
+        <table className="tt-tabla">
+          <tbody>
+            {cobertura.map((c) => {
+              const obj = config.objetivos.find((o) => o.id === c.objetivo_id)!
+              return (
+                <tr key={c.objetivo_id}>
+                  <td className="tt-mono">{obj.clave}</td>
+                  <td>{obj.nombre}</td>
+                  <td className="tt-mono" style={{ textAlign: 'right' }}>
+                    {c.evidencias > 0 ? `${c.evidencias} ev.` : ''}
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    <Chip tone={tone[c.estado]}>{COBERTURA_LABEL[c.estado]}</Chip>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
 }
 
 function Tablero() {
@@ -243,6 +287,8 @@ function Tablero() {
             </div>
           </div>
         </div>
+
+        <Cobertura />
 
         <div className="tt-card">
           <h2>Actividad reciente</h2>
