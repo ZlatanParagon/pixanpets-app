@@ -329,6 +329,99 @@ describe('cobertura de objetivos (s.12, CA-17)', () => {
   })
 })
 
+describe('ramas y consecuencias (s.17, s.43, CA-16)', () => {
+  const iny03 = cfg.inyecciones.find((i) => i.clave === 'INY-03')!
+
+  it('la rama se selecciona una sola vez y prepara las inyecciones dependientes', () => {
+    const events = sortEvents([
+      started(),
+      dispatched(iny03.id, T0 + 10_000),
+      makeEvent(EID, EVENT_TYPES.BRANCH_SELECTED, { inyeccion_id: iny03.id, consecuencia_id: 'iny-03-a' }, 'facilitador', 'arseg', T0 + 20_000),
+      // Intento de reescritura: debe ignorarse (s.43).
+      makeEvent(EID, EVENT_TYPES.BRANCH_SELECTED, { inyeccion_id: iny03.id, consecuencia_id: 'iny-03-b' }, 'facilitador', 'arseg', T0 + 30_000),
+    ])
+    const st = deriveState(cfg, events)
+    expect(st.ramas[iny03.id]).toBe('iny-03-a')
+    expect(st.inyecciones['iny-13'].estado).toBe('preparada') // dependiente de la rama A
+    expect(st.inyecciones['iny-14'].estado).toBe('pendiente') // dependiente de la rama B, intacta
+  })
+})
+
+describe('MSEL: ad hoc y ajustes previos al disparo (F2)', () => {
+  const adhoc = {
+    ...cfg.inyecciones[0],
+    id: 'adhoc-1',
+    clave: 'ADHOC-1',
+    tipo: 'dirigida' as const,
+    titulo: 'Inyección insertada en vivo',
+    fuente: 'facilitador' as const,
+    objetivo_ids: ['tt-03'],
+  }
+
+  it('una inyección ad hoc entra al MSEL derivado en estado pendiente', () => {
+    const events = sortEvents([
+      started(),
+      makeEvent(EID, EVENT_TYPES.INJECT_ADHOC_CREATED, { inyeccion: adhoc }, 'facilitador', 'arseg', T0 + 5000),
+    ])
+    const st = deriveState(cfg, events)
+    expect(st.msel.some((i) => i.id === 'adhoc-1')).toBe(true)
+    expect(st.inyecciones['adhoc-1'].estado).toBe('pendiente')
+  })
+
+  it('la audiencia solo puede ajustarse antes del disparo', () => {
+    const cambio = (t: number) =>
+      makeEvent(
+        EID,
+        EVENT_TYPES.INJECT_AUDIENCE_CHANGED,
+        { inyeccion_id: 'iny-01', audiencia_rol_ids: [ROLES.CISO], visible_en_sala: false },
+        'facilitador',
+        'arseg',
+        t,
+      )
+    const antes = deriveState(cfg, sortEvents([started(), cambio(T0 + 5000)]))
+    expect(antes.msel.find((i) => i.id === 'iny-01')!.audiencia_rol_ids).toEqual([ROLES.CISO])
+
+    const despues = deriveState(
+      cfg,
+      sortEvents([started(), dispatched('iny-01', T0 + 5000), cambio(T0 + 10_000)]),
+    )
+    // Ya disparada: el ajuste se ignora para no destruir trazabilidad.
+    expect(despues.msel.find((i) => i.id === 'iny-01')!.audiencia_rol_ids).toBeNull()
+  })
+
+  it('el reorden solo aplica antes del disparo', () => {
+    const reorden = (t: number) =>
+      makeEvent(EID, EVENT_TYPES.INJECT_REORDERED, { inyeccion_id: 'iny-01', nuevo_orden: 99 }, 'facilitador', 'arseg', t)
+    const antes = deriveState(cfg, sortEvents([started(), reorden(T0 + 5000)]))
+    expect(antes.msel.find((i) => i.id === 'iny-01')!.orden).toBe(99)
+    const despues = deriveState(cfg, sortEvents([started(), dispatched('iny-01', T0 + 5000), reorden(T0 + 10_000)]))
+    expect(despues.msel.find((i) => i.id === 'iny-01')!.orden).not.toBe(99)
+  })
+})
+
+describe('debriefing (Etapa 4)', () => {
+  it('se registra una sola vez por participante y llega al estado derivado', () => {
+    const deb = {
+      id: 'deb-1',
+      participante_id: 'p1',
+      rol_id: ROLES.CISO,
+      informacion_faltante: 'Alcance real del compromiso',
+      rol_faltante: 'Proveedor de monitoreo',
+      decision_mas_dificil: 'Autorizar la contención',
+      accion_30_dias: 'Definir umbrales de declaración de crisis',
+      registrado_en: T0 + 100_000,
+    }
+    const events = sortEvents([
+      started(),
+      makeEvent(EID, EVENT_TYPES.DEBRIEFING_SUBMITTED, { debriefing: deb }, 'participante', 'p1', T0 + 100_000),
+      makeEvent(EID, EVENT_TYPES.DEBRIEFING_SUBMITTED, { debriefing: { ...deb, id: 'deb-2' } }, 'participante', 'p1', T0 + 110_000),
+    ])
+    const st = deriveState(cfg, events)
+    expect(st.debriefings).toHaveLength(1)
+    expect(st.debriefings[0].accion_30_dias).toContain('umbrales')
+  })
+})
+
 describe('validación del MSEL (CA-8)', () => {
   it('el ejercicio de referencia es válido: toda inyección tiene objetivo', () => {
     expect(validarConfig(cfg)).toEqual([])

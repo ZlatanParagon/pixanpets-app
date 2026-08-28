@@ -5,9 +5,15 @@ import { elapsedMsAt, fmtHMS, fmtHora } from './clock'
 import { sortEvents } from './events'
 import { COBERTURA_LABEL, coberturaObjetivos } from './coverage'
 import { deriveState } from './reducer'
-import type { EjercicioConfig, EventoBitacora } from './types'
+import type { EjercicioConfig, EventoBitacora, Inyeccion } from './types'
 import type {
+  BranchSelectedPayload,
   CommitmentCreatedPayload,
+  DebriefingSubmittedPayload,
+  InjectAdhocCreatedPayload,
+  InjectAudienceChangedPayload,
+  InjectReorderedPayload,
+  RoomDisplayChangedPayload,
   DecisionCreatedPayload,
   EscalationAcknowledgedPayload,
   EscalationCreatedPayload,
@@ -41,6 +47,12 @@ const TIPO_LABEL: Record<string, string> = {
   'commitment.created': 'Compromiso declarado',
   'observation.created': 'Observación ARSEG',
   'observation.linked': 'Evidencia vinculada a observación',
+  'branch.selected': 'Rama seleccionada',
+  'inject.adhoc_created': 'Inyección ad hoc creada',
+  'inject.reordered': 'Inyección reordenada',
+  'inject.audience_changed': 'Audiencia de inyección ajustada',
+  'debriefing.submitted': 'Debriefing registrado',
+  'room.display_changed': 'Pantalla de sala ajustada',
 }
 
 export const TIPO_OBSERVACION_LABEL: Record<string, string> = {
@@ -51,9 +63,14 @@ export const TIPO_OBSERVACION_LABEL: Record<string, string> = {
   accion_prioritaria: 'Acción prioritaria',
 }
 
-export function describeEvento(config: EjercicioConfig, e: EventoBitacora): string {
+export function describeEvento(
+  config: EjercicioConfig,
+  e: EventoBitacora,
+  msel?: Inyeccion[],
+): string {
+  const catalogo = msel ?? config.inyecciones
   const iny = (id: string) => {
-    const x = config.inyecciones.find((i) => i.id === id)
+    const x = catalogo.find((i) => i.id === id)
     return x ? `${x.clave} — ${x.titulo}` : id
   }
   const rol = (id: string) => config.roles.find((r) => r.id === id)?.nombre ?? id
@@ -117,6 +134,36 @@ export function describeEvento(config: EjercicioConfig, e: EventoBitacora): stri
       const v = (e.payload as ObservationLinkedPayload).vinculo
       return `${v.tipo_referencia} ${v.referencia_id} → observación ${v.observacion_id}`
     }
+    case 'branch.selected': {
+      const p = e.payload as BranchSelectedPayload
+      const x = catalogo.find((i) => i.id === p.inyeccion_id)
+      const rama = x?.consecuencias.find((c) => c.id === p.consecuencia_id)
+      return `${x?.clave ?? p.inyeccion_id}: ${rama?.etiqueta ?? p.consecuencia_id}`
+    }
+    case 'inject.adhoc_created': {
+      const x = (e.payload as InjectAdhocCreatedPayload).inyeccion
+      return `${x.clave} — ${x.titulo}`
+    }
+    case 'inject.reordered': {
+      const p = e.payload as InjectReorderedPayload
+      return iny(p.inyeccion_id)
+    }
+    case 'inject.audience_changed': {
+      const p = e.payload as InjectAudienceChangedPayload
+      const aud =
+        p.audiencia_rol_ids === null
+          ? 'todos los roles'
+          : p.audiencia_rol_ids.map((r) => rol(r)).join(', ')
+      return `${iny(p.inyeccion_id)} → audiencia: ${aud}${p.visible_en_sala ? ' · visible en sala' : ' · no visible en sala'}`
+    }
+    case 'debriefing.submitted': {
+      const d = (e.payload as DebriefingSubmittedPayload).debriefing
+      return `${rol(d.rol_id)} — acción a 30 días: «${d.accion_30_dias}»`
+    }
+    case 'room.display_changed': {
+      const p = e.payload as RoomDisplayChangedPayload
+      return p.mostrar_inyeccion ? 'proyecta la inyección activa' : 'solo escenario'
+    }
     default:
       return ''
   }
@@ -134,7 +181,8 @@ function csvCell(v: string | number | null): string {
 /** Cronología completa en CSV (CA-20). */
 export function cronologiaCSV(config: EjercicioConfig, events: EventoBitacora[]): string {
   const ordered = sortEvents(events)
-  const participantes = deriveState(config, ordered).participantes
+  const estadoCsv = deriveState(config, ordered)
+  const participantes = estadoCsv.participantes
   const rows = [
     ['secuencia', 'hora_real', 'tiempo_ejercicio', 'tipo', 'actor_tipo', 'actor', 'detalle', 'evento_id'],
     ...ordered.map((e) => {
@@ -149,7 +197,7 @@ export function cronologiaCSV(config: EjercicioConfig, events: EventoBitacora[])
         tipoLabel(e.type),
         e.actor_tipo,
         actor,
-        describeEvento(config, e),
+        describeEvento(config, e, estadoCsv.msel),
         e.id,
       ]
     }),
@@ -180,7 +228,7 @@ export function paqueteEvidenciaJSON(config: EjercicioConfig, events: EventoBita
       fases: config.fases,
       roles: config.roles,
       participantes: estado.participantes,
-      msel: config.inyecciones.map((i) => ({ ...i, ...estado.inyecciones[i.id] })),
+      msel: estado.msel.map((i) => ({ ...i, ...estado.inyecciones[i.id], rama_seleccionada: estado.ramas[i.id] ?? null })),
       decisiones: estado.decisiones,
       escalamientos: estado.escalamientos,
       solicitudes_informacion: estado.solicitudes,
@@ -189,6 +237,7 @@ export function paqueteEvidenciaJSON(config: EjercicioConfig, events: EventoBita
         ...o,
         evidencia_vinculada: estado.vinculos.filter((v) => v.observacion_id === o.id),
       })),
+      debriefings: estado.debriefings,
       cobertura_objetivos: cobertura.map((c) => ({
         ...c,
         clave: config.objetivos.find((o) => o.id === c.objetivo_id)?.clave,
@@ -217,9 +266,9 @@ export function matrizObjetivoEvidenciaCSV(
   ]
   for (const obj of config.objetivos.filter((o) => o.activo)) {
     const cob = cobertura.find((c) => c.objetivo_id === obj.id)!
-    const inys = config.inyecciones.filter((i) => i.objetivo_ids.includes(obj.id))
+    const inys = estado.msel.filter((i) => i.objetivo_ids.includes(obj.id))
     const inyIds = new Set(inys.map((i) => i.id))
-    const clave = (id: string) => config.inyecciones.find((i) => i.id === id)?.clave ?? id
+    const clave = (id: string) => estado.msel.find((i) => i.id === id)?.clave ?? id
     const base = [obj.clave, obj.nombre, COBERTURA_LABEL[cob.estado]]
 
     const piezas: (string | number | null)[][] = []

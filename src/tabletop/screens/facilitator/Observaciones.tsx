@@ -14,7 +14,7 @@ import type {
   TipoReferenciaEvidencia,
 } from '../../domain/types'
 import { useStore } from '../../store'
-import { FACILITADOR_ID } from './Console'
+import { getSesionArseg } from './Console'
 
 const TIPOS: TipoObservacion[] = [
   'practica_efectiva',
@@ -34,6 +34,7 @@ const TIPO_TONE: Record<TipoObservacion, 'ok' | 'err' | 'warn' | 'activa' | unde
 
 export function Observaciones() {
   const { config, estado, append } = useStore()
+  const sesion = getSesionArseg()
   const [tipo, setTipo] = useState<TipoObservacion | null>(null)
   const [rolId, setRolId] = useState('')
   const [objetivoId, setObjetivoId] = useState('')
@@ -42,7 +43,7 @@ export function Observaciones() {
   const [error, setError] = useState('')
 
   // Autocompletado: la inyección activa más reciente (s.20 F4).
-  const inyActiva = config.inyecciones
+  const inyActiva = estado.msel
     .filter((i) => estado.inyecciones[i.id].estado === 'activa')
     .sort(
       (a, b) =>
@@ -63,10 +64,10 @@ export function Observaciones() {
       descripcion: descripcion.trim(),
       severidad: severidad || null,
       marcada_en: t,
-      creada_por_usuario_id: FACILITADOR_ID,
+      creada_por_usuario_id: sesion?.nombre ?? 'ARSEG',
     }
     const ok = append(
-      makeEvent(config.id, EVENT_TYPES.OBSERVATION_CREATED, { observacion }, 'facilitador', FACILITADOR_ID, t),
+      makeEvent(config.id, EVENT_TYPES.OBSERVATION_CREATED, { observacion }, 'facilitador', sesion?.usuario_id ?? 'arseg', t),
     )
     if (ok) {
       setTipo(null)
@@ -86,7 +87,7 @@ export function Observaciones() {
         <h2>Nueva observación</h2>
         <p className="tt-small tt-suave">
           Hereda automáticamente: {inyActiva ? `inyección ${inyActiva.clave}` : 'sin inyección activa'} ·
-          fase {config.fases.find((f) => f.id === estado.fase_actual_id)?.nombre} · hora y usuario ARSEG.
+          fase {config.fases.find((f) => f.id === estado.fase_actual_id)?.nombre} · hora · usuario {sesion?.nombre ?? 'ARSEG'}.
         </p>
         <div className="tt-fila" style={{ margin: '10px 0' }}>
           {TIPOS.map((tp) => (
@@ -149,10 +150,11 @@ export function Observaciones() {
 
 function ObservacionCard({ o }: { o: Observacion }) {
   const { config, estado, append } = useStore()
+  const sesion = getSesionArseg()
   const [seleccion, setSeleccion] = useState('')
 
   const clave = (id: string | null) =>
-    id ? (config.inyecciones.find((i) => i.id === id)?.clave ?? id) : null
+    id ? (estado.msel.find((i) => i.id === id)?.clave ?? id) : null
   const rol = (id: string | null) =>
     id ? (config.roles.find((r) => r.id === id)?.nombre ?? id) : null
   const objetivo = (id: string | null) =>
@@ -179,7 +181,7 @@ function ObservacionCard({ o }: { o: Observacion }) {
       valor: `compromiso:${c.id}`,
       etiqueta: `Compromiso · ${clave(c.inyeccion_id)} · ${rol(c.rol_responsable_id)}`,
     })),
-    ...config.inyecciones
+    ...estado.msel
       .filter((i) => ['activa', 'cerrada'].includes(estado.inyecciones[i.id].estado))
       .map((i) => ({ valor: `inyeccion:${i.id}`, etiqueta: `Inyección · ${i.clave} — ${i.titulo}` })),
   ].filter((op) => !vinculos.some((v) => `${v.tipo_referencia}:${v.referencia_id}` === op.valor))
@@ -193,7 +195,7 @@ function ObservacionCard({ o }: { o: Observacion }) {
         EVENT_TYPES.OBSERVATION_LINKED,
         { vinculo: { id: uuid(), observacion_id: o.id, tipo_referencia, referencia_id } },
         'facilitador',
-        FACILITADOR_ID,
+        sesion?.usuario_id ?? 'arseg',
       ),
     )
     setSeleccion('')
@@ -232,6 +234,7 @@ function ObservacionCard({ o }: { o: Observacion }) {
         {objetivo(o.objetivo_id) && <span className="tt-mono tt-small tt-suave">{objetivo(o.objetivo_id)}</span>}
         {rol(o.rol_id) && <span className="tt-small tt-suave">{rol(o.rol_id)}</span>}
         <span className="tt-mono tt-small tt-suave">{fmtHora(o.marcada_en)}</span>
+        <span className="tt-small tt-suave">por {o.creada_por_usuario_id}</span>
       </div>
       <p style={{ margin: '8px 0' }}>{o.descripcion}</p>
       {vinculos.length > 0 && (

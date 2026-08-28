@@ -16,36 +16,72 @@ import { Cierre } from './Cierre'
 const AUTH_KEY = 'arseg-tabletop:facilitador'
 // Passcode de demostración del prototipo. En producción: cuenta ARSEG (SPEC s.30).
 const DEMO_PASSCODE = 'ARSEG'
-export const FACILITADOR_ID = 'arseg-facilitador'
+export const FACILITADOR_ID = 'arseg-director'
+
+/** Sesión ARSEG de esta pestaña (s.7): director de ejercicio u observador. */
+export interface SesionArseg {
+  perfil: 'director' | 'observador'
+  nombre: string
+  usuario_id: string
+}
+
+export function getSesionArseg(): SesionArseg | null {
+  try {
+    const raw = sessionStorage.getItem(AUTH_KEY)
+    return raw ? (JSON.parse(raw) as SesionArseg) : null
+  } catch {
+    return null
+  }
+}
 
 type Tab = 'tablero' | 'msel' | 'decisiones' | 'observaciones' | 'cierre'
 
+const TABS_DIRECTOR: [Tab, string][] = [
+  ['tablero', 'Tablero'],
+  ['msel', 'MSEL / Inyecciones'],
+  ['decisiones', 'Sala de decisiones'],
+  ['observaciones', 'Observaciones'],
+  ['cierre', 'Cierre y exportación'],
+]
+// El observador ARSEG (s.7.2) registra observaciones y consulta respuestas;
+// no controla reloj, MSEL ni cierre.
+const TABS_OBSERVADOR: [Tab, string][] = [
+  ['observaciones', 'Observaciones'],
+  ['decisiones', 'Sala de decisiones'],
+]
+
 export function Console() {
-  const [auth, setAuth] = useState(() => sessionStorage.getItem(AUTH_KEY) === 'ok')
+  const [sesion, setSesion] = useState<SesionArseg | null>(() => getSesionArseg())
+  const tabs = sesion?.perfil === 'observador' ? TABS_OBSERVADOR : TABS_DIRECTOR
   const [tab, setTab] = useState<Tab>('tablero')
 
-  if (!auth) return <Gate onOk={() => { sessionStorage.setItem(AUTH_KEY, 'ok'); setAuth(true) }} />
+  if (!sesion) {
+    return (
+      <Gate
+        onOk={(s) => {
+          sessionStorage.setItem(AUTH_KEY, JSON.stringify(s))
+          setSesion(s)
+          setTab(s.perfil === 'observador' ? 'observaciones' : 'tablero')
+        }}
+      />
+    )
+  }
 
   return (
     <div className="tt-shell">
       <header className="tt-topbar">
         <div className="tt-brand">
           <strong>ARSEG Tabletop</strong>
-          <span>Consola del facilitador</span>
+          <span>{sesion.perfil === 'observador' ? 'Observador ARSEG' : 'Consola del facilitador'}</span>
         </div>
-        <EstadoChip />
+        <div className="tt-fila">
+          <span className="tt-small tt-suave">{sesion.nombre}</span>
+          <EstadoChip />
+        </div>
       </header>
 
       <div className="tt-tabs" role="tablist">
-        {(
-          [
-            ['tablero', 'Tablero'],
-            ['msel', 'MSEL / Inyecciones'],
-            ['decisiones', 'Sala de decisiones'],
-            ['observaciones', 'Observaciones'],
-            ['cierre', 'Cierre y exportación'],
-          ] as [Tab, string][]
-        ).map(([id, label]) => (
+        {tabs.map(([id, label]) => (
           <button
             key={id}
             role="tab"
@@ -58,18 +94,33 @@ export function Console() {
         ))}
       </div>
 
-      {tab === 'tablero' && <Tablero />}
-      {tab === 'msel' && <Msel />}
+      {tab === 'tablero' && sesion.perfil === 'director' && <Tablero />}
+      {tab === 'msel' && sesion.perfil === 'director' && <Msel />}
       {tab === 'decisiones' && <Decisiones />}
       {tab === 'observaciones' && <Observaciones />}
-      {tab === 'cierre' && <Cierre />}
+      {tab === 'cierre' && sesion.perfil === 'director' && <Cierre />}
     </div>
   )
 }
 
-function Gate({ onOk }: { onOk: () => void }) {
+function Gate({ onOk }: { onOk: (s: SesionArseg) => void }) {
   const [code, setCode] = useState('')
+  const [perfil, setPerfil] = useState<'director' | 'observador'>('director')
+  const [nombre, setNombre] = useState('')
   const [error, setError] = useState('')
+
+  const entrar = () => {
+    if (code.trim().toUpperCase() !== DEMO_PASSCODE) return setError('Passcode incorrecto.')
+    if (perfil === 'observador' && !nombre.trim()) {
+      return setError('Escribe tu nombre: cada observación queda firmada por su autor.')
+    }
+    onOk(
+      perfil === 'director'
+        ? { perfil, nombre: nombre.trim() || 'Director de ejercicio', usuario_id: FACILITADOR_ID }
+        : { perfil, nombre: nombre.trim(), usuario_id: 'arseg-obs-' + nombre.trim().toLowerCase().replace(/\s+/g, '-') },
+    )
+  }
+
   return (
     <div className="tt-shell tt-shell--movil">
       <header className="tt-topbar">
@@ -79,26 +130,35 @@ function Gate({ onOk }: { onOk: () => void }) {
         </div>
       </header>
       <div className="tt-card">
-        <h2>Acceso de facilitador</h2>
+        <h2>Acceso ARSEG</h2>
         <p className="tt-small tt-suave">
           Prototipo: usa el passcode de demostración <span className="tt-mono">ARSEG</span>. En
           producción este acceso será con cuenta ARSEG autenticada.
         </p>
+        <Field label="Perfil">
+          <select value={perfil} onChange={(e) => setPerfil(e.target.value as 'director' | 'observador')}>
+            <option value="director">Director de ejercicio</option>
+            <option value="observador">Observador ARSEG</option>
+          </select>
+        </Field>
+        <Field label={perfil === 'observador' ? 'Tu nombre' : 'Tu nombre (opcional)'}>
+          <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre del usuario ARSEG" />
+        </Field>
         <Field label="Passcode">
           <input
             type="password"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && (code.trim().toUpperCase() === DEMO_PASSCODE ? onOk() : setError('Passcode incorrecto.'))}
+            onKeyDown={(e) => e.key === 'Enter' && entrar()}
           />
         </Field>
         {error && <p className="tt-small" style={{ color: 'var(--critico)' }}>{error}</p>}
-        <button
-          className="tt-btn tt-btn--primario tt-btn--bloque"
-          onClick={() => (code.trim().toUpperCase() === DEMO_PASSCODE ? onOk() : setError('Passcode incorrecto.'))}
-        >
+        <button className="tt-btn tt-btn--primario tt-btn--bloque" onClick={entrar}>
           Entrar a la consola
         </button>
+        <p className="tt-aviso" style={{ marginTop: 10 }}>
+          Varios usuarios ARSEG pueden trabajar en paralelo: abre una pestaña por persona.
+        </p>
       </div>
     </div>
   )
@@ -247,6 +307,26 @@ function Tablero() {
         </div>
 
         <div className="tt-card">
+          <h2>Pantalla de sala</h2>
+          <p className="tt-small tt-suave">
+            {estado.sala_muestra_inyeccion
+              ? 'La sala proyecta la inyección pública activa.'
+              : 'La sala muestra solo el contexto del escenario.'}
+          </p>
+          <button
+            className="tt-btn"
+            disabled={cerrado}
+            onClick={() =>
+              emit(EVENT_TYPES.ROOM_DISPLAY_CHANGED, {
+                mostrar_inyeccion: !estado.sala_muestra_inyeccion,
+              })
+            }
+          >
+            {estado.sala_muestra_inyeccion ? 'Ocultar inyección en sala' : 'Proyectar inyección en sala'}
+          </button>
+        </div>
+
+        <div className="tt-card">
           <h2>Participantes conectados ({estado.participantes.length})</h2>
           {estado.participantes.length === 0 ? (
             <p className="tt-small tt-suave">Nadie ha hecho check-in todavía.</p>
@@ -300,7 +380,7 @@ function Tablero() {
                 <time>{fmtHora(e.client_timestamp)}</time>
                 <span>
                   <strong>{tipoLabel(e.type)}</strong>
-                  {describeEvento(config, e) && <> — {describeEvento(config, e)}</>}
+                  {describeEvento(config, e, estado.msel) && <> — {describeEvento(config, e, estado.msel)}</>}
                 </span>
               </div>
             ))

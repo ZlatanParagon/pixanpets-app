@@ -13,15 +13,19 @@ export function Room() {
   const fase = config.fases.find((f) => f.id === estado.fase_actual_id)
 
   // Solo inyecciones públicas marcadas visible_en_sala; la más reciente activa.
-  const activaPublica = config.inyecciones
-    .filter((i) => inyeccionVisibleEnSala(i))
-    .filter((i) => estado.inyecciones[i.id].estado === 'activa')
-    .sort(
-      (a, b) =>
-        (estado.inyecciones[b.id].disparada_en ?? 0) - (estado.inyecciones[a.id].disparada_en ?? 0),
-    )[0]
+  // El director puede apagar la proyección de la inyección (s.7.1).
+  const activaPublica = estado.sala_muestra_inyeccion
+    ? estado.msel
+        .filter((i) => inyeccionVisibleEnSala(i))
+        .filter((i) => estado.inyecciones[i.id].estado === 'activa')
+        .sort(
+          (a, b) =>
+            (estado.inyecciones[b.id].disparada_en ?? 0) -
+            (estado.inyecciones[a.id].disparada_en ?? 0),
+        )[0]
+    : undefined
 
-  const disparadas = config.inyecciones.filter((i) =>
+  const disparadas = estado.msel.filter((i) =>
     ['activa', 'cerrada'].includes(estado.inyecciones[i.id].estado),
   ).length
 

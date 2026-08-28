@@ -4,20 +4,27 @@
 import { clockStateAt, elapsedMsAt } from './clock'
 import { EVENT_TYPES } from './events'
 import type {
+  BranchSelectedPayload,
   CommitmentCreatedPayload,
+  DebriefingSubmittedPayload,
   DecisionCreatedPayload,
   EscalationAcknowledgedPayload,
   EscalationCreatedPayload,
   InformationRequestedPayload,
   InformationRespondedPayload,
+  InjectAdhocCreatedPayload,
+  InjectAudienceChangedPayload,
   InjectPayload,
+  InjectReorderedPayload,
   ObservationCreatedPayload,
   ObservationLinkedPayload,
   ParticipantConnectedPayload,
   PhaseChangedPayload,
+  RoomDisplayChangedPayload,
 } from './events'
 import type {
   Compromiso,
+  Debriefing,
   Decision,
   EjercicioConfig,
   EscalamientoDerivado,
@@ -25,6 +32,7 @@ import type {
   EstadoInyeccion,
   EventoBitacora,
   EvidenciaVinculo,
+  Inyeccion,
   Observacion,
   Participante,
   SolicitudDerivada,
@@ -42,12 +50,23 @@ export interface DerivedState {
   fase_actual_id: string
   participantes: Participante[]
   inyecciones: Record<string, InyeccionEstado>
+  /**
+   * MSEL efectivo: inyecciones de configuración + ad hoc, con los ajustes
+   * previos al disparo aplicados (orden, audiencia, visibilidad en sala).
+   * Las superficies deben leer de aquí, no de config.inyecciones.
+   */
+  msel: Inyeccion[]
+  /** Rama seleccionada por inyección (s.17): solo una vez, nunca se reescribe. */
+  ramas: Record<string, string>
   decisiones: Decision[]
   escalamientos: EscalamientoDerivado[]
   solicitudes: SolicitudDerivada[]
   compromisos: Compromiso[]
   observaciones: Observacion[]
   vinculos: EvidenciaVinculo[]
+  debriefings: Debriefing[]
+  /** Control de pantalla de sala (s.7.1): si proyecta la inyección activa. */
+  sala_muestra_inyeccion: boolean
   iniciado_en: number | null
   cerrado_en: number | null
 }
@@ -68,15 +87,25 @@ export function deriveState(config: EjercicioConfig, events: EventoBitacora[]): 
     fase_actual_id: config.fases[0]?.id ?? '',
     participantes: [],
     inyecciones,
+    msel: [],
+    ramas: {},
     decisiones: [],
     escalamientos: [],
     solicitudes: [],
     compromisos: [],
     observaciones: [],
     vinculos: [],
+    debriefings: [],
+    sala_muestra_inyeccion: true,
     iniciado_en: null,
     cerrado_en: null,
   }
+
+  const adhoc: Inyeccion[] = []
+  const ordenOverride = new Map<string, number>()
+  const audienciaOverride = new Map<string, { audiencia_rol_ids: string[] | null; visible_en_sala: boolean }>()
+  const puedeAjustarse = (id: string) =>
+    ['pendiente', 'preparada'].includes(state.inyecciones[id]?.estado ?? '')
 
   for (const e of events) {
     switch (e.type) {
@@ -205,8 +234,76 @@ export function deriveState(config: EjercicioConfig, events: EventoBitacora[]): 
         if (!dup) state.vinculos.push(vinculo)
         break
       }
+      case EVENT_TYPES.BRANCH_SELECTED: {
+        const p = e.payload as BranchSelectedPayload
+        // s.43: una rama solo puede seleccionarse una vez; nunca se reescribe.
+        if (state.ramas[p.inyeccion_id] != null) break
+        const iny = [...config.inyecciones, ...adhoc].find((i) => i.id === p.inyeccion_id)
+        const rama = iny?.consecuencias.find((c) => c.id === p.consecuencia_id)
+        if (!iny || !rama) break
+        state.ramas[p.inyeccion_id] = p.consecuencia_id
+        // Activa (prepara) las inyecciones dependientes de la rama elegida.
+        for (const depId of rama.activa_inyeccion_ids) {
+          const dep = state.inyecciones[depId]
+          if (dep && dep.estado === 'pendiente') dep.estado = 'preparada'
+        }
+        break
+      }
+      case EVENT_TYPES.INJECT_ADHOC_CREATED: {
+        const { inyeccion } = e.payload as InjectAdhocCreatedPayload
+        if (
+          !adhoc.some((i) => i.id === inyeccion.id) &&
+          !config.inyecciones.some((i) => i.id === inyeccion.id)
+        ) {
+          adhoc.push(inyeccion)
+          state.inyecciones[inyeccion.id] = {
+            estado: 'pendiente',
+            disparada_en: null,
+            disparada_elapsed_ms: null,
+            cerrada_en: null,
+          }
+        }
+        break
+      }
+      case EVENT_TYPES.INJECT_REORDERED: {
+        const p = e.payload as InjectReorderedPayload
+        // Solo puede reordenarse antes del disparo (F2).
+        if (puedeAjustarse(p.inyeccion_id)) ordenOverride.set(p.inyeccion_id, p.nuevo_orden)
+        break
+      }
+      case EVENT_TYPES.INJECT_AUDIENCE_CHANGED: {
+        const p = e.payload as InjectAudienceChangedPayload
+        // Solo puede hacerse privada/pública antes del disparo (F2).
+        if (puedeAjustarse(p.inyeccion_id)) {
+          audienciaOverride.set(p.inyeccion_id, {
+            audiencia_rol_ids: p.audiencia_rol_ids,
+            visible_en_sala: p.visible_en_sala,
+          })
+        }
+        break
+      }
+      case EVENT_TYPES.DEBRIEFING_SUBMITTED: {
+        const { debriefing } = e.payload as DebriefingSubmittedPayload
+        if (!state.debriefings.some((d) => d.participante_id === debriefing.participante_id)) {
+          state.debriefings.push(debriefing)
+        }
+        break
+      }
+      case EVENT_TYPES.ROOM_DISPLAY_CHANGED: {
+        state.sala_muestra_inyeccion = (e.payload as RoomDisplayChangedPayload).mostrar_inyeccion
+        break
+      }
     }
   }
+
+  // MSEL efectivo con ajustes previos al disparo aplicados.
+  state.msel = [...config.inyecciones, ...adhoc]
+    .map((i) => ({
+      ...i,
+      orden: ordenOverride.get(i.id) ?? i.orden,
+      ...(audienciaOverride.get(i.id) ?? {}),
+    }))
+    .sort((a, b) => a.orden - b.orden)
 
   // CA-11: vincular cada escalamiento con la primera acción posterior del rol
   // destino sobre la misma inyección. Derivado, nunca juzgado.

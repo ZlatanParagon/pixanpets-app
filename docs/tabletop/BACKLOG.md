@@ -38,12 +38,22 @@ Estado: ✅ implementado en este prototipo (Fase A) · 🔜 fase posterior · �
 | Paquete D5 completo | s.37 | ✅ (JSON con escalamientos, solicitudes, compromisos, observaciones y cobertura) |
 | Bitácora personal unificada del participante | s.19 P4 | ✅ |
 
-Pendiente de Fase B: preguntas de debriefing (acciones a 30 días) y encuestas D5.
+| Debriefing (Etapa 4): información faltante, rol faltante, decisión difícil, acción a 30 días | s.8, s.36.19 | ✅ (una vez por participante, incluido en D5) |
 
-## Fase C — Intensividad 🔜
+## Fase C — Intensividad (implementada en este prototipo)
 
-Inyecciones privadas ya soportadas en dominio y UI (CA-14 ✅); faltan: ramas y consecuencias
-manuales (CA-16), inserción ad hoc, visualización de cadenas, múltiples observadores (CA-25).
+| Historia | Criterios | Estado |
+|---|---|---|
+| Inyecciones privadas por rol | CA-14 | ✅ (desde Fase A) |
+| Ramas y consecuencias con selección manual del facilitador | CA-16, s.17 | ✅ (una sola vez, activa dependientes; con test) |
+| Inserción de inyección ad hoc durante la sesión | s.20 F2 | ✅ (evento `inject.adhoc_created`, valida CA-8) |
+| Reordenar inyecciones antes del disparo | s.20 F2 | ✅ (solo previo al disparo; con test) |
+| Hacer privada/pública una inyección antes del disparo | s.20 F2 | ✅ (solo previo al disparo; con test) |
+| Salto temporal como inyección del MSEL | s.9.1, s.15 | ✅ (aplica su desfase narrativo al dispararse) |
+| Múltiples observadores ARSEG en paralelo | CA-25, s.7.2 | ✅ (perfil observador con acceso acotado; observaciones firmadas por autor) |
+| Control de pantalla de sala | s.7.1 | ✅ (proyectar/ocultar inyección activa) |
+| Dependencias en el formulario de decisión | s.19 P3 | ✅ |
+| Visualización de cadenas de escalamiento como árbol | s.14 | 🔜 (hoy se presentan como lista con tiempos en F3) |
 
 ## Fase D — Resiliencia 🏗️
 

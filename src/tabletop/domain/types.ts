@@ -46,6 +46,14 @@ export type EstadoInyeccion = 'pendiente' | 'preparada' | 'activa' | 'cerrada' |
 
 export type Severidad = 'baja' | 'media' | 'alta' | 'critica'
 
+/** Consecuencia o rama narrativa de una inyección (s.17). */
+export interface Consecuencia {
+  id: string
+  etiqueta: string
+  /** Inyecciones dependientes que quedan preparadas al seleccionar esta rama. */
+  activa_inyeccion_ids: string[]
+}
+
 export interface Inyeccion {
   id: string
   fase_id: string
@@ -67,6 +75,10 @@ export interface Inyeccion {
   respuesta_esperada_rol_ids: string[]
   /** Alternativas sugeridas para la puerta de decisión (opcional). */
   alternativas: string[]
+  /** Consecuencias o ramas que el facilitador puede seleccionar manualmente (s.17). */
+  consecuencias: Consecuencia[]
+  /** Para tipo salto_temporal: segundos de salto narrativo que aplica al dispararse. */
+  salto_narrativo_seg: number | null
 }
 
 export type TipoDecision = 'decision' | 'no_actuar' | 'posponer'
@@ -80,6 +92,8 @@ export interface Decision {
   accion_elegida: string | null
   accion_libre: string | null
   justificacion: string
+  /** Dependencias declaradas por quien decide (P3), opcional. */
+  dependencias?: string | null
   severidad_percibida: Severidad | null
   registrada_en: number // epoch ms (client_timestamp)
   latencia_seg: number | null // en tiempo de ejercicio (excluye pausas)
@@ -177,6 +191,18 @@ export interface Participante {
   rol_id: string
   nombre_visible: string
   conectado_en: number
+}
+
+/** Respuestas de debriefing del participante (Etapa 4 — s.8, s.19 P4). */
+export interface Debriefing {
+  id: string
+  participante_id: string
+  rol_id: string
+  informacion_faltante: string
+  rol_faltante: string
+  decision_mas_dificil: string
+  accion_30_dias: string
+  registrado_en: number
 }
 
 /** Configuración estática del ejercicio (Etapa 0 — Preparación). */

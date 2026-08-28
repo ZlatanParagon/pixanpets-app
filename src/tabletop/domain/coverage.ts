@@ -40,7 +40,7 @@ export function coberturaObjetivos(
   return config.objetivos
     .filter((o) => o.activo)
     .map((obj) => {
-      const inys = config.inyecciones.filter((i) => i.objetivo_ids.includes(obj.id))
+      const inys = state.msel.filter((i) => i.objetivo_ids.includes(obj.id))
       const inyIds = new Set(inys.map((i) => i.id))
       const disparadas = inys.filter((i) =>
         ['activa', 'cerrada'].includes(state.inyecciones[i.id].estado),

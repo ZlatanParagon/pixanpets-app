@@ -57,6 +57,8 @@ const iny = (
   visible_en_sala: true,
   respuesta_esperada_rol_ids: [],
   alternativas: [],
+  consecuencias: [],
+  salto_narrativo_seg: null,
   ...extra,
 })
 
@@ -136,6 +138,10 @@ export const EJERCICIO_PH: EjercicioConfig = {
         respuesta_esperada_rol_ids: [ROLES.DG, ROLES.CISO],
         alternativas: ['Declarar crisis y convocar al comité ejecutivo', 'Mantener gestión como incidente técnico', 'Convocar solo a un grupo reducido'],
         ventana_decision_seg: 600,
+        consecuencias: [
+          { id: 'iny-02-a', etiqueta: 'A · Se declara la crisis y se activa la estructura', activa_inyeccion_ids: [] },
+          { id: 'iny-02-b', etiqueta: 'B · Se mantiene como incidente técnico', activa_inyeccion_ids: ['iny-12'] },
+        ],
       },
     ),
     iny(
@@ -150,6 +156,11 @@ export const EJERCICIO_PH: EjercicioConfig = {
         respuesta_esperada_rol_ids: [ROLES.DG, ROLES.CISO, ROLES.OPS, ROLES.FIN],
         alternativas: ['Autorizar contención inmediata', 'Diferir contención a horario de menor impacto', 'Solicitar más información antes de decidir'],
         ventana_decision_seg: 600,
+        consecuencias: [
+          { id: 'iny-03-a', etiqueta: 'A · Se autoriza la contención', activa_inyeccion_ids: ['iny-13'] },
+          { id: 'iny-03-b', etiqueta: 'B · Se difiere la contención', activa_inyeccion_ids: ['iny-14'] },
+          { id: 'iny-03-c', etiqueta: 'C · Se solicita más información', activa_inyeccion_ids: ['iny-04'] },
+        ],
       },
     ),
     iny(
@@ -218,6 +229,10 @@ export const EJERCICIO_PH: EjercicioConfig = {
         respuesta_esperada_rol_ids: [ROLES.DG, ROLES.CISO, ROLES.TI],
         alternativas: ['Restablecer por etapas con verificación', 'Restablecer todo de inmediato', 'Mantener contención hasta verificación completa'],
         ventana_decision_seg: 600,
+        consecuencias: [
+          { id: 'iny-08-a', etiqueta: 'A · Recuperación por etapas con verificación', activa_inyeccion_ids: [] },
+          { id: 'iny-08-b', etiqueta: 'B · Restablecimiento inmediato', activa_inyeccion_ids: [] },
+        ],
       },
     ),
     // Inyecciones dirigidas (información asimétrica — SPEC s.18, s.22)
@@ -270,6 +285,41 @@ export const EJERCICIO_PH: EjercicioConfig = {
         objetivo_ids: ['tt-04'],
         ventana_decision_seg: null,
         respuesta_esperada_rol_ids: [],
+        salto_narrativo_seg: 12 * 3600,
+      },
+    ),
+    // Consecuencias (s.17): quedan preparadas al seleccionar una rama.
+    iny(
+      'INY-12', FASES.ACTIVACION, 'consecuencia',
+      'El incidente escala sin estructura activada',
+      'Al mantenerse la gestión como incidente técnico, nuevas áreas reportan afectación sin un canal ' +
+        'ejecutivo claro. Se duplican esfuerzos y se pierde tiempo en coordinación informal.',
+      {
+        severidad_disenada: 'alta',
+        objetivo_ids: ['tt-03', 'tt-01'],
+        respuesta_esperada_rol_ids: [ROLES.DG],
+      },
+    ),
+    iny(
+      'INY-13', FASES.CONTENCION, 'consecuencia',
+      'La contención afecta la operación comercial',
+      'La medida de contención autorizada deja fuera de línea el cobro con tarjeta en tiendas. Operación ' +
+        'reporta filas y quejas; se requiere decidir cómo se sostiene la venta mientras dura la contención.',
+      {
+        severidad_disenada: 'alta',
+        objetivo_ids: ['tt-07', 'tt-08'],
+        respuesta_esperada_rol_ids: [ROLES.OPS, ROLES.FIN],
+      },
+    ),
+    iny(
+      'INY-14', FASES.CONTENCION, 'consecuencia',
+      'El adversario avanza durante la espera',
+      'Al diferirse la contención, el monitoreo detecta actividad del adversario sobre un sistema adicional. ' +
+        'La ventana de oportunidad se está cerrando.',
+      {
+        severidad_disenada: 'critica',
+        objetivo_ids: ['tt-08', 'tt-04'],
+        respuesta_esperada_rol_ids: [ROLES.CISO, ROLES.DG],
       },
     ),
   ],

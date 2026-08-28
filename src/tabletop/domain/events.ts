@@ -3,11 +3,13 @@
 import type {
   ActorTipo,
   Compromiso,
+  Debriefing,
   Decision,
   Escalamiento,
   EventoBitacora,
   EvidenciaVinculo,
   FuenteRespuesta,
+  Inyeccion,
   Observacion,
   Participante,
   SolicitudInformacion,
@@ -33,6 +35,12 @@ export const EVENT_TYPES = {
   COMMITMENT_CREATED: 'commitment.created',
   OBSERVATION_CREATED: 'observation.created',
   OBSERVATION_LINKED: 'observation.linked',
+  BRANCH_SELECTED: 'branch.selected',
+  INJECT_ADHOC_CREATED: 'inject.adhoc_created',
+  INJECT_REORDERED: 'inject.reordered',
+  INJECT_AUDIENCE_CHANGED: 'inject.audience_changed',
+  DEBRIEFING_SUBMITTED: 'debriefing.submitted',
+  ROOM_DISPLAY_CHANGED: 'room.display_changed',
 } as const
 
 export type EventType = (typeof EVENT_TYPES)[keyof typeof EVENT_TYPES]
@@ -77,6 +85,28 @@ export interface ObservationCreatedPayload {
 }
 export interface ObservationLinkedPayload {
   vinculo: EvidenciaVinculo
+}
+export interface BranchSelectedPayload {
+  inyeccion_id: string
+  consecuencia_id: string
+}
+export interface InjectAdhocCreatedPayload {
+  inyeccion: Inyeccion
+}
+export interface InjectReorderedPayload {
+  inyeccion_id: string
+  nuevo_orden: number
+}
+export interface InjectAudienceChangedPayload {
+  inyeccion_id: string
+  audiencia_rol_ids: string[] | null
+  visible_en_sala: boolean
+}
+export interface DebriefingSubmittedPayload {
+  debriefing: Debriefing
+}
+export interface RoomDisplayChangedPayload {
+  mostrar_inyeccion: boolean
 }
 
 export function uuid(): string {

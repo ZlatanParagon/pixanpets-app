@@ -29,7 +29,7 @@ type Accion = TipoDecision | 'solicitud' | 'escalar' | 'compromiso'
 export function Play() {
   const { config, events, estado, now } = useStore()
   const sesion = getSesionParticipante()
-  const [tab, setTab] = useState<'inyecciones' | 'bitacora'>('inyecciones')
+  const [tab, setTab] = useState<'inyecciones' | 'bitacora' | 'debriefing'>('inyecciones')
 
   if (!sesion) {
     navigate('/checkin')
@@ -41,7 +41,7 @@ export function Play() {
   const narrativo = narrativeSecAt(events, now)
   const fase = config.fases.find((f) => f.id === estado.fase_actual_id)
 
-  const visibles = config.inyecciones
+  const visibles = estado.msel
     .filter((i) => inyeccionVisibleParaRol(i, sesion.rol_id))
     .filter((i) => estado.inyecciones[i.id].estado === 'activa')
     .sort(
@@ -97,6 +97,14 @@ export function Play() {
         >
           Mi bitácora ({misRegistros})
         </button>
+        <button
+          role="tab"
+          aria-selected={tab === 'debriefing'}
+          className={'tt-tab' + (tab === 'debriefing' ? ' tt-tab--activa' : '')}
+          onClick={() => setTab('debriefing')}
+        >
+          Debriefing
+        </button>
       </div>
 
       {tab === 'inyecciones' && (
@@ -116,6 +124,8 @@ export function Play() {
       )}
 
       {tab === 'bitacora' && <Bitacora sesion={sesion} decisiones={misDecisiones} />}
+
+      {tab === 'debriefing' && <DebriefingForm sesion={sesion} />}
     </div>
   )
 }
@@ -150,6 +160,7 @@ function InyeccionCard({
     accion_elegida: string | null
     accion_libre: string | null
     justificacion: string
+    dependencias: string | null
     severidad_percibida: Severidad | null
   }) => {
     const t = Date.now()
@@ -411,7 +422,7 @@ function ParaTuRol({ sesion }: { sesion: { participante_id: string; rol_id: stri
   if (escalamientos.length === 0 && solicitudes.length === 0) return null
 
   const rol = (id: string) => config.roles.find((r) => r.id === id)?.nombre ?? id
-  const clave = (id: string) => config.inyecciones.find((i) => i.id === id)?.clave ?? id
+  const clave = (id: string) => estado.msel.find((i) => i.id === id)?.clave ?? id
 
   return (
     <div className="tt-card" style={{ borderLeft: '4px solid var(--acento-2)' }}>
@@ -510,12 +521,14 @@ function FormDecision({
     accion_elegida: string | null
     accion_libre: string | null
     justificacion: string
+    dependencias: string | null
     severidad_percibida: Severidad | null
   }) => void
 }) {
   const [elegida, setElegida] = useState('')
   const [libre, setLibre] = useState('')
   const [justificacion, setJustificacion] = useState('')
+  const [dependencias, setDependencias] = useState('')
   const [severidad, setSeveridad] = useState<Severidad | ''>('')
   const [error, setError] = useState('')
 
@@ -536,6 +549,7 @@ function FormDecision({
       accion_elegida: elegida || null,
       accion_libre: libre.trim() || null,
       justificacion: justificacion.trim(),
+      dependencias: dependencias.trim() || null,
       severidad_percibida: severidad || null,
     })
   }
@@ -572,6 +586,15 @@ function FormDecision({
           placeholder="Por qué tomas esta postura, con la información disponible"
         />
       </Field>
+      {tipo === 'decision' && (
+        <Field label="Dependencias (opcional)">
+          <input
+            value={dependencias}
+            onChange={(e) => setDependencias(e.target.value)}
+            placeholder="Qué necesitas de otros roles para que esto funcione"
+          />
+        </Field>
+      )}
       <Field label="Severidad percibida (opcional)">
         <select value={severidad} onChange={(e) => setSeveridad(e.target.value as Severidad | '')}>
           <option value="">Sin registrar</option>
@@ -678,7 +701,7 @@ function Bitacora({
   return (
     <>
       {entradas.map((e) => {
-        const iny = config.inyecciones.find((i) => i.id === e.inyeccion_id)
+        const iny = estado.msel.find((i) => i.id === e.inyeccion_id)
         return (
           <div key={e.id} className="tt-card">
             <div className="tt-fila">
@@ -694,5 +717,81 @@ function Bitacora({
         )
       })}
     </>
+  )
+}
+
+/** Etapa 4 — Debriefing (s.8, s.19 P4): se responde una vez, al cierre del ejercicio. */
+function DebriefingForm({ sesion }: { sesion: { participante_id: string; rol_id: string } }) {
+  const { config, estado, append } = useStore()
+  const [informacion, setInformacion] = useState('')
+  const [rolFaltante, setRolFaltante] = useState('')
+  const [dificil, setDificil] = useState('')
+  const [accion30, setAccion30] = useState('')
+  const [error, setError] = useState('')
+
+  const enviado = estado.debriefings.find((d) => d.participante_id === sesion.participante_id)
+  if (enviado) {
+    return (
+      <div className="tt-card">
+        <div className="tt-fila">
+          <h2>Debriefing registrado</h2>
+          <Chip tone="ok">Enviado {fmtHora(enviado.registrado_en)}</Chip>
+        </div>
+        <p className="tt-small tt-suave">Qué información faltó</p>
+        <p>{enviado.informacion_faltante}</p>
+        <p className="tt-small tt-suave">Qué rol faltó</p>
+        <p>{enviado.rol_faltante}</p>
+        <p className="tt-small tt-suave">Decisión más difícil</p>
+        <p>{enviado.decision_mas_dificil}</p>
+        <p className="tt-small tt-suave">Acción concreta a 30 días</p>
+        <p>{enviado.accion_30_dias}</p>
+      </div>
+    )
+  }
+
+  const enviar = () => {
+    if (!informacion.trim() || !rolFaltante.trim() || !dificil.trim() || !accion30.trim()) {
+      return setError('Responde las cuatro preguntas: son parte de la evidencia del ejercicio.')
+    }
+    const t = Date.now()
+    const debriefing = {
+      id: uuid(),
+      participante_id: sesion.participante_id,
+      rol_id: sesion.rol_id,
+      informacion_faltante: informacion.trim(),
+      rol_faltante: rolFaltante.trim(),
+      decision_mas_dificil: dificil.trim(),
+      accion_30_dias: accion30.trim(),
+      registrado_en: t,
+    }
+    const ok = append(
+      makeEvent(config.id, EVENT_TYPES.DEBRIEFING_SUBMITTED, { debriefing }, 'participante', sesion.participante_id, t),
+    )
+    if (!ok) setError('El ejercicio está cerrado: coordina con el facilitador.')
+  }
+
+  return (
+    <div className="tt-card">
+      <h2>Debriefing</h2>
+      <p className="tt-small tt-suave">
+        Responde al final del ejercicio. Tus respuestas forman parte de la evidencia.
+      </p>
+      <Field label="¿Qué información te faltó durante el ejercicio?">
+        <textarea value={informacion} onChange={(e) => setInformacion(e.target.value)} />
+      </Field>
+      <Field label="¿Qué rol o área hizo falta?">
+        <textarea value={rolFaltante} onChange={(e) => setRolFaltante(e.target.value)} />
+      </Field>
+      <Field label="¿Cuál fue la decisión más difícil?">
+        <textarea value={dificil} onChange={(e) => setDificil(e.target.value)} />
+      </Field>
+      <Field label="Una acción concreta a 30 días">
+        <textarea value={accion30} onChange={(e) => setAccion30(e.target.value)} />
+      </Field>
+      {error && <p className="tt-small" style={{ color: 'var(--critico)' }}>{error}</p>}
+      <button className="tt-btn tt-btn--primario tt-btn--bloque" onClick={enviar}>
+        Enviar debriefing
+      </button>
+    </div>
   )
 }

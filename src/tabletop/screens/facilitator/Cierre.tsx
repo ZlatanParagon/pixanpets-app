@@ -12,7 +12,7 @@ export function Cierre() {
   const [confirmaCierre, setConfirmaCierre] = useState(false)
   const [confirmaReset, setConfirmaReset] = useState(false)
 
-  const disparadas = config.inyecciones.filter((i) =>
+  const disparadas = estado.msel.filter((i) =>
     ['activa', 'cerrada'].includes(estado.inyecciones[i.id].estado),
   ).length
 
@@ -25,6 +25,7 @@ export function Cierre() {
     ['Compromisos', estado.compromisos.length],
     ['Observaciones ARSEG', estado.observaciones.length],
     ['Evidencias vinculadas', estado.vinculos.length],
+    ['Debriefings recibidos', estado.debriefings.length],
     ['Eventos de bitácora', events.length],
   ]
 

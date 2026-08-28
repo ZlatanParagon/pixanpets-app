@@ -8,7 +8,7 @@ import { EVENT_TYPES, makeEvent } from '../../domain/events'
 import { estadoRespuestaRol, type EstadoRespuestaRol } from '../../domain/rules'
 import type { Decision, Inyeccion } from '../../domain/types'
 import { useStore } from '../../store'
-import { FACILITADOR_ID } from './Console'
+import { FACILITADOR_ID, getSesionArseg } from './Console'
 
 const RESPUESTA_UI: Record<EstadoRespuestaRol, { label: string; tone?: 'ok' | 'warn' | 'err' }> = {
   respondio: { label: 'Respondió', tone: 'ok' },
@@ -21,7 +21,7 @@ export function Decisiones() {
   const { config, events, estado, now } = useStore()
   const elapsedAhora = elapsedMsAt(events, now)
 
-  const disparadas = config.inyecciones
+  const disparadas = estado.msel
     .filter((i) => ['activa', 'cerrada'].includes(estado.inyecciones[i.id].estado))
     .sort(
       (a, b) =>
@@ -106,6 +106,7 @@ export function Decisiones() {
 /** Escalamientos, solicitudes y compromisos de una inyección, con sus tiempos. */
 function CadenasInyeccion({ iny }: { iny: Inyeccion }) {
   const { config, estado, append } = useStore()
+  const esDirector = getSesionArseg()?.perfil !== 'observador'
   const [respuestas, setRespuestas] = useState<Record<string, string>>({})
   const rol = (id: string | null) => (id ? (config.roles.find((r) => r.id === id)?.nombre ?? id) : '')
 
@@ -141,6 +142,8 @@ function CadenasInyeccion({ iny }: { iny: Inyeccion }) {
             {s.dirigida_a_rol_id ? ` a ${rol(s.dirigida_a_rol_id)}` : ' al facilitador'}: «{s.pregunta}»
             {s.respondida_en != null ? (
               <> · respondida <span className="tt-mono">{fmtHora(s.respondida_en)}</span>: «{s.respuesta}»</>
+            ) : !esDirector ? (
+              <> · <Chip tone="warn">Sin respuesta</Chip></>
             ) : (
               <span className="tt-fila" style={{ marginTop: 6 }}>
                 <input
