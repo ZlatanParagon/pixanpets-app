@@ -1,5 +1,9 @@
 # PIXANPETS — app móvil
 
+> Este repositorio contiene **dos apps** que comparten el proyecto de Vite:
+> PIXANPETS en `index.html` (documentada abajo) y **AAE — Arseg Academy Express** en
+> `aae.html`, documentada en [`AAE.md`](AAE.md). `npm run build` compila las dos.
+
 Implementación en **React + Vite + TypeScript** del prototipo diseñado en Claude Design
 (`project/PIXANPETS App.dc.html`). Es una app móvil responsiva en español (MX): a pantalla
 completa en el teléfono y centrada a 402 px en pantallas anchas — sin marco de iPhone.
