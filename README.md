@@ -1,10 +1,13 @@
 # PIXANPETS — app móvil
 
-> Este repositorio contiene **tres apps** que comparten el proyecto de Vite:
+> Este repositorio contiene **cuatro apps** que comparten el proyecto de Vite:
 > PIXANPETS en `index.html` (documentada abajo), **AAE — Arseg Academy Express** en
-> `aae.html` (documentada en [`AAE.md`](AAE.md)) y **ARSEG Tabletop** en `tabletop.html`
-> (SPEC, arquitectura y backlog en [`docs/tabletop/`](docs/tabletop/); tests de dominio con
-> `npm test`). `npm run build` compila las tres.
+> `aae.html` (documentada en [`AAE.md`](AAE.md)), **ARSEG Tabletop** en `tabletop.html`
+> (SPEC, arquitectura y backlog en [`docs/tabletop/`](docs/tabletop/)) y **ARSEG Cyber —
+> Portal de Cliente** en `portal.html` (SPEC v0.3, arquitectura, control de acceso,
+> modelo de amenazas, aceptación, operación, retención y decisiones en
+> [`docs/portal/`](docs/portal/)). Los tests de dominio de Tabletop y del Portal corren
+> con `npm test`. `npm run build` compila las cuatro.
 
 Implementación en **React + Vite + TypeScript** del prototipo diseñado en Claude Design
 (`project/PIXANPETS App.dc.html`). Es una app móvil responsiva en español (MX): a pantalla

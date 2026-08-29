@@ -1,0 +1,330 @@
+/* ARSEG Cyber — Portal de Cliente. Tokens de la extensión web clara propuesta
+   (SPEC v0.3, II.10.2) y reglas de contraste de II.10.3:
+   - Cobalt sobre Portal Mist NO se usa para texto pequeño (4.20:1): los enlaces
+     sobre Mist van en Navy con subrayado; sobre blanco, Cobalt es apto (4.53:1).
+   - Amber/Green/Crimson nunca son texto pequeño ni único indicador: los estados
+     usan relleno tenue + texto Navy + símbolo.
+   - El gradiente Cobalt→Purple se limita al filete superior de 3 px. */
+
+:root {
+  --navy: #0A1128;
+  --cobalt: #3A6CF4;
+  --purple: #8A2BE2;
+  --blanco: #FFFFFF;
+  --mist: #F5F6FC;
+  --silver: #E2E8F0;
+  --ink-muted: #5C6A93;
+  --crimson: #EF4444;
+  --amber: #E08A00;
+  --green: #109E7C;
+
+  --radio-tarjeta: 12px;
+  --radio-control: 8px;
+  --fuente: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--mist);
+  color: var(--navy);
+  font-family: var(--fuente);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* ---------- Estructura ---------- */
+
+.filete {
+  height: 3px;
+  background: linear-gradient(90deg, var(--cobalt), var(--purple));
+}
+
+.marco { min-height: 100dvh; display: flex; flex-direction: column; }
+
+.salto {
+  position: absolute;
+  left: -9999px;
+  background: var(--navy);
+  color: var(--blanco);
+  padding: 8px 14px;
+  border-radius: var(--radio-control);
+}
+.salto:focus { left: 12px; top: 12px; z-index: 10; }
+
+.cabecera {
+  background: var(--blanco);
+  border-bottom: 1px solid var(--silver);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 24px;
+  flex-wrap: wrap;
+}
+
+.marca { display: flex; flex-direction: column; line-height: 1.1; min-width: 120px; }
+.marca-nombre { font-weight: 700; font-size: 22px; letter-spacing: 0.06em; color: var(--navy); }
+.marca-sub { font-weight: 600; font-size: 11px; letter-spacing: 0.14em; color: var(--ink-muted); }
+.marca-acceso { margin-bottom: 12px; }
+
+.cabecera nav { display: flex; gap: 4px; flex: 1; }
+.cabecera nav a {
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: var(--radio-control);
+}
+.cabecera nav a[aria-current='page'] {
+  background: var(--navy);
+  color: var(--blanco);
+  font-weight: 600;
+}
+.cabecera nav a:hover:not([aria-current='page']) { background: var(--mist); }
+
+.sesion { display: flex; align-items: center; gap: 12px; }
+.sesion-nombre { font-weight: 600; font-size: 13px; }
+
+.banda-sintetica {
+  margin: 0;
+  padding: 6px 24px;
+  background: var(--navy);
+  color: var(--blanco);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.banda-cliente {
+  margin: 0;
+  padding: 10px 24px;
+  background: var(--blanco);
+  border-bottom: 1px solid var(--silver);
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.banda-cliente strong { color: var(--navy); font-size: 15px; margin-right: 6px; }
+
+.contenido {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.pie {
+  padding: 16px 24px;
+  color: var(--ink-muted);
+  font-size: 13px;
+  border-top: 1px solid var(--silver);
+}
+
+/* ---------- Tipografía ---------- */
+
+h1 { font-size: 28px; font-weight: 700; margin: 8px 0 16px; }
+h2 { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+h3 { font-size: 15px; font-weight: 600; margin: 16px 0 6px; }
+
+.texto-secundario { color: var(--ink-muted); font-size: 13px; }
+
+/* Enlaces: sobre Mist (fondo de página) van en Navy con subrayado (II.10.3);
+   dentro de tarjetas blancas, Cobalt es apto. */
+.contenido a { color: var(--navy); text-decoration: underline; text-underline-offset: 2px; }
+.tarjeta a { color: var(--cobalt); }
+a:focus-visible, button:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--cobalt);
+  outline-offset: 2px;
+}
+
+/* ---------- Tarjetas y listas ---------- */
+
+.tarjeta {
+  background: var(--blanco);
+  border: 1px solid var(--silver);
+  border-radius: var(--radio-tarjeta);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.rejilla-proyectos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.tarjeta-proyecto { margin-bottom: 0; }
+.tarjeta-proyecto h2 a { text-decoration: none; }
+.tarjeta-proyecto h2 a:hover { text-decoration: underline; }
+
+section { margin-bottom: 24px; }
+
+.lista-compromisos, .lista-bitacora, .lista-secciones, .lista-revisiones {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.lista-compromisos li, .lista-bitacora li { padding: 6px 0; border-bottom: 1px solid var(--silver); }
+.lista-compromisos li:last-child, .lista-bitacora li:last-child { border-bottom: none; }
+.lista-bitacora { font-size: 13px; }
+
+.lista-compromisos-detalle { list-style: none; margin: 0; padding: 0; }
+.compromiso { padding: 14px 0; border-bottom: 1px solid var(--silver); }
+.compromiso:last-child { border-bottom: none; }
+.compromiso-encabezado { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+
+.respuesta {
+  margin: 8px 0;
+  padding: 8px 14px;
+  border-left: 3px solid var(--cobalt);
+  background: var(--mist);
+  border-radius: 0 var(--radio-control) var(--radio-control) 0;
+}
+.respuesta p { margin: 0 0 4px; }
+
+.fila-estados { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 6px 0; }
+
+.entregable { padding: 10px 0; border-bottom: 1px solid var(--silver); }
+.entregable:last-of-type { border-bottom: none; }
+.lista-revisiones li { padding: 4px 0; }
+.acciones-linea { margin-left: 8px; display: inline-flex; gap: 8px; }
+
+.revision-acuerdo { border-top: 1px solid var(--silver); padding-top: 12px; margin-top: 12px; }
+.revision-acuerdo:first-of-type { border-top: none; margin-top: 0; }
+
+/* ---------- Estados: relleno tenue + texto Navy + símbolo (II.10.3) ---------- */
+
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy);
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--silver);
+  background: var(--mist);
+}
+.estado-simbolo { font-size: 9px; }
+.estado-estable { background: #E2F4EE; border-color: #B8E2D4; }
+.estado-estable .estado-simbolo { color: var(--green); }
+.estado-atencion { background: #FBEEDB; border-color: #F0D5A8; }
+.estado-atencion .estado-simbolo { color: var(--amber); }
+.estado-critico { background: #FCE7E7; border-color: #F5C2C2; }
+.estado-critico .estado-simbolo { color: var(--crimson); }
+.estado-neutro .estado-simbolo { color: var(--ink-muted); }
+
+.chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--navy);
+  border: 1px solid var(--silver);
+  border-radius: 4px;
+  padding: 1px 8px;
+  background: var(--mist);
+}
+.chip-tecnica_restringida { border-color: var(--navy); }
+.chip-comercial_restringida { border-color: var(--ink-muted); }
+
+/* ---------- Avisos ---------- */
+
+.aviso {
+  border-radius: var(--radio-control);
+  padding: 10px 14px;
+  font-size: 13px;
+  border: 1px solid var(--silver);
+  background: var(--mist);
+}
+.aviso-error { background: #FCE7E7; border-color: #F5C2C2; font-weight: 500; }
+
+/* ---------- Controles ---------- */
+
+button {
+  font-family: var(--fuente);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radio-control);
+  cursor: pointer;
+  padding: 8px 16px;
+}
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.boton-primario { background: var(--cobalt); color: var(--blanco); border: 1px solid var(--cobalt); }
+.boton-primario:hover:not(:disabled) { background: #2f5ad0; }
+.boton-secundario { background: var(--blanco); color: var(--navy); border: 1px solid var(--ink-muted); }
+.boton-secundario:hover:not(:disabled) { background: var(--mist); }
+.boton-terciario { background: none; color: var(--navy); border: none; text-decoration: underline; padding: 6px 8px; }
+
+label { display: block; font-size: 13px; font-weight: 600; margin: 8px 0; }
+textarea, select {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  font-family: var(--fuente);
+  font-size: 14px;
+  color: var(--navy);
+  border: 1px solid var(--ink-muted);
+  border-radius: var(--radio-control);
+  padding: 8px 10px;
+  background: var(--blanco);
+}
+.cambio-cuenta select { width: auto; display: inline-block; margin: 0; }
+.acciones-compromiso { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.acciones-compromiso label { width: 100%; margin: 0; }
+.acciones-compromiso button + button { margin-left: 8px; }
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Tablas: se desplazan en su contenedor, no la página (II.10.4) ---------- */
+
+.tabla-envoltura { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th { text-align: left; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-muted); border-bottom: 2px solid var(--silver); padding: 8px 10px; }
+td { border-bottom: 1px solid var(--silver); padding: 8px 10px; vertical-align: top; }
+
+/* ---------- Definiciones ---------- */
+
+.dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin: 0; }
+.definicion dt { font-size: 12px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.definicion dd { margin: 2px 0 0; }
+
+/* ---------- Acceso ---------- */
+
+.acceso { min-height: 100dvh; display: flex; flex-direction: column; }
+.acceso-caja { max-width: 560px; margin: 48px auto; width: calc(100% - 32px); }
+.lista-acceso { list-style: none; margin: 16px 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.boton-fila {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--mist);
+  border: 1px solid var(--silver);
+  padding: 12px 16px;
+}
+.boton-fila:hover { border-color: var(--cobalt); }
+.boton-fila span { font-size: 12px; font-weight: 500; color: var(--ink-muted); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .boton-fila, button, .cabecera nav a { transition: background 120ms ease, border-color 120ms ease; }
+}
+
+@media (max-width: 640px) {
+  .cabecera { gap: 12px; }
+  .contenido { padding: 16px; }
+  .compromiso-encabezado { flex-direction: column; }
+}
