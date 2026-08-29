@@ -233,6 +233,56 @@ Formato de cada tabla: **#** · pregunta · **Ancla** (norma §cláusula/control
 | 12 | ¿En qué medida los respaldos cubren información y sistemas críticos con frecuencia, retención y responsables? | 27001 A.8.13 | [D] | — |
 | 13 | ¿Cuándo fue la última vez que restauraste un respaldo para verificar que sirve? *(pregunta-hecho anti-sesgo; ambas A.8.13; re-anclado desde A.8.14)* | 27001 A.8.13; 22301 §8.2.2 | [D] | — |
 | 14 | ¿En qué medida se revisan responsabilidades, jurisdicción, compromisos, cambios y salida de los servicios en nube críticos? | 27001 A.5.23 | [D] | — |
+| 15 | ¿En qué medida los puntos únicos de falla (tecnológico o proveedor) tienen alternativas/redundancia proporcionales al riesgo? *(re-anclado: dependencia de proveedor es A.5.21/A.5.19, no solo A.5.22)* | 27001 A.5.19, A.5.21, A.8.14 | [D] | — |
 
-<!-- ⚠️ TRUNCADO: el documento fuente recibido se corta aquí (a mitad de D3.4).
+#### D3.5 · Higiene básica *(NUEVA — vacío de cobertura más importante de D3 según Kimi)*
+| # | Pregunta | Ancla | Sop. | 9001 |
+|---|---|---|---|---|
+| 16 | ¿En qué medida equipos y sistemas se mantienen actualizados y protegidos contra malware (parches, antimalware)? *(vector real de incidente en PYME: ransomware por equipos sin parche)* | 27001 A.8.7, A.8.8 | [D] | — |
+
+**Consolidación D3:** 2 errores de referencia corregidos (#5 A.8.6→marco propio; #11 A.8.2→A.5.12/A.8.3). #13 convertida a pregunta-hecho (fecha de última restauración). #15 re-anclado a cadena de suministro TIC. Añadida higiene anti-malware (#16). D3.2 consolidada de 4→3 para abrir el hueco. D3.3 y D3.4 marcadas como sub-dimensiones de riesgo (piso crítico). Total: 16 hijas.
+
+---
+
+### D4 · VISIBILIDAD Y DECISIÓN — ancla ISO 9001 (Cl. 9)
+*La dimensión más financiera y menos "de cláusula" — varias hijas viven del principio de decisión basada en evidencia (ISO 9000). Etiquetado honesto de soporte parcial.*
+
+**Pregunta-madre:** *"Si hoy tuvieras que decidir dónde invertir, recortar o corregir, ¿con qué información contarías?"*
+
+#### D4.1 · Medición e indicadores
+| # | Pregunta | Ancla | Sop. | 27001 |
+|---|---|---|---|---|
+| 1 | ¿En qué medida existen objetivos e indicadores vinculados con resultados del negocio y requisitos del cliente? | 9001 §6.2, §9.1.1 | [D] | §9.1 |
+| 2 | ¿En qué medida se calcula costo y margen de entrega con un método definido y repetible? | 9001 §9.1.1 | [P] | — |
+| 3 | ¿En qué medida se monitorean percepción, satisfacción y quejas de clientes con método y frecuencia definidos? | 9001 §8.2.1, §9.1.2 | [D] | — |
+| 4 | ¿En qué medida cada indicador tiene definición, fuente, responsable, frecuencia y umbral de acción? | 9001 §9.1.1 | [D] | §9.1 |
+
+#### D4.2 · Datos confiables
+| # | Pregunta | Ancla | Sop. | 27001 |
+|---|---|---|---|---|
+| 5 | ¿Tus números cuadran con el banco/fuentes sin ajustes, o has encontrado errores en los últimos 3 meses? *(convertida de percepción a hecho verificable — conciliación es evidencia)* | 9001 §9.1.3 | [P] | — |
+| 6 | ¿En qué medida cada cifra crítica se rastrea hasta una fuente vigente y se distingue de copias obsoletas? *(re-anclado: §7.1.5 era calibración de equipos, incorrecto → §7.5.3/§9.1.1; fuente única vive aquí, no en D3.2)* | 9001 §7.5.3, §9.1.1 | [P] | §7.5 |
+| 7 | ¿En qué medida los reportes se producen de forma repetible y a tiempo, sin consolidación heroica? | 9001 §9.1.3 | [P] | — |
+| 8 | ¿En qué medida se distingue desempeño/rentabilidad por producto, servicio o segmento con criterios acordados? | 9001 §9.1.3 | [P] | — |
+
+#### D4.3 · Decisión basada en evidencia
+| # | Pregunta | Ancla | Sop. | 27001 |
+|---|---|---|---|---|
+| 9 | ¿En qué medida las decisiones relevantes registran datos, supuestos y criterio? *(principio ISO 9000 de decisión basada en evidencia + §9.3)* | 9001 §9.3 (ppio. ISO 9000) | [P] | §9.3 |
+| 10 | ¿En qué medida el desempeño se revisa con frecuencia definida y cada acuerdo tiene responsable y fecha? | 9001 §9.3.1 | [D] | §9.3 |
+| 11 | ¿En qué medida existen indicadores adelantados y umbrales para actuar antes de que la desviación sea crítica? | 9001 §9.1.1 | [P] | — |
+| 12 | ¿Conoces y revisas el punto de equilibrio y umbrales financieros para sostener la operación? *(excelente: concreta y verificable — modelo a imitar)* | 9001 §9.1.1 | [P] | — |
+
+#### D4.4 · Información oportuna para actuar *(consolidada — evita duplicar D4.1)*
+| # | Pregunta | Ancla | Sop. | 27001 |
+|---|---|---|---|---|
+| 13 | ¿En qué medida comparas resultados contra una meta o presupuesto/forecast definido? *(NUEVA — cubre vacío entre "tengo números" y "decido"; escalón natural)* | 9001 §6.2, §9.1.1 | [D] | — |
+| 14 | ¿En qué medida quienes deciden acceden a los mismos datos vigentes y comprenden sus definiciones? *(fusiona "vista actualizada" + "mismos datos")* | 9001 §7.4, §9.1.1 | [D] | §7.4 |
+| 15 | ¿En qué medida las desviaciones materiales generan alerta y una respuesta previamente definida? | 9001 §9.1.1, §10.2 | [P] | — |
+| 16 | ¿En qué medida resultados y acuerdos de revisión se comunican a los responsables y se verifica su cierre? *(anclaje elegante §7.4)* | 9001 §7.4, §9.3 | [D] | §7.4 |
+
+**Consolidación D4:** #6 re-anclado (§7.1.5→§7.5.3/§9.1.1). #5 convertida a pregunta-hecho (conciliación bancaria). "Fuente única de verdad" resuelta en D4.2 #6 (se retiró la duplicada de D3.2). Añadida #13 presupuesto/forecast (vacío real). Consolidadas las 4 hijas de "datos actuales" en 2. Etiquetado honesto: D4 vive del principio de evidencia más que de cláusulas.
+
+<!-- ⚠️ TRUNCADO: integrado hasta el final del Bloque A (consolidación D4).
+     Pendiente: Bloque B (D5 y D6) y Bloque C (secciones 7–12).
      Ver docs/dmo/README.md — sección "Contenido pendiente". -->
