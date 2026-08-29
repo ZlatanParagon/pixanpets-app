@@ -283,6 +283,87 @@ Formato de cada tabla: **#** · pregunta · **Ancla** (norma §cláusula/control
 
 **Consolidación D4:** #6 re-anclado (§7.1.5→§7.5.3/§9.1.1). #5 convertida a pregunta-hecho (conciliación bancaria). "Fuente única de verdad" resuelta en D4.2 #6 (se retiró la duplicada de D3.2). Añadida #13 presupuesto/forecast (vacío real). Consolidadas las 4 hijas de "datos actuales" en 2. Etiquetado honesto: D4 vive del principio de evidencia más que de cláusulas.
 
-<!-- ⚠️ TRUNCADO: integrado hasta el final del Bloque A (consolidación D4).
-     Pendiente: Bloque B (D5 y D6) y Bloque C (secciones 7–12).
+---
+
+### D5 · PRESENCIA Y CONFIANZA — madurez progresiva (piso sin norma → techo 27001/privacidad)
+*Regla especial: P=(D5.1+D5.2), T=(D5.3+D5.4). Reporte y enrutado usan P y T por separado. D5.3 y D5.4 son sub-dimensiones de RIESGO (piso crítico).*
+
+**Pregunta-madre:** *"Cuando un cliente corporativo te investiga antes de comprarte, ¿qué puede verificar sobre tu empresa y el cuidado de su información?"*
+
+#### D5.1 · Identidad y presencia [PISO]
+| # | Pregunta | Ancla | Sop. | Norma |
+|---|---|---|---|---|
+| 1 | ¿En qué medida la identidad visual y verbal está definida y se aplica consistente para el público objetivo? | Marco propio MEBUKI | [M] | — |
+| 2 | ¿En qué medida los canales controlados muestran información vigente y coherente (oferta, identidad legal, contacto)? | Marco propio MEBUKI | [M] | — |
+| 3 | ¿En qué medida la empresa verifica que puede encontrarse en los canales y búsquedas de su cliente objetivo? | Marco propio MEBUKI | [M] | — |
+| 4 | ¿En qué medida mensajes, condiciones y llamadas a la acción son coherentes entre canales? | Marco propio MEBUKI | [M] | — |
+
+#### D5.2 · Prueba y reputación [PISO]
+| # | Pregunta | Ancla | Sop. | Norma |
+|---|---|---|---|---|
+| 5 | ¿En qué medida las afirmaciones comerciales están respaldadas por casos/resultados vigentes, con alcance, método y permiso? | Marco propio MEBUKI | [M] | — |
+| 6 | ¿En qué medida testimonios y reseñas se obtienen y publican con autenticidad, autorización y tratamiento responsable de datos? | LFPDPPP; marco propio | [P] | — |
+| 7 | ¿En qué medida quejas e incidentes públicos se monitorean, responden y convierten en mejora? | 9001 §8.2.1, §9.1.2, §10.2 | [P] | — |
+| 8 | ¿En qué medida un prospecto puede verificar identidad, contacto, condiciones y experiencia antes de la primera reunión? *(proxy observable, no percepción)* | Marco propio MEBUKI | [M] | — |
+
+#### D5.3 · Manejo responsable de datos [TECHO · RIESGO]
+| # | Pregunta | Ancla | Sop. | Norma |
+|---|---|---|---|---|
+| 9 | ¿En qué medida existe inventario de categorías de datos personales, finalidades, responsables, destinatarios y conservación? | 27001 A.5.34; LFPDPPP 10–13 | [D] | — |
+| 10 | ¿En qué medida los avisos de privacidad contienen lo requerido, están disponibles en el punto de obtención y se cumplen? *(un hecho: aviso completo y disponible)* | LFPDPPP 14–16 | [D] | — |
+| 11 | ¿En qué medida se limita recopilación/conservación a lo necesario y se bloquea/elimina al concluir la finalidad? | LFPDPPP 10–13; 27001 A.5.34 | [D] | — |
+| 12 | ¿En qué medida existen medidas administrativas/técnicas/físicas y un mecanismo para responder y notificar vulneraciones? *(frontera: aquí gestión de brecha; controles técnicos internos viven en D3.3)* | LFPDPPP 18–20; 27001 A.5.34 | [D] | — |
+
+#### D5.4 · Confianza demostrable [TECHO · RIESGO]
+| # | Pregunta | Ancla | Sop. | Norma |
+|---|---|---|---|---|
+| 13 | ¿En qué medida puedes responder cuestionarios/revisiones de seguridad de clientes con responsables y evidencia vigente? *(reforzado A.5.35 autoevaluación — lo que el corporativo pregunta)* | 27001 §7.5, §9; A.5.35 | [P] | — |
+| 14 | ¿En qué medida se identifican, asignan y revisan requisitos legales, regulatorios y contractuales aplicables? | 27001 A.5.31 | [D] | §7.5 |
+| 15 | ¿En qué medida las políticas de seguridad necesarias están aprobadas, comunicadas y revisadas? | 27001 A.5.1 | [D] | §5.2 |
+| 16 | ¿En qué medida las afirmaciones de seguridad se respaldan con evaluación de riesgos, controles, revisiones y certificación cuando procede? *(demostrabilidad externa — frontera con D3.3 que es control interno)* | 27001 §6.1, §9.2, §10.2; A.5.36 | [D] | — |
+
+**Consolidación D5:** Piso (D5.1–5.2) marco propio honesto. Techo (D5.3–5.4) anclado a 27001+LFPDPPP y marcado como riesgo (piso crítico). Frontera D3.3↔D5-techo aclarada: D3.3 = control técnico interno; D5-techo = demostrabilidad externa. #13 y #16 reforzados con A.5.35/A.5.36 (autoevaluación y certificación). El arco piso→techo se cuenta en la capa comercial como maduración "de verte serio a ser confiable con datos".
+
+---
+
+### D6 · CAPACIDAD DE EVOLUCIÓN — ancla ISO 9001 (Cl. 10 + Cl. 6)
+
+**Pregunta-madre:** *"Cuando quieres lanzar un producto, servicio o mejora, ¿qué suele ocurrir desde la idea hasta la decisión final?"*
+
+#### D6.1 · Capacidad de ejecutar cambio
+| # | Pregunta | Ancla | Sop. | 27001 |
+|---|---|---|---|---|
+| 1 | ¿En qué medida cada iniciativa relevante define problema, objetivo, alcance y criterio de éxito? *(velocidad idea→lanzamiento; re-anclado desde §6.1)* | 9001 §6.2, §6.3 | [P] | — |
+| 2 | ¿En qué medida arrancas iniciativas y las cierras con decisión (tasa de finalización)? *(eje distinto a #1: finalización, no arranque)* | 9001 §6.2 | [D] | — |
+| 3 | ¿En qué medida existe capacidad reservada y método para priorizar mejoras frente al trabajo operativo? | 9001 §6.2, §7.1 | [P] | — |
+| 4 | ¿En qué medida los cambios consideran propósito, consecuencias, recursos, responsabilidades e integridad antes de ejecutarse? | 9001 §6.3 | [D] | §6.3 |
+
+#### D6.2 · Aprendizaje e innovación
+| # | Pregunta | Ancla | Sop. | 27001 |
+|---|---|---|---|---|
+| 5 | ¿En qué medida las oportunidades de mejora se capturan y priorizan desde datos, retroalimentación y riesgos? | 9001 §9.1.3, §10.1 | [D] | §10.1 |
+| 6 | ¿En qué medida errores/no conformidades se contienen, analizan y corrigen, verificando eficacia? | 9001 §10.2 | [D] | §10.2 |
+| 7 | ¿En qué medida los experimentos definen hipótesis, límites, métricas y regla para adoptar/cambiar/detener? | 9001 §6.1, §10.1 | [P] | — |
+| 8 | ¿En qué medida se adoptan nuevas tecnologías (incluida IA) por necesidad, riesgo, competencia e integración? *(adoptar lo NUEVO — frontera con D1.4 que automatiza lo existente; re-etiquetado desde §7.1.3)* | Marco propio (apoyo §10.1) | [M] | — |
+
+#### D6.3 · Adaptación al mercado
+| # | Pregunta | Ancla | Sop. | 27001 |
+|---|---|---|---|---|
+| 9 | ¿En qué medida se actualizan periódicamente necesidades y expectativas de clientes y partes pertinentes? | 9001 §4.2 | [D] | §4.2 |
+| 10 | ¿En qué medida la oferta se prueba y ajusta usando requisitos, retroalimentación y resultados? | 9001 §8.2.2, §9.1.2 | [D] | — |
+| 11 | ¿En qué medida se monitorean cambios del entorno (competencia, tecnología, regulación)? | 9001 §4.1 | [D] | §4.1 |
+| 12 | ¿En qué medida riesgos y oportunidades se priorizan, atienden y revisan por eficacia? | 9001 §6.1 | [D] | §6.1 |
+
+#### D6.4 · Escalabilidad
+| # | Pregunta | Ancla | Sop. | 27001 |
+|---|---|---|---|---|
+| 13 | ¿En qué medida se evalúan escenarios de crecimiento y sus necesidades de capacidad, personas, tecnología y proveedores? *(escala PLANEADA — frontera con D1.3 #10 que es capacidad hoy)* | 9001 §7.1.1, §8.1 | [D] | — |
+| 14 | ¿En qué medida los objetivos de crecimiento tienen metas, responsables, recursos, plazos y método de evaluación? | 9001 §6.2 | [D] | — |
+| 15 | ¿En qué medida se prueba que el crecimiento sostiene calidad, seguridad y experiencia dentro de criterios aceptables? | 9001 §8.1, §8.5.1 | [P] | §6.1 |
+| 16 | ¿En qué medida existe una ruta al siguiente estado objetivo, con brechas, acciones y puntos de revisión? *(buen techo: visión + camino)* | 9001 §6.2, §9.3, §10.3 | [D] | — |
+
+**Consolidación D6:** #1 re-anclado (§6.1→§6.2/§6.3). #8 re-etiquetado marco propio (adopción tecnológica ≠ infraestructura §7.1.3). #1/#2 diferenciados por eje (velocidad vs. finalización). Frontera #13 (escala planeada) vs D1.3 #10 (capacidad hoy) explícita.
+
+<!-- ⚠️ TRUNCADO: integrado hasta el final del Bloque B (consolidación D6).
+     Pendiente: Bloque C (secciones 7–12: método de arquetipos, informe, cierre).
      Ver docs/dmo/README.md — sección "Contenido pendiente". -->

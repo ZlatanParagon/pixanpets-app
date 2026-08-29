@@ -25,7 +25,7 @@ nada** del contenido faltante.
 
 - ✅ **Bloque inicial** — secciones 0–6 hasta D3.4 #14 (integrado).
 - ✅ **Bloque A** — cierre de D3 (D3.4 #15, D3.5, consolidación) + D4 completa (integrado).
-- ⬜ **Bloque B** — D5 · Presencia y confianza y D6 · Capacidad de evolución completas.
+- ✅ **Bloque B** — D5 · Presencia y confianza y D6 · Capacidad de evolución completas (integrado).
 - ⬜ **Bloque C** — secciones 7 a 12 (método de arquetipos, informe, cierre).
 
 Al recibir cada bloque, se integra verbatim en `INSTRUMENTO-DMO-v2.md`
