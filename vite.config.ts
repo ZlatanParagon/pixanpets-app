@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Tres apps en un mismo proyecto: PIXANPETS en `/`, AAE en `/aae.html`
-// y ARSEG Tabletop en `/tabletop.html`.
+// Cuatro apps en un mismo proyecto: PIXANPETS en `/`, AAE en `/aae.html`,
+// ARSEG Tabletop en `/tabletop.html` y el Portal de Cliente en `/portal.html`.
 export default defineConfig({
   plugins: [react()],
   base: './',
@@ -12,6 +12,7 @@ export default defineConfig({
         main: 'index.html',
         aae: 'aae.html',
         tabletop: 'tabletop.html',
+        portal: 'portal.html',
       },
     },
   },
