@@ -5,6 +5,7 @@ import { Inicio } from './screens/Inicio'
 import { ProyectoDetalle } from './screens/Proyecto'
 import { Acuerdos } from './screens/Acuerdos'
 import { Cuenta } from './screens/Cuenta'
+import { AltaCliente } from './screens/AltaCliente'
 
 function useHashRoute(): string {
   const [hash, setHash] = useState(() => window.location.hash || '#/')
@@ -27,6 +28,8 @@ function Marco({ ruta, children }: { ruta: string; children: ReactNode }) {
     { a: '', etiqueta: 'Inicio' },
     { a: 'acuerdos', etiqueta: 'Acuerdos' },
     { a: 'cuenta', etiqueta: 'Cuenta' },
+    // La alta guiada es la consola del socio responsable (2.4).
+    ...(membresia?.rol === 'socio_responsable' ? [{ a: 'alta', etiqueta: 'Alta de cliente' }] : []),
   ]
   return (
     <div className="marco">
@@ -88,6 +91,7 @@ function Rutas() {
   if (ruta.startsWith('proyecto/')) pantalla = <ProyectoDetalle proyectoId={ruta.slice('proyecto/'.length)} />
   else if (ruta === 'acuerdos') pantalla = <Acuerdos />
   else if (ruta === 'cuenta') pantalla = <Cuenta />
+  else if (ruta === 'alta') pantalla = <AltaCliente />
   else pantalla = <Inicio />
   return <Marco ruta={ruta}>{pantalla}</Marco>
 }

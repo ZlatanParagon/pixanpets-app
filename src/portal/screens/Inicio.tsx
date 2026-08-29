@@ -14,6 +14,8 @@ import {
 } from '../domain/consultas'
 import { PARTE_POR_ROL } from '../domain/types'
 import { Estado, Tarjeta, fechaCorta } from '../components/ui'
+import { InicioSocio } from './InicioSocio'
+import { InicioLider } from './InicioLider'
 
 const FASE: Record<string, string> = {
   preparacion: 'Preparación',
@@ -26,6 +28,11 @@ const FASE: Record<string, string> = {
 export function Inicio() {
   const { estado, ctx, ahora } = useStore()
   if (!ctx) return null
+
+  // Cada rol tiene un seguimiento distinto (II.3): el socio ve la relación
+  // estratégica/comercial, el PM la operación, el cliente su servicio.
+  if (ctx.membresia.rol === 'socio_responsable') return <InicioSocio />
+  if (ctx.membresia.rol === 'lider_proyecto') return <InicioLider />
 
   if (ctx.membresia.rol === 'administracion') {
     return (

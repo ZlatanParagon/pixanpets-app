@@ -23,6 +23,10 @@ La correspondencia con claves v0.2 está en la SPEC (II.13.4); aquí se traza co
 | Expediente portable con manifiesto, hashes y permisos del solicitante | 5.7, RR-08, PA-32 | ✅ |
 | Bitácora de solo adición en la misma transacción que el estado | INV-12, PA-30 | ✅ |
 | Tokens visuales II.10.2 + reglas de contraste II.10.3 + teclado/foco | II.10, PA-41/42 | ✅ |
+| Alta guiada de cliente (socio): evidencia → PM → SOW → formalización → hitos → usuarios → activación | 2.4, 5.2, 8.1 | ✅ |
+| Inicio diferenciado por rol: socio (estratégico/comercial y riesgo), PM (operativo), cliente | II.3 | ✅ |
+| Gestión operativa del PM: crear/avanzar hitos con evidencia, crear compromisos, publicar avances | 5.4, RR-04 | ✅ |
+| Cierre de proyecto desde la interfaz (socio), con compromisos resueltos o documentados | 5.7 | ✅ |
 
 ## MVP — pendiente de backend de producción
 

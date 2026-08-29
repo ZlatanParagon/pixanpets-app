@@ -38,13 +38,15 @@ src/portal/
     types.ts                   entidades de II.6 (subconjunto MVP), con cliente_id obligatorio
     authz.ts                   capas de autorización de RR-05/8.2
     comandos.ts                comandos transaccionales + invariantes (INV-02/03/05/08/11/12/13)
+    gestion.ts                 flujo de origen (2.4): alta de cliente, equipo, acuerdo, hitos, compromisos
     consultas.ts               lecturas filtradas: la UI nunca filtra por su cuenta
     expediente.ts              paquete portable con manifiesto y permisos del solicitante (5.7)
     reglas.test.ts             29 pruebas trazadas a INV/PA (vitest)
   data/sinteticos.ts         ← DOS clientes sintéticos, seis roles, permisos y autoridad (8.2)
   store.tsx                  ← sesión del prototipo + persistencia localStorage (capa a sustituir)
   components/ui.tsx          ← estados con símbolo + texto Navy (II.10.3), chips de clasificación
-  screens/                   ← Acceso, Inicio, Proyecto, Acuerdos, Cuenta
+  screens/                   ← Acceso, Inicio (por rol: InicioSocio/InicioLider), Proyecto,
+                               Acuerdos, Cuenta, AltaCliente (alta guiada del socio)
   styles/portal.css          ← tokens de II.10.2 y reglas de contraste de II.10.3
 ```
 
