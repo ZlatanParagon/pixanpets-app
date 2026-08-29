@@ -364,6 +364,109 @@ Formato de cada tabla: **#** · pregunta · **Ancla** (norma §cláusula/control
 
 **Consolidación D6:** #1 re-anclado (§6.1→§6.2/§6.3). #8 re-etiquetado marco propio (adopción tecnológica ≠ infraestructura §7.1.3). #1/#2 diferenciados por eje (velocidad vs. finalización). Frontera #13 (escala planeada) vs D1.3 #10 (capacidad hoy) explícita.
 
-<!-- ⚠️ TRUNCADO: integrado hasta el final del Bloque B (consolidación D6).
-     Pendiente: Bloque C (secciones 7–12: método de arquetipos, informe, cierre).
-     Ver docs/dmo/README.md — sección "Contenido pendiente". -->
+---
+
+## 7. MÉTODO PARA REDACTAR LAS 480 OPCIONES DE NIVEL *(fase Claude Code)*
+
+Las 96 hijas × 5 niveles = 480 opciones aún no redactadas. Método adoptado (Kimi), para ejecutar como sistema:
+
+**Arquetipos (4 moldes con escalera fija):**
+- **Existencia:** no existe → informal → documentado → documentado y medido → automatizado/optimizado.
+- **Frecuencia:** nunca → solo cuando falla → periódico definido → periódico con métricas → continuo/automático.
+- **Cobertura:** nadie/ninguno → algunos informales → los críticos definidos → todos medidos → todos integrados.
+- **Capacidad/tiempo:** colapsa → sobrevive con el dueño → sobrevive sin el dueño → escala con plan → escala solo.
+
+**Reglas de redacción:**
+1. Cada nivel difiere del anterior en ≥2 anclas de un set fijo (artefacto, formalidad, titularidad, disparador, evidencia). Si solo cambia el adverbio, fusionar.
+2. Cumulatividad Guttman: nivel N implica N−1. Test: "¿puede alguien estar en 4 sin cumplir 3?" Si sí, reescribir.
+3. Orden: primero niveles 1-3-5 (polos y centro), luego interpolar 2 y 4. Redactar en paralelo todos los "3" de una sub-dimensión para calibrar el salto.
+4. Nivel 5 anti-aspiracional: siempre "funciona sin intervención del dueño". Casi nadie se auto-califica 5 si exige que el sistema corra solo.
+5. Anchors conductuales con artefacto + ventana de tiempo: nivel 3 = "documento que un tercero usó en los últimos 6 meses", no "documentamos bien". Un adjetivo se auto-regala; un artefacto con fecha, no.
+6. ~1 pregunta-hecho por sub-dimensión (fecha, frecuencia, cantidad, responsable) para anclar contra el sesgo.
+7. Máx. ~20 palabras por opción, lenguaje de cliente en capa comercial, jerga ISO solo en capa de entrega. Un solo redactor + guía de estilo de 1 página (la consistencia de 480 opciones no se logra por comité).
+8. Coherencia madre↔hijas: las 5 opciones de cada madre con el mismo molde; la madre = promedio esperado de sus 16 hijas.
+
+---
+
+## 8. LENTES TRANSVERSALES DE PREPARACIÓN
+
+No son porcentajes de cumplimiento ni sustituyen una evaluación de brecha formal. Se reportan como `señales favorables`, `brechas por validar` y `siguiente evaluación recomendada`.
+
+- **Calidad (9001):** D1, D2, D4, D6.
+- **Seguridad de la información (27001):** D3, D5.3, D5.4, más D2.2 #8 (accesos).
+- **Continuidad (22301):** D2.2, D2.3, D3.4.
+- **Privacidad (LFPDPPP):** D5.3, más inventario de datos, proveedores, accesos y transferencias de D3.
+
+---
+
+## 9. REGLAS EDITORIALES (para futuras preguntas y anclas)
+
+1. Una pregunta mide un comportamiento principal (sin doble/triple barril).
+2. Polaridad positiva: mayor puntuación = mayor madurez.
+3. Sustituir adjetivos por alcance, frecuencia, responsable, criterio y evidencia.
+4. Ninguna herramienta específica es requisito de madurez.
+5. Automatización no sustituye eficacia o control.
+6. No atribuir una pregunta a una cláusula por mera afinidad conceptual (usar etiqueta [P] o [M]).
+7. Separar respuesta del cliente, evidencia y juicio del facilitador.
+8. Versionar cambios para conservar comparabilidad.
+9. **IDs compuestos estables:** D{dim}.{subdim}.{n} (p. ej. D3.3.10) como identificador único pregunta↔nivel↔servicio↔norma.
+
+---
+
+## 10. SALIDA MÍNIMA DEL INFORME
+
+- Alcance y periodo (últimos 90 días salvo justificación).
+- Mapa de 6 dimensiones + global (declarado y validado).
+- Cobertura de evidencia.
+- **Índice de consistencia madre↔hijas** (la brecha auto-percepción vs. operación real).
+- **Dispersión intra-dimensión** (marca de "fachada" donde aplique).
+- Dos pilares de D5 (P y T por separado).
+- **Riesgos por piso crítico** (sub-dimensiones de riesgo en nivel 1–2 aunque el promedio sea alto).
+- Contradicciones o incertidumbres relevantes.
+- Dos dimensiones prioritarias + impacto + razón de selección.
+- Ruta de certificación sugerida (9001 / 27001) derivada por sub-dimensión.
+- Tres acciones de 30 días.
+- Nota expresa: el resultado no constituye certificación ni dictamen legal.
+
+---
+
+## 11. RESUMEN DE CAMBIOS v1 → v2 (trazabilidad de la consolidación)
+
+**Del criterio MEBUKI (decisiones de Serge):**
+- Un solo instrumento riguroso; 6 madre en lenguaje cliente, 96 hijas en registro técnico.
+- Peso 9001 vs 27001: cuestionario estable, rebalanceo solo en el motor de enrutado (criterio Kimi).
+- Duplicaciones: fusionar solo las reales, conservar los pares calibradores.
+
+**De ChatGPT (v1.1):**
+- Distinción nivel declarado vs. validado con evidencia.
+- Disclaimer legal expreso.
+- Ficha de aplicación y periodo de 90 días.
+- Escala con anclas conductuales y evidencia esperada.
+
+**De Kimi:**
+- 4 correcciones de referencia normativa (A.8.6→marco propio; §7.1.5→§9.1.3/§7.5.3; A.8.2→A.5.12/A.8.3; 22301 RTO §8.4.1→§8.2.2).
+- Etiquetado honesto de 3 niveles (directo/parcial/marco propio) en las 96.
+- Regla de piso crítico y reporte de dispersión.
+- Índice de consistencia madre↔hijas como producto de venta.
+- Doble cita Annex SL (9001≡27001).
+- Vacío de intake de pedido (nueva D1.0) e higiene anti-malware (D3.5 #16).
+- Método de arquetipos para las 480 opciones.
+- Versionado a ISO 9001:2026 (publicación 16-sep-2026).
+- Reformulación de percepción→hecho en preguntas clave (D4.2 #5, D3.4 #13).
+
+**Convergencia de ambos paneles (señal fuerte):** etiquetado honesto de soporte normativo; conservar las madres en lenguaje cliente; no rebalancear el cuestionario por conteo.
+
+---
+
+## 12. PENDIENTES ABIERTOS
+
+1. **Redactar las 480 opciones de nivel** — fase Claude Code (método §7).
+2. **Nombre comercial del DMO** para la capa de venta (DMO se queda como nombre técnico interno).
+3. **Piloto con 5–10 clientes reales** antes de congelar: revisar distribución por pregunta (si >70% cae en 1–2 niveles, reescribir anchors) y correlación ítem-subdimensión. Único paso que valida de verdad la discriminación.
+4. **Decisión abierta:** etiqueta comercial de D2 ("Continuidad y delegación" vs. "Dependencia del dueño" interno).
+5. **Re-mapeo a ISO 9001:2026** al publicarse (16-sep-2026).
+6. **Aplicar el DMO a las marcas propias** (ARSEG Cyber, ARSEG Academy, ARGOS) como casos-cero de validación.
+
+---
+
+*Documento maestro v2.0 — fuente de verdad para la construcción del sistema en Claude Code. La arquitectura, el enfoque y la escala no se modificaron respecto a v1; toda la consolidación operó sobre la ejecución.*

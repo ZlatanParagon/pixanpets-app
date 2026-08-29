@@ -9,25 +9,15 @@ MEBUKI y rutas de certificación ISO 9001 / ISO/IEC 27001.
 
 | Archivo | Contenido |
 |---|---|
-| `INSTRUMENTO-DMO-v2.md` | Instrumento maestro v2.0 (29-ago-2026), consolidado a tres bandas (MEBUKI + ChatGPT v1.1 + Kimi). **Fuente de verdad** para el motor de scoring y el artefacto interactivo. |
+| `INSTRUMENTO-DMO-v2.md` | Instrumento maestro v2.0 (29-ago-2026), **completo**: secciones 0–12, 6 preguntas-madre y 96 preguntas-hijas. Consolidado a tres bandas (MEBUKI + ChatGPT v1.1 + Kimi). **Fuente de verdad** para el motor de scoring y el artefacto interactivo. |
 
 ## Estado
 
-- Instrumento maestro **cerrado para documentación**.
-- **Pendiente:** construcción como sistema (fase Claude Code) y piloto con 5–10 clientes.
-- **Pendiente (fase Claude Code):** redacción de las 5 opciones de respuesta de cada pregunta-madre con el molde de arquetipos de las hijas.
-
-## ⚠️ Contenido pendiente de recibir (traspaso por bloques)
-
-El documento maestro se está traspasando por bloques porque el pegado completo
-se truncaba. Lo consignado es verbatim; **no se reconstruyó ni se inventó
-nada** del contenido faltante.
-
-- ✅ **Bloque inicial** — secciones 0–6 hasta D3.4 #14 (integrado).
-- ✅ **Bloque A** — cierre de D3 (D3.4 #15, D3.5, consolidación) + D4 completa (integrado).
-- ✅ **Bloque B** — D5 · Presencia y confianza y D6 · Capacidad de evolución completas (integrado).
-- ⬜ **Bloque C** — secciones 7 a 12 (método de arquetipos, informe, cierre).
-
-Al recibir cada bloque, se integra verbatim en `INSTRUMENTO-DMO-v2.md`
-(reemplazando el marcador `⚠️ TRUNCADO` al final del archivo). La fase de
-construcción del motor de scoring inicia con el documento completo.
+- Instrumento maestro **cerrado para documentación** e íntegro en el repositorio
+  (traspasado por bloques y verificado; nada fue reconstruido ni inventado).
+- **Pendiente — fase de construcción (Claude Code):** motor de scoring
+  (sección 4), redacción de las 480 opciones de nivel y de las opciones de
+  las 6 madres (método de la sección 7), y artefacto interactivo.
+- **Pendientes abiertos del instrumento:** ver la sección 12 del documento
+  maestro (nombre comercial, piloto 5–10 clientes, etiqueta comercial de D2,
+  re-mapeo a ISO 9001:2026, casos-cero con marcas propias).
