@@ -263,7 +263,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .boton-terciario { background: none; color: var(--navy); border: none; text-decoration: underline; padding: 6px 8px; }
 
 label { display: block; font-size: 13px; font-weight: 600; margin: 8px 0; }
-textarea, select {
+textarea, select, input {
   display: block;
   width: 100%;
   margin-top: 4px;
@@ -276,6 +276,20 @@ textarea, select {
   background: var(--blanco);
 }
 .cambio-cuenta select { width: auto; display: inline-block; margin: 0; }
+
+/* Formularios de gestión y wizard de alta */
+.rejilla-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 4px 16px; margin: 8px 0; }
+.rejilla-form label { margin: 4px 0; }
+.campo-ancho { grid-column: 1 / -1; }
+.campo-linea { display: inline-block; width: 220px; margin: 0 0 0 8px; padding: 5px 8px; font-size: 13px; }
+
+.paso h2 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.paso-numero {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--navy); color: var(--blanco); font-size: 13px; font-weight: 700;
+}
+.paso-hecho { border-left: 3px solid var(--green); }
 .acciones-compromiso { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .acciones-compromiso label { width: 100%; margin: 0; }
 .acciones-compromiso button + button { margin-left: 8px; }

@@ -53,6 +53,8 @@ export interface Cliente {
   motivo_suspension?: string
   zona_horaria: string
   socio_responsable_id: string
+  /** Evidencia de la relación comercial formalizada que habilita el alta (2.4). */
+  evidencia_relacion_ref?: string
   creado_en: string
 }
 
