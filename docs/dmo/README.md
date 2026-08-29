@@ -9,7 +9,9 @@ MEBUKI y rutas de certificación ISO 9001 / ISO/IEC 27001.
 
 | Archivo | Contenido |
 |---|---|
-| `INSTRUMENTO-DMO-v2.md` | Instrumento maestro v2.0 (29-ago-2026), **completo**: secciones 0–12, 6 preguntas-madre y 96 preguntas-hijas. Consolidado a tres bandas (MEBUKI + ChatGPT v1.1 + Kimi). **Fuente de verdad** para el motor de scoring y el artefacto interactivo. |
+| `INSTRUMENTO-DMO-v2.md` | Instrumento maestro v2.0 (29-ago-2026), **completo**: secciones 0–12, 6 preguntas-madre y 96 preguntas-hijas. Consolidado a tres bandas (MEBUKI + ChatGPT v1.1 + Kimi). **Fuente de verdad** del contenido y la maquinaria. |
+| `GUIA-VOZ-Y-MARCA.md` | Guía de voz para la reescritura de las 96 hijas (calidez en el enunciado, rigor en las opciones) + branding visual MEBUKI (terminal `>_`, teal `#5DE0C0`, mono). Rige la redacción visible y la identidad del artefacto. |
+| `preguntas/D1.json` | **Calibración de voz**: las 16 hijas de D1 reescritas (enunciado cálido + escalera Guttman de 5 opciones), con IDs estables y maquinaria intacta. Pendiente de revisión de Serge; al aprobarse se vuelve patrón para D2–D6. |
 
 ## Estado
 

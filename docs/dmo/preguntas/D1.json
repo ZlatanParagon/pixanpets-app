@@ -1,0 +1,297 @@
+{
+  "dimension": "D1",
+  "nombre": "Procesos",
+  "ancla_primaria": "ISO 9001",
+  "estado": "calibración de voz — pendiente de revisión de Serge",
+  "nota": "Patrón de referencia para D2–D6. Enunciado cálido según GUIA-VOZ-Y-MARCA.md; opciones con escalera Guttman (método §7 del doc v2). La maquinaria (anclas, soporte, Annex SL, scoring) se conserva intacta del doc v2; enunciado_v2 conserva la redacción técnica original para trazabilidad.",
+  "subdimensiones": [
+    {
+      "id": "D1.0",
+      "nombre": "Intake y requisitos",
+      "preguntas": [
+        {
+          "id": "D1.0.1",
+          "enunciado_calido": "Antes de comprometerte con un pedido, ¿qué tan claro queda lo que el cliente espera?",
+          "opciones": [
+            "Se acuerda de palabra; muchas veces descubrimos sobre la marcha qué querían.",
+            "Alguien lo anota a su manera; a veces se confirma con el cliente, a veces no.",
+            "Registramos alcance y condiciones en un formato, y el cliente lo confirma.",
+            "Nada arranca sin requisitos confirmados; los malentendidos se miden y se corrigen.",
+            "El equipo captura y confirma solo, sin que el dueño intervenga; casi no hay sorpresas."
+          ],
+          "enunciado_v2": "¿En qué medida se capturan y confirman requisitos, alcance y condiciones antes de comprometer la entrega?",
+          "ancla": "9001 §8.2.1, §8.2.2",
+          "soporte": "D",
+          "annex_sl": null,
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.0.2",
+          "enunciado_calido": "¿Lo que cotizas y lo que terminas entregando coinciden?",
+          "opciones": [
+            "Casi nunca; el retrabajo por malentendidos es lo normal.",
+            "Coinciden en pedidos sencillos; en los complejos algo se pierde en el camino.",
+            "La cotización sale del alcance registrado y el cliente la valida antes de arrancar.",
+            "Comparamos lo cotizado contra lo entregado y ajustamos cuando difiere.",
+            "Cotización y entrega cierran contra el mismo registro sin intervención del dueño; las excepciones son raras y se analizan."
+          ],
+          "enunciado_v2": "¿En qué medida la cotización/compromiso refleja el alcance acordado y evita retrabajo por malentendidos?",
+          "ancla": "9001 §8.2.3",
+          "soporte": "D",
+          "annex_sl": null,
+          "es_pregunta_hecho": false
+        }
+      ]
+    },
+    {
+      "id": "D1.1",
+      "nombre": "Definición y documentación",
+      "preguntas": [
+        {
+          "id": "D1.1.3",
+          "enunciado_calido": "¿Podrías listar los procesos que sostienen tu negocio y qué entrega cada uno?",
+          "opciones": [
+            "No lo tengo claro; el trabajo simplemente \"se hace\".",
+            "Los tengo en la cabeza; cada quien en el equipo los contaría distinto.",
+            "Están listados por escrito, con el resultado que debe producir cada uno.",
+            "La lista está viva: se revisa cuando algo cambia y cada resultado se verifica.",
+            "Cualquiera del equipo la usa y la mantiene al día sin pasar por el dueño."
+          ],
+          "enunciado_v2": "¿En qué medida están identificados los procesos clave y los resultados que debe producir cada uno?",
+          "ancla": "9001 §4.4",
+          "soporte": "D",
+          "annex_sl": "§4.4",
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.1.4",
+          "enunciado_calido": "Si alguien nuevo tomara un proceso mañana, ¿con qué se guiaría?",
+          "opciones": [
+            "Con preguntarle a quien lo hacía; no hay nada escrito.",
+            "Con apuntes sueltos que cada quien guarda por su lado.",
+            "Con una guía escrita al nivel de detalle que su rol necesita.",
+            "La guía se usa de verdad y se corrige cada vez que el proceso cambia.",
+            "Entrenarse con ella no requiere al dueño; la operación la mantiene viva."
+          ],
+          "enunciado_v2": "¿En qué medida la forma de ejecutar cada proceso clave está documentada con el detalle necesario para el rol que la usa?",
+          "ancla": "9001 §4.4, §7.5",
+          "soporte": "D",
+          "annex_sl": "§7.5",
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.1.5",
+          "enunciado_calido": "Cuando el equipo consulta un documento, ¿cómo sabe que es la versión vigente?",
+          "opciones": [
+            "No lo sabe; circulan copias viejas por chat y correo.",
+            "Pregunta o compara fechas; a veces se trabaja con la equivocada.",
+            "Hay un lugar único donde vive la versión vigente y las viejas se retiran.",
+            "Está accesible en el punto de uso y los cambios se avisan al publicarse.",
+            "El control de versiones corre solo; nadie puede tomar una obsoleta por error."
+          ],
+          "enunciado_v2": "¿En qué medida la versión vigente está accesible en el punto de uso y se controlan las obsoletas?",
+          "ancla": "9001 §7.5.2, §7.5.3",
+          "soporte": "D",
+          "annex_sl": "§7.5",
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.1.6",
+          "enunciado_calido": "¿Quién responde por cada proceso clave?",
+          "opciones": [
+            "Nadie en particular; lo saca el que esté disponible.",
+            "Se sabe de manera informal, pero cuando algo falla nadie lo asume.",
+            "Cada proceso tiene responsable nombrado, con entradas y salidas claras.",
+            "El responsable rinde cuentas contra criterios de desempeño acordados.",
+            "Las suplencias y los relevos de responsable ocurren sin intervención del dueño."
+          ],
+          "enunciado_v2": "¿En qué medida cada proceso clave tiene responsable, entradas, salidas y criterios de desempeño?",
+          "ancla": "9001 §4.4.1, §5.3",
+          "soporte": "D",
+          "annex_sl": "§5.3",
+          "es_pregunta_hecho": false
+        }
+      ]
+    },
+    {
+      "id": "D1.2",
+      "nombre": "Ejecución y consistencia",
+      "preguntas": [
+        {
+          "id": "D1.2.7",
+          "enunciado_calido": "¿Dos personas distintas haciendo la misma tarea la hacen igual?",
+          "opciones": [
+            "No; cada quien tiene su método y se nota en el resultado.",
+            "Parecido, pero los detalles cambian según quién la tome.",
+            "Siguen los mismos pasos y criterios definidos por escrito.",
+            "La consistencia se verifica con muestras o revisiones periódicas.",
+            "Las variaciones se detectan solas y se corrigen sin escalar al dueño."
+          ],
+          "enunciado_v2": "¿En qué medida las personas ejecutan el proceso con los mismos criterios y controles definidos?",
+          "ancla": "9001 §8.5.1",
+          "soporte": "D",
+          "annex_sl": null,
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.2.8",
+          "enunciado_calido": "¿Cuántos errores o retrabajos quedaron registrados el último mes?",
+          "opciones": [
+            "Ninguno registrado — ocurren, pero no se anotan.",
+            "Algunos quedaron en chats o correos; no hay registro formal.",
+            "Están registrados en un solo lugar, con causa y responsable.",
+            "Se analizan cada periodo y generan acciones para no repetirse.",
+            "La recurrencia baja de forma sostenida y el registro se alimenta solo desde la operación."
+          ],
+          "enunciado_v2": "¿En qué medida desviaciones, errores y retrabajos se registran, controlan y analizan para evitar recurrencia?",
+          "ancla": "9001 §8.7, §10.2",
+          "soporte": "D",
+          "annex_sl": "§10.2",
+          "es_pregunta_hecho": true
+        },
+        {
+          "id": "D1.2.9",
+          "enunciado_calido": "Cuando alguien clave falta o la demanda sube, ¿las entregas se sostienen?",
+          "opciones": [
+            "No; se atrasan o baja la calidad hasta que la persona vuelve.",
+            "Se sostienen a base de horas extra y favores.",
+            "Hay cobertura definida y las entregas cumplen lo acordado.",
+            "Medimos el cumplimiento en esos picos y ajustamos capacidad.",
+            "La operación absorbe picos y ausencias sin que el dueño reasigne nada."
+          ],
+          "enunciado_v2": "¿En qué medida se cumplen requisitos y tiempos de entrega pese a cambios de persona o variaciones de demanda?",
+          "ancla": "9001 §8.1, §8.5.1",
+          "soporte": "D",
+          "annex_sl": null,
+          "es_pregunta_hecho": false
+        }
+      ]
+    },
+    {
+      "id": "D1.3",
+      "nombre": "Flujo y cuellos de botella",
+      "preguntas": [
+        {
+          "id": "D1.3.10",
+          "enunciado_calido": "¿Sabes cuánto trabajo puede tomar tu equipo antes de saturarse?",
+          "nota": "capacidad HOY — frontera con D6.4 que es escala planeada",
+          "opciones": [
+            "No; nos enteramos cuando ya estamos ahogados.",
+            "Lo intuimos por experiencia, sin números.",
+            "Planificamos capacidad contra el volumen esperado, con criterios claros.",
+            "La carga se monitorea y las prioridades se ajustan con datos.",
+            "La asignación se balancea sola y avisa antes de saturar; el dueño no interviene."
+          ],
+          "enunciado_v2": "¿En qué medida se planifica la capacidad frente al volumen y prioridades esperadas?",
+          "ancla": "9001 §7.1.1, §8.1",
+          "soporte": "D",
+          "annex_sl": null,
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.3.11",
+          "enunciado_calido": "¿Dónde se atora el trabajo hoy?",
+          "opciones": [
+            "No sabría decirlo; solo se siente que todo tarda.",
+            "Tenemos sospechas, pero nadie lo ha medido.",
+            "Medimos tiempos y colas de las etapas clave; los cuellos están ubicados.",
+            "Los cuellos se atacan por prioridad y verificamos que la mejora se sostenga.",
+            "La medición corre en continuo y reordena el flujo sin esperar al dueño."
+          ],
+          "enunciado_v2": "¿En qué medida se miden tiempos de ciclo, cargas, colas o bloqueos para localizar restricciones?",
+          "ancla": "9001 §9.1.1",
+          "soporte": "P",
+          "annex_sl": "§9.1",
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.3.12",
+          "enunciado_calido": "Cuando el trabajo pasa de una persona a otra, ¿qué se pierde en el camino?",
+          "opciones": [
+            "Mucho: contexto, pendientes y calidad; se vuelve a preguntar todo.",
+            "Depende de quién entrega; hay recordatorios informales.",
+            "Cada pase define qué se entrega, a quién y cómo se acepta.",
+            "Los pases fallidos se registran y el criterio de aceptación se ajusta.",
+            "Las transferencias fluyen sin supervisión del dueño, incluso entre áreas."
+          ],
+          "enunciado_v2": "¿En qué medida las transferencias entre personas/áreas tienen entradas, salidas y criterios de aceptación?",
+          "ancla": "9001 §4.4.1, §8.1",
+          "soporte": "D",
+          "annex_sl": null,
+          "es_pregunta_hecho": false
+        }
+      ]
+    },
+    {
+      "id": "D1.4",
+      "nombre": "Mejora y automatización",
+      "preguntas": [
+        {
+          "id": "D1.4.13",
+          "enunciado_calido": "¿Con qué frecuencia revisan cómo están funcionando sus procesos?",
+          "opciones": [
+            "Nunca formalmente; solo cuando algo truena.",
+            "De vez en cuando, sin fecha ni método fijos.",
+            "Con frecuencia definida, usando datos, quejas e incidentes.",
+            "Cada revisión deja acuerdos con responsable y fecha, y se les da seguimiento.",
+            "El ciclo de revisión corre solo y al dueño solo le llega lo excepcional."
+          ],
+          "enunciado_v2": "¿En qué medida los procesos se revisan con frecuencia definida usando datos, retroalimentación e incidentes?",
+          "ancla": "9001 §9.1.3, §10.3",
+          "soporte": "D",
+          "annex_sl": "§10.1",
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.4.14",
+          "enunciado_calido": "¿Cuándo fue la última vez que eliminaron un paso que ya no aportaba?",
+          "opciones": [
+            "No recuerdo ninguna; los pasos solo se acumulan.",
+            "Alguna vez, cuando alguien se queja lo suficiente.",
+            "En revisiones definidas, donde se simplifica con criterio acordado.",
+            "Cada eliminación se valida midiendo antes y después.",
+            "La simplificación es continua; el equipo la ejecuta sin permiso del dueño."
+          ],
+          "enunciado_v2": "¿En qué medida se eliminan pasos, esperas o controles que ya no aportan valor?",
+          "ancla": "9001 §10.3, §4.4",
+          "soporte": "D",
+          "annex_sl": "§10.1",
+          "es_pregunta_hecho": true
+        },
+        {
+          "id": "D1.4.15",
+          "enunciado_calido": "De lo que hoy hacen a mano, ¿qué valdría la pena automatizar primero?",
+          "nota": "automatizar lo EXISTENTE — frontera con D6.2 que es adoptar lo nuevo",
+          "opciones": [
+            "Ni idea; no hay lista de candidatos.",
+            "Hay ideas sueltas, sin comparar impacto ni costo.",
+            "Hay una lista priorizada por impacto, costo y riesgo.",
+            "La lista se ejecuta por orden y cada automatización demuestra su beneficio.",
+            "La operación propone y prioriza candidatos sola; el dueño solo ve resultados."
+          ],
+          "enunciado_v2": "¿En qué medida las oportunidades de simplificación/automatización se priorizan por impacto, costo y riesgo?",
+          "ancla": "9001 §10.1",
+          "soporte": "P",
+          "annex_sl": "§10.1",
+          "es_pregunta_hecho": false
+        },
+        {
+          "id": "D1.4.16",
+          "enunciado_calido": "Cuando cambian algo del proceso, ¿cómo saben si de verdad mejoró?",
+          "opciones": [
+            "Por sensación; nadie compara contra cómo estaba antes.",
+            "Se comenta si \"se siente mejor\", sin datos.",
+            "Comparamos línea base contra resultado con un indicador acordado.",
+            "También vigilamos efectos no deseados y revertimos si aparecen.",
+            "Todo cambio relevante trae su medición desde el diseño; corre sin empujón del dueño."
+          ],
+          "enunciado_v2": "¿En qué medida cada cambio relevante compara línea base con resultado y verifica efectos no deseados?",
+          "ancla": "9001 §9.1.3, §10.1",
+          "soporte": "D",
+          "annex_sl": null,
+          "es_pregunta_hecho": false
+        }
+      ]
+    }
+  ]
+}
